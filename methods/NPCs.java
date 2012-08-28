@@ -1,6 +1,6 @@
 /******************************************************
 * Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
+* ï¿½ 2012 MarneusScripts.com                            *
 * **************************************************** *
 * Access to this source is unauthorized without prior  *
 * authorization from its appropriate author(s).        *
@@ -26,5 +26,23 @@ public class NPCs {
 			}
 		}
 		return npcs.toArray(new NPC[]{});
+	}
+	
+	public static NPC getNearest(final int...ids) {
+		NPC temp = null;
+		double dist = Double.MAX_VALUE;
+		for (final NPC npc : getNPCArray()) {
+			final int id = npc.getID();
+			for (final int i : ids) {
+				if (i == id) {
+					final int distance = Calculations.distanceTo(npc.getLocationX(), npc.getLocationY());
+					if (distance < dist) {
+						dist = distance;
+						temp = npc;
+					}
+				}
+			}
+		}
+		return temp;
 	}
 }
