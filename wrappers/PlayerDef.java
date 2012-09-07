@@ -35,7 +35,16 @@ public class PlayerDef {
 		if(fh!=null){
 			Object data = fh.getData(currentObject);
 			if(data!=null)
-				return (Integer)data;
+				return (Integer)data * fh.getMultiplier();
+		}
+		return -1;
+	}
+	public long getModelHash(){
+		FieldHook fh = currentHook.getFieldHook("getModelHash");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return (Long)data * fh.getLongMultiplier();
 		}
 		return -1;
 	}

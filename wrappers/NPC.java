@@ -27,7 +27,7 @@ public class NPC extends Character{
 		if(fh!=null){
 			Object data = fh.getData(currentObject);
 			if(data!=null)
-				return (Integer)data;
+				return (Integer)data * fh.getMultiplier();
 		}
 		return -1;
 	}

@@ -15,8 +15,8 @@ import org.dynamac.enviroment.hook.ClassHook.FieldHook;
 
 
 public class Player extends Character{
-	private Object currentObject;
-	private ClassHook currentHook;
+	public Object currentObject;
+	public ClassHook currentHook;
 	public Player(Object o){
 		super(o);
 		currentObject=o;

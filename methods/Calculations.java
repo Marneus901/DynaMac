@@ -16,8 +16,8 @@ import org.dynamac.bot.api.wrappers.TileData;
 
 public class Calculations {	
 	public static float[] matrixCache = new float[]{};
-	public static double distanceBetween(int x1, int y1, int x2, int y2) {
-		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	public double distance(int x1, int x2, int y1, int y2) {
+		return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 	}
 	public static double distanceTo(int x, int y) {
 		int x2 = Client.getMyPlayer().getLocationX();
@@ -115,13 +115,10 @@ public class Calculations {
 		final float _z = z * data[11] + (data[15] + x * data[3] + y * data[7]);
 		final float _x = data[8] * z + (data[4] * y + (data[12] + data[0] * x));
 		final float _y = data[9] * z + (data[5] * y + (data[1] * x + data[13]));	
-		if (_x >= -_z && _x <= _z && _y >= -_z && _y <= _z) {		
-			return new Point(			
-					Math.round((int)(260.0 + (256.0 * _x) / _z))-4,	
-					Math.round((int)(171.0 + (167.0 * _y) / _z))		
-			);		
-		}		
-		return new Point(-1, -1);	
+		return new Point(			
+			Math.round((int)(260.0 + (256.0 * _x) / _z))-4,	
+			Math.round((int)(171.0 + (167.0 * _y) / _z))		
+		);		
 	}								
 	public static final int[] SIN_TABLE = new int[0x4000];	
 	public static final int[] COS_TABLE = new int[0x4000];	
