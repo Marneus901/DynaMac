@@ -1,6 +1,6 @@
 /******************************************************
 * Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
+* ï¿½ 2012 MarneusScripts.com                            *
 * **************************************************** *
 * Access to this source is unauthorized without prior  *
 * authorization from its appropriate author(s).        *
@@ -16,7 +16,7 @@ import org.dynamac.bot.api.wrappers.TileData;
 
 public class Calculations {	
 	public static float[] matrixCache = new float[]{};
-	public double distance(int x1, int x2, int y1, int y2) {
+	public static double distance(int x1, int x2, int y1, int y2) {
 		return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 	}
 	public static double distanceTo(int x, int y) {
