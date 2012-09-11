@@ -1,12 +1,3 @@
-/******************************************************
-* Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
-* **************************************************** *
-* Access to this source is unauthorized without prior  *
-* authorization from its appropriate author(s).        *
-* You are not permitted to release, nor distribute this* 
-* work without appropriate author(s) authorization.    *
-********************************************************/
 package org.dynamac.bot.api.wrappers;
 
 import org.dynamac.bot.api.methods.Calculations;
@@ -16,54 +7,34 @@ import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
 import org.dynamac.enviroment.hook.ClassHook.FieldHook;
 
-
-public class BoundaryObject extends Boundary{
+public class AnimatedObject{
 	public Object currentObject;
 	public ClassHook currentHook;
-	public BoundaryObject(Object o){
-		super(o);
-		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("BoundaryObject");
+	public AnimatedObject(Object data, short x, short y) {
+		localX=x;
+		localY=y;
+		currentObject = data;
+		currentHook = Data.indentifiedClasses.get("AnimatedObject");
 	}
-	public BoundaryObject(Object o, int locx, int locy){
-		super(o);
-		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("BoundaryObject");
-		locX=locx;
-		locY=locy;
+	private int localX;
+	private int localY;
+	public int getUnknownInt(int index){
+		FieldHook fh = currentHook.getFieldHook("getUnknownInt"+index);
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return (Integer)data * fh.getMultiplier();
+		}
+		return -1;
 	}
-	private int locX;
-	private int locY;
 	public int getID(){
 		FieldHook fh = currentHook.getFieldHook("getID");
 		if(fh!=null){
 			Object data = fh.getData(currentObject);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return (Integer)data * fh.getMultiplier();
 		}
-		return -1;		
-	}
-	public int getLocationX(){
-		try{
-			return locX+Client.getRSData().getBaseInfo().getX();
-		}
-		catch(Exception e){
-			return -1;
-		}
-	}
-	public int getLocationY(){
-		try{
-			return locY+Client.getRSData().getBaseInfo().getY();
-		}
-		catch(Exception e){
-			return -1;
-		}
-	}
-	public double getLocalX(){
-		return locX;
-	}
-	public double getLocalY(){
-		return locY;
+		return -1;
 	}
 	public ObjectDef getObjectDef(){
 		try{
@@ -85,6 +56,28 @@ public class BoundaryObject extends Boundary{
 		}
 		return null;
 	}
+	public int getLocationX(){
+		try{
+			return localX+Client.getRSData().getBaseInfo().getX();
+		}
+		catch(Exception e){
+			return -1;
+		}
+	}
+	public int getLocationY(){
+		try{
+			return localY+Client.getRSData().getBaseInfo().getY();
+		}
+		catch(Exception e){
+			return -1;
+		}
+	}
+	public int getLocalX(){
+		return localX;
+	}
+	public int getLocalY(){
+		return localY;
+	}
 	public ObjectDefLoader getObjectDefLoader(){
 		FieldHook fh = currentHook.getFieldHook("getObjectDefLoader");
 		if(fh!=null){
@@ -95,6 +88,19 @@ public class BoundaryObject extends Boundary{
 		return null;
 	}
 	public ModelLD getLDModel(){
+		ObjectDefLoader odl = getObjectDefLoader();
+		if(odl!=null){
+			ObjectComposite oc = odl.getComposite();
+			if(oc!=null){
+				ModelLD model = oc.getModel();
+				if(model!=null){
+					return model;
+				}
+			}
+		}
+		return null;
+	}	
+	public ModelLD getLDModel2(){
 		FieldHook fh = currentHook.getFieldHook("getModel");
 		if(fh!=null){
 			Object data = fh.getData(currentObject);
@@ -108,8 +114,8 @@ public class BoundaryObject extends Boundary{
 		ModelLD model = getLDModel();
 		if(model==null)
 			return new int[][]{{-1, -1, -1}};
-		double locX = (getLocalX()+0.5)*512;
-		double locY = (getLocalY()+0.5)*512;
+		double locX = (localX+0.5)*512;
+		double locY = (localY+0.5)*512;
 		int numVertices = Math.min(model.getVerticiesX().length, Math.min(model.getVerticiesY().length, model.getVerticiesZ().length));
 		int[][] screen = new int[numVertices][3];
 

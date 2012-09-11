@@ -31,7 +31,7 @@ public class BaseInfo {
 		return -1;
 	}
 	public int getY(){
-		FieldHook fh = currentHook.getFieldHook("getX");
+		FieldHook fh = currentHook.getFieldHook("getY");
 		if(fh!=null){
 			Object data = fh.getData(currentObject);
 			if(data!=null)

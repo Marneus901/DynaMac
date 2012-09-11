@@ -149,7 +149,8 @@ public class Client {
 				if(rsdata!=null){
 					BaseInfo baseinfo = rsdata.getBaseInfo();
 					if(baseinfo!=null){
-						int localDest = (((Integer)data) * fh.getMultiplier())/4;
+						int localDest = (((Integer)data) * fh.getMultiplier());
+						localDest/=4;
 						if(localDest!=-1)
 							return localDest + baseinfo.getY();
 					}

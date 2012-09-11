@@ -59,7 +59,6 @@ public class InterfaceChild {
 				x+=bounds[index].x;
 				y+=bounds[index].y;
 			}
-			
 		}
 		if (parentId != -1) {
 			InterfaceChild child = Interfaces.getChild(parentId);
@@ -116,13 +115,18 @@ public class InterfaceChild {
 		return -1;
 	}
 	public int getParentId(){
-		int mainID = getID() >>> 16;
+		int mainID = getID() >>> 0x10;
 		HashTable nc = Client.getInterfaceNodeCache();
-		for(Node n : nc.getBuckets()){
-			InterfaceNode ic = new InterfaceNode(n.currentObject);
-			if(mainID == ic.getMainID()){
-				return (int)(n.getID());
+		for(Node curr : nc.getBuckets()){
+			try{
+				InterfaceNode inode = new InterfaceNode(curr.getNext().currentObject);
+				if(inode.getMainID()==mainID)
+					return (int)curr.getNext().getID();
+				inode = new InterfaceNode(curr.getPrevious().currentObject);
+				if(inode.getMainID()==mainID)
+					return (int)curr.getPrevious().getID();
 			}
+			catch(Exception e){}
 		}
 		return -1;
 	}
@@ -132,6 +136,8 @@ public class InterfaceChild {
 			int id = (Integer)data * currentHook.getFieldHook("getParentID").getMultiplier();
 			if(id!=-1)
 				return id;
+			else
+				return getParentId();
 		}
 		return -1;
 	}

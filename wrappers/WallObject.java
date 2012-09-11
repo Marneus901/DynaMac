@@ -39,7 +39,7 @@ public class WallObject extends WallDecoration{
 		if(fh!=null){
 			Object data = fh.getData(currentObject);
 			if(data!=null)
-				return (Integer)data;
+				return (Integer)data * fh.getMultiplier();
 		}
 		return -1;		
 	}
@@ -67,19 +67,21 @@ public class WallObject extends WallDecoration{
 	}
 	public ObjectDef getObjectDef(){
 		try{
-			Node ref = Nodes.lookup(Client.getObjectDefLoader().getCache().getTable(), (long)getID());
-			if (ref.currentHook.getClassName().equals(Data.indentifiedClasses.get("HardReference").getClassName())) {
-				HardReference hr = new HardReference(ref.currentObject);
-				return new ObjectDef(hr.getHardReference());
-			} 
-			else if (ref.currentHook.getClassName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {
+			Node ref = Nodes.lookup(Client.getRSData().getObjectDefLoaders().getCache().getTable(), (long)getID());
+			if(ref==null)
+				return null;
+			if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {
 				SoftReference sr = new SoftReference(ref.currentObject);
 				Object def = sr.getSoftReference().get();
 				return new ObjectDef(def);
 			}
+			else if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("HardReference").getClassName())) {
+				HardReference hr = new HardReference(ref.currentObject);
+				Object def = hr.getHardReference();
+				return new ObjectDef(def);
+			}
 		}
 		catch(Exception e){
-			e.printStackTrace();
 		}
 		return null;
 	}
