@@ -1,4 +1,4 @@
-public class Cake {
+public class Cake<T> {
 
 	public abstract boolean accept();
 	
