@@ -16,6 +16,28 @@ import org.dynamac.bot.api.wrappers.NPCNode;
 
 public class NPCs {
 	/**
+	 * @author Azerbaijan, Marneus901
+	 * @param npcIDs
+	 * @return The closest NPC with a valid id from the list given
+	 */
+	public static NPC getNearest(int...ids) {
+		NPC temp = null;
+		double dist = Double.MAX_VALUE;
+		for (NPC npc : getNPCArray()) {
+			int id = npc.getNPCDef().getID();
+			for (int i : ids) {
+				if (i == id) {
+					double distance = Calculations.distanceTo(npc.getLocationX(), npc.getLocationY());
+					if (distance < dist) {
+						dist = distance;
+						temp = npc;
+					}
+				}
+			}
+		}
+		return temp;
+	}
+	/**
 	 * @author Connor132, Marneus901
 	 * @param npcIDs
 	 * @return Filtered NPCs by given IDs
@@ -53,7 +75,9 @@ public class NPCs {
 		for(NPCNode node : Client.getNPCNodeArray()){
 			if(node!=null){
 				NPC npc = node.getNPC();
-				if(npc!=null && !npc.getNPCName().equals("null"))
+				if(npc==null)
+					continue;
+				if(!npc.getNPCName().equals("null") && !npc.getNPCName().equals(""))
 					npcs.add(npc);
 			}
 		}
