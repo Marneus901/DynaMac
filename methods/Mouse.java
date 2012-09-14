@@ -28,13 +28,6 @@ public class Mouse {
 	public static final int RIGHT_BUTTON = MouseEvent.BUTTON3;
 	private Point lastPoint;
 
-	public void mouse(Point p, int button) {
-		mouse(p.x, p.y, button);
-	}
-	public void mouse(int x, int y, int button) {
-		moveMouse(x, y);
-		clickMouse(x, y, button);
-	}
 	public Point getLastMousePos() {
 		Point lastPos = getMousePos();
 		if(lastPos != null)
@@ -66,17 +59,17 @@ public class Mouse {
 		}
 		lastPoint = new Point(x2, y2);
 	}
-	public void dragMouse(Point p, int button) throws IllegalArgumentException {
+	public void dragMouse(Point p, int button){
 		dragMouse(p.x, p.y, button);
 	}
-	public void dragMouse(int x, int y, int button)  throws IllegalArgumentException{
+	public void dragMouse(int x, int y, int button){
 		Point p = getLastMousePos();
 		dragMouseFrom(p.x, p.y, x, y, button);
 	}
-	public void dragMouseFrom(Point p1, Point p2, int button) throws IllegalArgumentException {
+	public void dragMouseFrom(Point p1, Point p2, int button){
 		dragMouseFrom(p1.x, p1.y, p2.x, p2.y, button);
 	}
-	public void dragMouseFrom(int x1, int y1, int x2, int y2, int button) throws IllegalArgumentException {
+	public void dragMouseFrom(int x1, int y1, int x2, int y2, int button){
 		Component mouseTarget = Data.CLIENT_APPLET.getComponent(0);
 		Component mouseMotionTarget = mouseTarget;
 		PathGen pathGen = new PathGen();
@@ -90,16 +83,22 @@ public class Mouse {
 		lastPoint = new Point(x2, y2);
 		stars.add(new Star(System.currentTimeMillis(), lastPoint));
 	}
-	public void clickMouse(Point p, int button) throws IllegalArgumentException {
+	public void clickMouse(){
+		clickMouse(1);
+	}
+	public void clickMouse(int button){
+		clickMouse(getMousePos(), button);
+	}
+	public void clickMouse(Point p, int button){
 		clickMouse(p.x, p.y, button, 1);
 	}
-	public void clickMouse(int x, int y, int button) throws IllegalArgumentException {
+	public void clickMouse(int x, int y, int button){
 		clickMouse(x, y, button, 1);
 	}
-	public void clickMouse(Point p, int button, int clickCount) throws IllegalArgumentException {
+	public void clickMouse(Point p, int button, int clickCount){
 		clickMouse(p.x, p.y, button, clickCount);
 	}
-	public void clickMouse(int x, int y, int button, int clickCount) throws IllegalArgumentException {
+	public void clickMouse(int x, int y, int button, int clickCount){
 		Component target = Data.CLIENT_APPLET.getComponent(0);
 		for (MouseEvent me : createMouseClick(target, x, y, button, clickCount))
 			target.dispatchEvent(me);
