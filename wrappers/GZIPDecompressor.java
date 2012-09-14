@@ -13,7 +13,7 @@ import java.util.zip.Inflater;
 
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.ClassHook.FieldHook;
+import org.dynamac.enviroment.hook.FieldHook;
 
 
 public class GZIPDecompressor {

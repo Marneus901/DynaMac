@@ -14,7 +14,7 @@ import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Nodes;
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.ClassHook.FieldHook;
+import org.dynamac.enviroment.hook.FieldHook;
 
 
 public class WallObject extends WallDecoration{

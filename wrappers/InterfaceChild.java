@@ -81,13 +81,13 @@ public class InterfaceChild {
 	public int getRelativeX(){
 		Object data = currentHook.getData("getRelativeX", currentObject);
 		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getRelativeX").getMultiplier();
+			return (Integer)data * currentHook.getFieldHook("getRelativeX").getMultiplier() + 4;
 		return -1;
 	}
 	public int getRelativeY(){
 		Object data = currentHook.getData("getRelativeY", currentObject);
 		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getRelativeY").getMultiplier();
+			return (Integer)data * currentHook.getFieldHook("getRelativeY").getMultiplier() + 4;
 		return -1;
 	}
 	public int getWidth(){
@@ -115,18 +115,21 @@ public class InterfaceChild {
 		return -1;
 	}
 	public int getParentId(){
-		int mainID = getID() >>> 0x10;
-		HashTable nc = Client.getInterfaceNodeCache();
-		for(Node curr : nc.getBuckets()){
-			try{
-				InterfaceNode inode = new InterfaceNode(curr.getNext().currentObject);
-				if(inode.getMainID()==mainID)
-					return (int)curr.getNext().getID();
-				inode = new InterfaceNode(curr.getPrevious().currentObject);
-				if(inode.getMainID()==mainID)
-					return (int)curr.getPrevious().getID();
+		for(int i=0;i<20;++i){
+			int mainID = getID() >>> i;
+			System.out.println("Main ID : "+mainID);
+			HashTable nc = Client.getInterfaceNodeCache();
+			for(Node curr : nc.getBuckets()){
+				try{
+					InterfaceNode inode = new InterfaceNode(curr.getNext().currentObject);
+					if(inode.getMainID()==mainID)
+						return (int)curr.getNext().getID();
+					inode = new InterfaceNode(curr.getPrevious().currentObject);
+					if(inode.getMainID()==mainID)
+						return (int)curr.getPrevious().getID();
+				}
+				catch(Exception e){}
 			}
-			catch(Exception e){}
 		}
 		return -1;
 	}
