@@ -4,48 +4,51 @@ import java.util.ArrayList;
 
 import org.dynamac.bot.api.wrappers.Interface;
 import org.dynamac.bot.api.wrappers.InterfaceChild;
+import org.dynamac.bot.api.wrappers.InterfaceItem;
 
 public class Inventory {
 	public static int getCount(){
-		return getItemIDs().length;
+		return getItems().length;
 	}
-	public static boolean isInventoryFull(){
-		return getCount()>27;
-	}
-	public static int getItemStackSize(int itemID){
-		Interface inventory = Client.getInterfaceCache()[679];
-		if(inventory!=null){
-			InterfaceChild inventoryItems = inventory.getChildren()[0];
-			if(inventoryItems!=null){
-				for(InterfaceChild slot : inventoryItems.getChildren()){
-					if(slot!=null){
-						if(slot.getComponentID()==itemID){
-							return slot.getComponentStackSize();
-						}
-					}
-				}
-			}
-		}
-		return -1;
-	}
-	public static int[] getItemIDs(){
-		ArrayList<Integer> itemIDs = new ArrayList<Integer>();
-		Interface inventory = Client.getInterfaceCache()[679];
-		if(inventory!=null){
+	public static InterfaceItem[] getItems(){
+		ArrayList<InterfaceItem> items = new ArrayList<InterfaceItem>();
+		Interface inventory = Client.getInterfaceCache()[763];
+		if(inventory!=null && inventory.getChildren().length>0){
 			InterfaceChild inventoryItems = inventory.getChildren()[0];
 			if(inventoryItems!=null){
 				for(InterfaceChild slot : inventoryItems.getChildren()){
 					if(slot!=null){
 						if(slot.getComponentID()!=-1){
-							itemIDs.add(slot.getComponentID());
+							items.add(new InterfaceItem(slot));
 						}
 					}
 				}
 			}
 		}
-		int[] ret = new int[itemIDs.size()];
-		for(int i=0;i<ret.length;++i)
-			ret[i]=itemIDs.get(i);
-		return ret;
+		else{
+			inventory = Client.getInterfaceCache()[679];
+			if(inventory!=null && inventory.getChildren().length>0){
+				InterfaceChild inventoryItems = inventory.getChildren()[0];
+				if(inventoryItems!=null){
+					for(InterfaceChild slot : inventoryItems.getChildren()){
+						if(slot!=null){
+							if(slot.getComponentID()!=-1){
+								items.add(new InterfaceItem(slot));
+							}
+						}
+					}
+				}
+			}
+		}
+		return items.toArray(new InterfaceItem[]{});
+	}
+	public static InterfaceItem getSelectedItem(){
+		for(InterfaceItem i : getItems())
+			if(i.isSelected())
+				return i;
+		return null;
+	}
+	public static boolean isInventoryFull(){
+		return getCount()>27;
 	}
 }
