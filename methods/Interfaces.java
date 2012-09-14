@@ -9,12 +9,26 @@
 ********************************************************/
 package org.dynamac.bot.api.methods;
 
+import java.util.ArrayList;
+
+import org.dynamac.bot.api.wrappers.Interface;
 import org.dynamac.bot.api.wrappers.InterfaceChild;
 
 public class Interfaces {
 	public static InterfaceChild getChild(final int id) {
-		final int x = id >> 16;
+		final int x = id >> 0x10;
 		final int y = id & 0xffff;
 		return Client.getInterfaceCache()[x].getChildren()[y];
+	}
+	public static Interface[] getInterfaces(){
+		ArrayList<Interface> interfaces = new ArrayList<Interface>();
+		int k=0;
+		for(Interface i : Client.getInterfaceCache()){
+    		if(i!=null && i.getChildren().length>0){
+    			interfaces.add(i);
+    		}
+    		k++;
+    	}
+		return interfaces.toArray(new Interface[]{});
 	}
 }
