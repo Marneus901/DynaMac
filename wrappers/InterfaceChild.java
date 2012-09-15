@@ -12,6 +12,7 @@ package org.dynamac.bot.api.wrappers;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Interfaces;
@@ -43,6 +44,13 @@ public class InterfaceChild {
 		currentObject = o;
 		currentHook = Data.indentifiedClasses.get("InterfaceChild");
 	}
+	public Point getRandomPoint(){
+		int width = getWidth();
+		int height = getHeight();
+		int x = getAbsoluteX();
+		int y = getAbsoluteY();
+		return new Point(new Random().nextInt(getWidth())+getAbsoluteX(), new Random().nextInt(getHeight())+getAbsoluteY());
+	}
 	public Point getAbsoluteLocation() {
 		int parentId = getParentID();
 		int x = 0, y = 0;
@@ -58,6 +66,7 @@ public class InterfaceChild {
 			if (bounds != null && index > 0 && index < bounds.length && bounds[index] != null) {
 				x+=bounds[index].x;
 				y+=bounds[index].y;
+				return new Point(x, y);
 			}
 		}
 		if (parentId != -1) {
@@ -81,13 +90,13 @@ public class InterfaceChild {
 	public int getRelativeX(){
 		Object data = currentHook.getData("getRelativeX", currentObject);
 		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getRelativeX").getMultiplier() + 4;
+			return (Integer)data * currentHook.getFieldHook("getRelativeX").getMultiplier();
 		return -1;
 	}
 	public int getRelativeY(){
 		Object data = currentHook.getData("getRelativeY", currentObject);
 		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getRelativeY").getMultiplier() + 4;
+			return (Integer)data * currentHook.getFieldHook("getRelativeY").getMultiplier();
 		return -1;
 	}
 	public int getWidth(){
@@ -114,33 +123,26 @@ public class InterfaceChild {
 			return (Integer)data * currentHook.getFieldHook("getTextureID").getMultiplier();
 		return -1;
 	}
-	public int getParentId(){
-		for(int i=0;i<20;++i){
-			int mainID = getID() >>> i;
-			System.out.println("Main ID : "+mainID);
-			HashTable nc = Client.getInterfaceNodeCache();
-			for(Node curr : nc.getBuckets()){
-				try{
-					InterfaceNode inode = new InterfaceNode(curr.getNext().currentObject);
-					if(inode.getMainID()==mainID)
-						return (int)curr.getNext().getID();
-					inode = new InterfaceNode(curr.getPrevious().currentObject);
-					if(inode.getMainID()==mainID)
-						return (int)curr.getPrevious().getID();
-				}
-				catch(Exception e){}
-			}
-		}
-		return -1;
-	}
 	public int getParentID(){
 		Object data = currentHook.getData("getParentID", currentObject);
 		if(data!=null){
 			int id = (Integer)data * currentHook.getFieldHook("getParentID").getMultiplier();
 			if(id!=-1)
 				return id;
-			else
-				return getParentId();
+			else{
+				int mainID = getID() >> 0x10;
+				HashTable nc = Client.getInterfaceNodeCache();
+				for(Node start : nc.getBuckets()){
+					for(Node in = start.getNext();in!=null && !in.currentObject.equals(start.currentObject);in=in.getNext()){
+						try{
+							InterfaceNode curr = new InterfaceNode(in.currentObject);
+							if(mainID==curr.getMainID())
+								return (int)curr.getID();
+						}
+						catch(Exception e){}
+					}
+				}
+			}
 		}
 		return -1;
 	}
