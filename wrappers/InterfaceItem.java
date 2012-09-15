@@ -24,6 +24,9 @@ public class InterfaceItem {
 	public String getName(){
 		return itemName;
 	}
+	public InterfaceChild getInterfaceChild(){
+		return itemInterface;
+	}
 	public int getIndex(){
 		return itemInterface.index;
 	}
