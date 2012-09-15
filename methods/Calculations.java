@@ -10,6 +10,7 @@
 package org.dynamac.bot.api.methods;
 
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 
 import org.dynamac.bot.api.wrappers.TileData;
@@ -25,6 +26,19 @@ public class Calculations {
 		int x2 = Client.getMyPlayer().getLocationX();
 		int y2 = Client.getMyPlayer().getLocationY();
 		return Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
+	}
+	public Polygon getTilePolygon(int x, int y){
+		Polygon p = new Polygon();
+		Point center = Calculations.locationToScreen(x, y);
+		Point n = Calculations.locationToScreen(x, y+1);
+		Point s = Calculations.locationToScreen(x, y-1);
+		Point e = Calculations.locationToScreen(x+1, y);
+		Point w = Calculations.locationToScreen(x-1, y);
+		p.addPoint((center.x+n.x+w.x)/3, (center.y+n.y+w.y)/3);
+		p.addPoint((center.x+s.x+w.x)/3, (center.y+s.y+w.y)/3);
+		p.addPoint((center.x+s.x+e.x)/3, (center.y+s.y+e.y)/3);
+		p.addPoint((center.x+n.x+e.x)/3, (center.y+n.y+e.y)/3);
+		return p;
 	}
 	public static Point groundToScreen(int x, int y) {
 		try{
