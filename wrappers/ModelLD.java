@@ -12,7 +12,7 @@ package org.dynamac.bot.api.wrappers;
 import org.dynamac.bot.api.methods.Calculations;
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.ClassHook.FieldHook;
+import org.dynamac.enviroment.hook.FieldHook;
 
 
 public class ModelLD extends Model{

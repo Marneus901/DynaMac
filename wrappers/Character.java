@@ -14,12 +14,12 @@ import java.lang.reflect.Array;
 import org.dynamac.bot.api.methods.Client;
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.ClassHook.FieldHook;
+import org.dynamac.enviroment.hook.FieldHook;
 
 
 public class Character extends Animable{
-	private Object currentObject;
-	private ClassHook currentHook;
+	public Object currentObject;
+	public ClassHook currentHook;
 	public Character(Object o){
 		super(o);
 		currentObject=o;
@@ -77,6 +77,15 @@ public class Character extends Animable{
 	}
 	public int getHeight(){
 		FieldHook fh = currentHook.getFieldHook("getHeight");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return ((Integer)data) * fh.getMultiplier();
+		}
+		return -1;		
+	}
+	public int getMovementSpeed(){
+		FieldHook fh = currentHook.getFieldHook("getMovementSpeed");
 		if(fh!=null){
 			Object data = fh.getData(currentObject);
 			if(data!=null)

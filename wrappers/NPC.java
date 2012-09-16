@@ -11,7 +11,7 @@ package org.dynamac.bot.api.wrappers;
 
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.ClassHook.FieldHook;
+import org.dynamac.enviroment.hook.FieldHook;
 
 
 public class NPC extends Character{
@@ -29,6 +29,12 @@ public class NPC extends Character{
 			if(data!=null)
 				return (Integer)data * fh.getMultiplier();
 		}
+		return -1;
+	}
+	public int getID(){
+		NPCDef def = getNPCDef();
+		if(def!=null)
+			return def.getID();
 		return -1;
 	}
 	public NPCDef getNPCDef(){

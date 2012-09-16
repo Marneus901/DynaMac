@@ -3,33 +3,35 @@ package org.dynamac.bot.api.wrappers;
 import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Nodes;
 import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
 
-public class Item {
-	public Object currentObject;
-	public ClassHook currentHook;
-	public Item(Object o){
-		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Item");
+public class InterfaceItem {
+	private String itemName;
+	private int itemID;
+	private int itemStackSize;
+	private InterfaceChild itemInterface;
+	public InterfaceItem(InterfaceChild ic){
+		itemName = ic.getComponentName();
+		itemID = ic.getComponentID();
+		itemStackSize = ic.getComponentStackSize();
+		itemInterface = ic;
 	}
 	public int getID(){
-		FieldHook fh = currentHook.getFieldHook("getID");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
-			if(data!=null)
-				return (Integer)data * fh.getMultiplier();
-		}
-		return -1;
+		return itemID;
 	}
 	public int getStackSize(){
-		FieldHook fh = currentHook.getFieldHook("getStackSize");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
-			if(data!=null)
-				return (Integer)data * fh.getMultiplier();
-		}
-		return -1;
+		return itemStackSize;
+	}
+	public String getName(){
+		return itemName;
+	}
+	public InterfaceChild getInterfaceChild(){
+		return itemInterface;
+	}
+	public int getIndex(){
+		return itemInterface.index;
+	}
+	public boolean isSelected(){
+		return itemInterface.getBorderThickness()==2;
 	}
 	public ItemDef getItemDef(){
 		try{

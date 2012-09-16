@@ -10,8 +10,11 @@
 package org.dynamac.bot.api.methods;
 
 import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
 
 import org.dynamac.bot.api.wrappers.TileData;
+import org.dynamac.enviroment.Data;
 
 
 public class Calculations {	
@@ -24,6 +27,19 @@ public class Calculations {
 		int y2 = Client.getMyPlayer().getLocationY();
 		return Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
 	}
+	public Polygon getTilePolygon(int x, int y){
+		Polygon p = new Polygon();
+		Point center = Calculations.locationToScreen(x, y);
+		Point n = Calculations.locationToScreen(x, y+1);
+		Point s = Calculations.locationToScreen(x, y-1);
+		Point e = Calculations.locationToScreen(x+1, y);
+		Point w = Calculations.locationToScreen(x-1, y);
+		p.addPoint((center.x+n.x+w.x)/3, (center.y+n.y+w.y)/3);
+		p.addPoint((center.x+s.x+w.x)/3, (center.y+s.y+w.y)/3);
+		p.addPoint((center.x+s.x+e.x)/3, (center.y+s.y+e.y)/3);
+		p.addPoint((center.x+n.x+e.x)/3, (center.y+n.y+e.y)/3);
+		return p;
+	}
 	public static Point groundToScreen(int x, int y) {
 		try{
 			int z = tileHeight(x, y);
@@ -34,11 +50,6 @@ public class Calculations {
 		}
 		return new Point(-1, -1);
 	}
-	public static Point locationToScreen(int x, int y, int height){
-		x = x-Client.getRSData().getBaseInfo().getX();
-		y = y-Client.getRSData().getBaseInfo().getY();
-		return groundToScreen((int) ((x + 0.5) * 512), (int) ((y + 0.5) * 512), height);
-	}
 	public static Point groundToScreen(int x, int y, int height) {
 		try{
 			int z = tileHeight(x, y)-height;
@@ -48,6 +59,14 @@ public class Calculations {
 			e.printStackTrace();
 		}
 		return new Point(-1, -1);
+	}
+	public boolean isOnScreen(int x, int y){
+		return new Rectangle(0, 0, Data.CLIENT_APPLET.getWidth(), Data.CLIENT_APPLET.getHeight()).contains(new Point(x, y));
+	}
+	public static Point locationToScreen(int x, int y, int height){
+		x = x-Client.getRSData().getBaseInfo().getX();
+		y = y-Client.getRSData().getBaseInfo().getY();
+		return groundToScreen((int) ((x + 0.5) * 512), (int) ((y + 0.5) * 512), height);
 	}
 	public static Point locationToScreen(int x, int y){
 		x = x-Client.getRSData().getBaseInfo().getX();

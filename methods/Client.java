@@ -27,11 +27,31 @@ import org.dynamac.bot.api.wrappers.Player;
 import org.dynamac.bot.api.wrappers.RenderLD;
 import org.dynamac.bot.api.wrappers.Settings;
 import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook.FieldHook;
+import org.dynamac.enviroment.hook.FieldHook;
 import org.dynamac.rsapplet.canvas.Canvas;
 
 
 public class Client {
+	public static int getBaseX(){
+		Info rsdata = getRSData();
+		if(rsdata!=null){
+			BaseInfo baseinfo = rsdata.getBaseInfo();
+			if(baseinfo!=null){
+				return baseinfo.getX();
+			}
+		}
+		return -1;
+	}
+	public static int getBaseY(){
+		Info rsdata = getRSData();
+		if(rsdata!=null){
+			BaseInfo baseinfo = rsdata.getBaseInfo();
+			if(baseinfo!=null){
+				return baseinfo.getY();
+			}
+		}
+		return -1;
+	}
 	public static int getCameraPitch(){
 		FieldHook fh = Data.runtimeStaticFields.get("getCameraPitch");
 		if(fh!=null){
@@ -235,6 +255,14 @@ public class Client {
 		}
 		return false;
 	}
+	public static boolean isLoggedIn(){
+		try{
+			return Client.getRSData().getGroundInfo()!=null;
+		}
+		catch(Exception e){
+			return false;
+		}
+	}
 	public static Object getKeyboard(){
 		FieldHook fh = Data.runtimeStaticFields.get("getKeyboard");
 		if(fh!=null){
@@ -417,8 +445,11 @@ public class Client {
 	}
 	public static Player getMyPlayer(){
 		FieldHook fh = Data.runtimeStaticFields.get("getMyPlayer");
-		if(fh!=null)
-			return new Player(fh.getData(Data.CLIENT));
+		if(fh!=null){
+			Object data = fh.getData(Data.CLIENT);
+			if(data!=null)
+				return new Player(data);
+		}
 		return null;
 	}
 	public static int getNPCCount(){

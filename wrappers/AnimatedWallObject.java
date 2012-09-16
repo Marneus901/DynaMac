@@ -2,7 +2,7 @@ package org.dynamac.bot.api.wrappers;
 
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.ClassHook.FieldHook;
+import org.dynamac.enviroment.hook.FieldHook;
 
 public class AnimatedWallObject extends WallDecoration{
 	public Object currentObject;
