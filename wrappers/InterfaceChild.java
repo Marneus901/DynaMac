@@ -1,6 +1,6 @@
 /******************************************************
 * Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
+* ï¿½ 2012 MarneusScripts.com                            *
 * **************************************************** *
 * Access to this source is unauthorized without prior  *
 * authorization from its appropriate author(s).        *
@@ -45,10 +45,6 @@ public class InterfaceChild {
 		currentHook = Data.indentifiedClasses.get("InterfaceChild");
 	}
 	public Point getRandomPoint(){
-		int width = getWidth();
-		int height = getHeight();
-		int x = getAbsoluteX();
-		int y = getAbsoluteY();
 		return new Point(new Random().nextInt(getWidth())+getAbsoluteX(), new Random().nextInt(getHeight())+getAbsoluteY());
 	}
 	public Point getAbsoluteLocation() {
@@ -110,6 +106,9 @@ public class InterfaceChild {
 		if(data!=null)
 			return (Integer)data * currentHook.getFieldHook("getHeight").getMultiplier();
 		return -1;
+	}
+	public Rectangle getBounds() {
+		return new Rectangle(getAbsoluteX(), getAbsoluteY(), getWidth(), getHeight());
 	}
 	public int getID(){
 		Object data = currentHook.getData("getID", currentObject);
