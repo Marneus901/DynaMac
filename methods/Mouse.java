@@ -9,13 +9,10 @@
  ********************************************************/
 package org.dynamac.bot.api.methods;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Random;
 
 import org.dynamac.enviroment.Data;
@@ -26,9 +23,10 @@ public class Mouse {
 	public static final int LEFT_BUTTON = MouseEvent.BUTTON1;
 	public static final int MIDDLE_BUTTON = MouseEvent.BUTTON2;
 	public static final int RIGHT_BUTTON = MouseEvent.BUTTON3;
-	private Point lastPoint;
+	private static Point lastPoint;
+	public static int mouseSpeed=10;
 
-	public Point getLastMousePos() {
+	public static Point getLastMousePos() {
 		Point lastPos = getMousePos();
 		if(lastPos != null)
 			return lastPos;
@@ -36,40 +34,43 @@ public class Mouse {
 			return lastPoint;
 		return new Point(0,0);            
 	}
-	public Point getMousePos() {
+	public static Point getMousePos() {
 		return Data.CLIENT_APPLET.getMousePosition();
 	}
-	public void moveMouse(Point p) {
+	public static void moveMouse(Point p) {
 		moveMouse(p.x, p.y);
 	}
-	public void moveMouse(int x, int y) {
+	public static void moveMouse(int x, int y) {
 		Point p = getLastMousePos();
 		moveMouseFrom(p.x, p.y, x, y);
 	}
-	public void moveMouseFrom(Point p1, Point p2) {
+	public static void moveMouseFrom(Point p1, Point p2) {
 		moveMouseFrom(p1.x, p1.y, p2.x, p2.y);
 	}
-	public void moveMouseFrom(int x1, int y1, int x2, int y2) {
+	public static void moveMouseFrom(int x1, int y1, int x2, int y2) {
 		Component target = Data.CLIENT_APPLET.getComponent(0);
 		PathGen pathGen = new PathGen();
 		for (MouseEvent me : createMousePath(target, pathGen.makeMousePath(x1, y1, x2, y2))) {
 			target.dispatchEvent(me);
-			stars.add(new Star(System.currentTimeMillis(), me.getPoint()));
-			try{ Thread.sleep(2 + (int)(Math.random() * 2));}catch(Exception ex){};
+			try{ 
+				Thread.sleep(Math.max(0, mouseSpeed - 2 + new Random().nextInt(4)));
+				}
+			catch(Exception ex){
+			};
 		}
 		lastPoint = new Point(x2, y2);
 	}
-	public void dragMouse(Point p, int button){
+	public static void dragMouse(Point p, int button){
 		dragMouse(p.x, p.y, button);
 	}
-	public void dragMouse(int x, int y, int button){
+	public static void dragMouse(int x, int y, int button){
 		Point p = getLastMousePos();
 		dragMouseFrom(p.x, p.y, x, y, button);
 	}
-	public void dragMouseFrom(Point p1, Point p2, int button){
+	public static void dragMouseFrom(Point p1, Point p2, int button){
 		dragMouseFrom(p1.x, p1.y, p2.x, p2.y, button);
 	}
-	public void dragMouseFrom(int x1, int y1, int x2, int y2, int button){
+	public static void dragMouseFrom(int x1, int y1, int x2, int y2, int button){
 		Component mouseTarget = Data.CLIENT_APPLET.getComponent(0);
 		Component mouseMotionTarget = mouseTarget;
 		PathGen pathGen = new PathGen();
@@ -77,45 +78,47 @@ public class Mouse {
 		mouseTarget.dispatchEvent(me[0]);
 		for (int i = 1; i < me.length - 1; ++i) {
 			mouseMotionTarget.dispatchEvent(me[i]);
-			try{ Thread.sleep(2 + (int)(Math.random() * 2));}catch(Exception ex){}; //the lagtime isnt human enough
+			try{ 
+				Thread.sleep(Math.max(0, mouseSpeed - 2 + new Random().nextInt(4)));
+				}
+			catch(Exception ex){
+			};
 		}
 		mouseTarget.dispatchEvent(me[me.length-1]);
 		lastPoint = new Point(x2, y2);
-		stars.add(new Star(System.currentTimeMillis(), lastPoint));
 	}
-	public void clickMouse(){
+	public static void clickMouse(){
 		clickMouse(1);
 	}
-	public void clickMouse(int button){
-		clickMouse(getMousePos(), button);
+	public static void clickMouse(int button){
+		clickMouse(getLastMousePos(), button);
 	}
-	public void clickMouse(Point p, int button){
+	public static void clickMouse(Point p, int button){
 		clickMouse(p.x, p.y, button, 1);
 	}
-	public void clickMouse(int x, int y, int button){
+	public static void clickMouse(int x, int y, int button){
 		clickMouse(x, y, button, 1);
 	}
-	public void clickMouse(Point p, int button, int clickCount){
+	public static void clickMouse(Point p, int button, int clickCount){
 		clickMouse(p.x, p.y, button, clickCount);
 	}
-	public void clickMouse(int x, int y, int button, int clickCount){
+	public static void clickMouse(int x, int y, int button, int clickCount){
 		Component target = Data.CLIENT_APPLET.getComponent(0);
 		for (MouseEvent me : createMouseClick(target, x, y, button, clickCount))
 			target.dispatchEvent(me);
 	}
-	public void exitMouse(int x,int y) {
+	public static void exitMouse(int x,int y) {
 		Component target = Data.CLIENT_APPLET.getComponent(0);
 		MouseEvent me = new MouseEvent(target,MouseEvent.MOUSE_EXITED,System.currentTimeMillis(),0,x,y,0,false,MouseEvent.NOBUTTON);
 		target.dispatchEvent(me);
 	}
-	public void enterMouse(int x,int y) {
+	public static void enterMouse(int x,int y) {
 		Component target = Data.CLIENT_APPLET.getComponent(0);
 		MouseEvent me = new MouseEvent(target,MouseEvent.MOUSE_ENTERED,System.currentTimeMillis(),0,x,y,0,false,MouseEvent.NOBUTTON);
 		target.dispatchEvent(me);
 	}
 	private static long getRandom() {
 		Random rand = new Random();
-		//lag var 47-219, usu 78-94; currently tends low
 		return rand.nextInt(100) + 40;
 	}
 	private static MouseEvent[] createDragPath(Component mouseMotionTarget, Component mouseTarget, Point[] path, int button)  throws IllegalArgumentException{
@@ -171,48 +174,11 @@ public class Mouse {
 		}
 	}    
 	public static void paint(Graphics g){
-		for (int i = 0; i < stars.size(); i++) {
-			if (System.currentTimeMillis() - stars.get(i).when <= LENGTH) {
-				stars.get(i).c = new Color(Color.HSBtoRGB(i / (float) stars.size(), 1, 1));
-				stars.get(i).draw(g.create(), System.currentTimeMillis());
-			} 
-			else 
-				stars.remove(i);
-		}
 	}
-	private static final long LENGTH = 400;
-	private static final double DISTANCE = 10;
-	public final static ArrayList<Star> stars = new ArrayList<Star>();
-	public class Ray {
-		public double rot;
-		public Ray(double rot) {
-			this.rot = rot;
-		}
-		public void draw(Graphics g1, double j, Color c) {
-			Graphics2D g = (Graphics2D) g1;
-			g.rotate(rot);
-			g.setColor(c);
-			g.drawLine(0, 0, (int) (j), (int) (j));
-		}
+	public static int getSpeed(){
+		return mouseSpeed;
 	}
-	public class Star extends ArrayList<Ray> {
-		private static final long serialVersionUID = -1137739803879792377L;
-		long when;
-		Point where;
-		Color c;
-		public Star(long when, Point where) {
-			for (int i = 0; i < 100; i++)
-				add(new Ray(Math.random() * 2 * Math.PI));
-			this.where = where;
-			this.when = when;
-		}
-		public void draw(Graphics g, long time) {
-			g.translate(where.x, where.y);
-			for (Ray r : this)
-				r.draw(g, dist(time), c);
-		}
-		public double dist(long time) {
-			return DISTANCE - (double) (time - when) / (LENGTH / DISTANCE);
-		}
+	public static void setSpeed(int speed){
+		mouseSpeed=speed;
 	}
 }
