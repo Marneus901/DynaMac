@@ -9,8 +9,14 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.util.Random;
+
 import org.dynamac.bot.api.methods.Calculations;
 import org.dynamac.bot.api.methods.Client;
+import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Nodes;
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
@@ -34,6 +40,30 @@ public class WallObject extends WallDecoration{
 	}
 	private int locX;
 	private int locY;
+	public boolean clickModel(){
+		if(isOnScreen() && getLDModel()!=null){
+			int[][] pts = projectVertices();
+			int randInd = new Random().nextInt(pts.length);
+			Point p = new Point(pts[randInd][0], pts[randInd][1]);
+			if(p.x>0 && p.x<515 && p.y>54 && p.y<388){
+				Mouse.clickMouse(p, 1);
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean clickTile(){
+		if(isOnScreen()){
+			Polygon p = Calculations.getTilePolygon(getLocationX(), getLocationY());
+			Rectangle r = p.getBounds();
+			Point pt = new Point(new Random().nextInt(r.width)+r.x, new Random().nextInt(r.height)+r.y);
+			if(pt.x>0 && pt.x<515 && pt.y>54 && pt.y<388){
+				Mouse.clickMouse(pt, 1);
+				return true;
+			}
+		}
+		return false;
+	}
 	public int getID(){
 		FieldHook fh = currentHook.getFieldHook("getID");
 		if(fh!=null){
@@ -103,6 +133,10 @@ public class WallObject extends WallDecoration{
 		}
 		return null;
 	}	
+	public boolean isOnScreen(){
+		Point p = Calculations.locationToScreen(getLocationX(), getLocationY());
+		return (p.x>0 && p.x<515 && p.y>54 && p.y<388);
+	}
 	public int[][] projectVertices() {
 		float[] data = Calculations.matrixCache;
 		ModelLD model = getLDModel();
