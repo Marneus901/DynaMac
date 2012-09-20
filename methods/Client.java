@@ -203,8 +203,18 @@ public class Client {
 			Object data = fh.getData(Data.CLIENT);
 			if(data!=null){
 				Interface[] array = new Interface[Array.getLength(data)];
-				for(int i=0;i<array.length;++i)
-					array[i]=new Interface(i, Array.get(data, i));
+				for(int i=0;i<array.length;++i){
+					Object indexData = Array.get(data, i);
+					if(indexData!=null){
+						Interface iface = new Interface(i, Array.get(data, i));
+						if(iface.getChildren().length>0)
+							array[i]=iface;
+						else
+							array[i]=null;
+					}
+					else
+						array[i]=null;
+				}
 				return array;
 			}
 		}
