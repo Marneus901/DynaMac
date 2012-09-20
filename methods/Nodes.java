@@ -1,12 +1,12 @@
 /******************************************************
-* Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
-* **************************************************** *
-* Access to this source is unauthorized without prior  *
-* authorization from its appropriate author(s).        *
-* You are not permitted to release, nor distribute this* 
-* work without appropriate author(s) authorization.    *
-********************************************************/
+ * Created by Marneus901                                *
+ * © 2012 MarneusScripts.com                            *
+ * **************************************************** *
+ * Access to this source is unauthorized without prior  *
+ * authorization from its appropriate author(s).        *
+ * You are not permitted to release, nor distribute this* 
+ * work without appropriate author(s) authorization.    *
+ ********************************************************/
 package org.dynamac.bot.api.methods;
 
 import org.dynamac.bot.api.wrappers.HashTable;
@@ -19,13 +19,12 @@ public class Nodes {
 				return null;
 			}
 			for(Node node : nc.getBuckets()){
-				Node n=node.getNext();
-				if (n.getID() == id) {
-					return n;
-				}
-				n=node.getPrevious();
-				if (n.getID() == id) {
-					return n;
+				for(Node in = node.getNext();in!=null && !in.currentObject.equals(node.currentObject);in=in.getNext()){
+					try{
+						if(in.getID()==id)
+							return in;
+					}
+					catch(Exception e){}
 				}
 			}
 		} catch (Exception e) {
