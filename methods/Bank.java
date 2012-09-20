@@ -12,8 +12,9 @@ public class Bank {
 	public static int BANK_INTERFACE_ID = 762;
 	public static int BANK_SLOTS_INTERFACE_ID = 95;
 	public static int BANK_DEPOSIT_INVENTORY_BUTTON_ID = 34;
-	public static int BANK_DEPOSIT_EQUIPMENT_BUTTON_ID = 36;
-	public static int BANK_DEPOSIT_BEAST_BUTTON_ID = 38;
+	public static int BANK_DEPOSIT_POUCH_BUTTON_ID = 36;
+	public static int BANK_DEPOSIT_EQUIPMENT_BUTTON_ID = 38;
+	public static int BANK_DEPOSIT_BEAST_BUTTON_ID = 40;
 	public static final int[] BANKER_IDS = new int[]{
 		44, 45, 166, 494, 495, 496, 497, 498, 499, 553, 909, 953, 958, 1036, 1360, 1702, 2163, 2164, 2354, 2355,
 		2568, 2569, 2570, 2718, 2759, 3046, 3198, 3199, 3293, 3416, 3418, 3824, 4456, 4457, 4458, 4459, 4519, 4907,
@@ -111,6 +112,14 @@ public class Bank {
 	public static boolean depositFamiliar(){
 		if(isOpen()){
 			InterfaceChild button = Client.getInterfaceCache()[BANK_INTERFACE_ID].getChildren()[BANK_DEPOSIT_BEAST_BUTTON_ID];
+			button.click();
+			return true;
+		}
+		return false;
+	}
+	public static boolean depositPouch(){
+		if(isOpen()){
+			InterfaceChild button = Client.getInterfaceCache()[BANK_INTERFACE_ID].getChildren()[BANK_DEPOSIT_POUCH_BUTTON_ID];
 			button.click();
 			return true;
 		}
