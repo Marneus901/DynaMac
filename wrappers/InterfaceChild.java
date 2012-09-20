@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.dynamac.bot.api.methods.Client;
+import org.dynamac.bot.api.methods.Menu;
+import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Interfaces;
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
@@ -44,12 +46,42 @@ public class InterfaceChild {
 		currentObject = o;
 		currentHook = Data.indentifiedClasses.get("InterfaceChild");
 	}
+	public void click(){
+		Point p = getRandomPoint();
+		if(!p.equals(new Point(-1, -1)))
+			Mouse.clickMouse(p, 1);
+	}
+	public boolean doAction(String action){
+		if(!Menu.isOpen()){
+			Point p = getRandomPoint();
+			if(p.equals(new Point(-1, -1))){
+				return false;
+			}
+			Mouse.moveMouse(p);
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+			}
+			if(Menu.getIndex(action)>0){
+				Mouse.clickMouse(Mouse.getLastMousePos(), 3);
+				for(int i=0;i<10;++i){
+					if(Menu.isOpen())
+						break;
+					try {
+						Thread.sleep(100);
+					} catch (Exception e) {
+					}
+				}
+			}
+		}
+		return Menu.click(action);
+	}
 	public Point getRandomPoint(){
-		int width = getWidth();
-		int height = getHeight();
-		int x = getAbsoluteX();
-		int y = getAbsoluteY();
-		return new Point(new Random().nextInt(getWidth())+getAbsoluteX(), new Random().nextInt(getHeight())+getAbsoluteY());
+		try{
+			return new Point(new Random().nextInt(getWidth())+getAbsoluteX(), new Random().nextInt(getHeight())+getAbsoluteY());
+		}
+		catch(Exception e){}
+		return new Point(-1, -1);
 	}
 	public Point getAbsoluteLocation() {
 		int parentId = getParentID();
