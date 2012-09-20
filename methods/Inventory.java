@@ -56,7 +56,7 @@ public class Inventory {
 	 *@param ID of the InterfaceItem 
 	 *@return InterfaceItem in the Inventory
 	 **/
-	public static InterfaceItem getItemById(final int itemId) {
+	public static InterfaceItem getItemByID(final int itemId) {
 		for (InterfaceItem i : Inventory.getItems()) {
 			if (i != null) {
 				if (i.getID() == itemId) {
@@ -71,8 +71,8 @@ public class Inventory {
 	 *@param ID of the InterfaceItem
 	 *@return true if Inventory contains the InterfaceItem, false if not
 	 **/
-	public static boolean containsItemId(final int itemId) {
-		return getItemById(itemId) != null;
+	public static boolean containsItemID(final int itemId) {
+		return getItemByID(itemId) != null;
 	}   
 	/**
 	 *@author VelvetRevolver
@@ -97,12 +97,31 @@ public class Inventory {
 	public static boolean containsItemName(String itemName) {
 		return getItemByName(itemName) != null;
 	}
+	public static InterfaceItem getItemAt(int slotIndex){
+		Interface inventory = Client.getInterfaceCache()[763];
+		if(inventory!=null && inventory.getChildren().length>0){
+			InterfaceChild inventoryItems = inventory.getChildren()[0];
+			if(inventoryItems!=null){
+				return new InterfaceItem(inventoryItems.getChildren()[slotIndex]);
+			}
+		}
+		else{
+			inventory = Client.getInterfaceCache()[679];
+			if(inventory!=null && inventory.getChildren().length>0){
+				InterfaceChild inventoryItems = inventory.getChildren()[0];
+				if(inventoryItems!=null){
+					return new InterfaceItem(inventoryItems.getChildren()[slotIndex]);
+				}
+			}
+		}
+		return null;
+	}
 	/**
 	 *@author VelvetRevolver , Marneus901
 	 *@param Ids of the InterfaceItems you want to look for  
 	 *@return InterfaceItems with the Selected Ids
 	 **/
-	public static InterfaceItem[] getItemsByIds(int... ids){
+	public static InterfaceItem[] getItemsByIDs(int... ids){
 		ArrayList<InterfaceItem> items = new ArrayList<InterfaceItem>();
 		for(InterfaceItem item : getItems()){
 			for(int i : ids){
@@ -122,19 +141,14 @@ public class Inventory {
 	 **/
 	public static InterfaceItem[] getItems(boolean selected, int...ids){
 		ArrayList<InterfaceItem> items = new ArrayList<InterfaceItem>();
-		for(InterfaceItem item : getItems())
-			items.add(item);
-		for(InterfaceItem item : items){
-			boolean isListed=false;
-			for(int i : ids){
-				if(i==item.getID()){
-					isListed=true;
-					break;
-				}
-			}
-			if((isListed && !selected) || (!isListed && selected)){
-				items.remove(item);
-			}
+		ArrayList<Integer> itemIDs = new ArrayList<Integer>();
+		for(int i=0;i<ids.length;++i)
+			itemIDs.add(ids[i]);
+		for(InterfaceItem item : getItems()){
+			if(selected && itemIDs.contains(item.getID()))
+				items.add(item);
+			if(!selected && !itemIDs.contains(item.getID()))
+				items.add(item);
 		}
 		return items.toArray(new InterfaceItem[]{});
 	}
