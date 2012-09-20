@@ -52,4 +52,10 @@ public class InterfaceItem {
 		catch(Exception e){}
 		return null;
 	}
+	public void click(){
+		itemInterface.click();
+	}
+	public boolean doAction(String action){
+		return itemInterface.doAction(action);
+	}
 }
