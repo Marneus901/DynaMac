@@ -19,7 +19,7 @@ import org.dynamac.enviroment.Data;
 
 public class Calculations {	
 	public static float[] matrixCache = new float[]{};
-	public double distance(int x1, int x2, int y1, int y2) {
+	public static double distance(int x1, int x2, int y1, int y2) {
 		return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 	}
 	public static double distanceTo(int x, int y) {
@@ -27,7 +27,7 @@ public class Calculations {
 		int y2 = Client.getMyPlayer().getLocationY();
 		return Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
 	}
-	public Polygon getTilePolygon(int x, int y){
+	public static Polygon getTilePolygon(int x, int y){
 		Polygon p = new Polygon();
 		Point center = Calculations.locationToScreen(x, y);
 		Point n = Calculations.locationToScreen(x, y+1);
@@ -60,7 +60,7 @@ public class Calculations {
 		}
 		return new Point(-1, -1);
 	}
-	public boolean isOnScreen(int x, int y){
+	public static boolean isOnScreen(int x, int y){
 		return new Rectangle(0, 0, Data.CLIENT_APPLET.getWidth(), Data.CLIENT_APPLET.getHeight()).contains(new Point(x, y));
 	}
 	public static Point locationToScreen(int x, int y, int height){
