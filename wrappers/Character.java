@@ -1,6 +1,6 @@
 /******************************************************
 * Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
+* ï¿½ 2012 MarneusScripts.com                            *
 * **************************************************** *
 * Access to this source is unauthorized without prior  *
 * authorization from its appropriate author(s).        *
@@ -92,6 +92,10 @@ public class Character extends Animable{
 		catch(Exception e){
 			return -1;
 		}
+	}
+	public Tile getLocation() {
+		return new Tile(Players.getMyPlayer().getLocationX(), Players.getMyPlayer().getLocationY(), 
+				Players.getMyPlayer().getHeight());
 	}
 	public int getHeight(){
 		FieldHook fh = currentHook.getFieldHook("getHeight");
