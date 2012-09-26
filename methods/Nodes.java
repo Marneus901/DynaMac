@@ -28,7 +28,6 @@ public class Nodes {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return null;
 	}
