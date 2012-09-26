@@ -104,8 +104,7 @@ public class Mouse {
 	}
 	public static void clickMouse(int x, int y, int button, int clickCount){
 		Component target = Data.CLIENT_APPLET.getComponent(0);
-		for (MouseEvent me : createMouseClick(target, x, y, button, clickCount))
-			target.dispatchEvent(me);
+		createMouseClick(target, x, y, button, clickCount);
 	}
 	public static void exitMouse(int x,int y) {
 		Component target = Data.CLIENT_APPLET.getComponent(0);
@@ -144,22 +143,28 @@ public class Mouse {
 
 		return me;
 	}
-	private static MouseEvent[] createMouseClick(Component target, int x, int y, int button, int clickCount) throws IllegalArgumentException {
+	private static void createMouseClick(Component target, int x, int y, int button, int clickCount) throws IllegalArgumentException {
 		int buttonModifiers = getButtonModifiers(button);
-		MouseEvent[] me = new MouseEvent[clickCount * 3];
-		long lagTime = System.currentTimeMillis();
-		int count = 1;
-
-		for (int i = 0; i < me.length; i += 3) {
-			me[i] = new MouseEvent(target, MouseEvent.MOUSE_PRESSED, lagTime, buttonModifiers, x, y, count, false, button);
-			lagTime += getRandom();
-			me[i + 1] = new MouseEvent(target, MouseEvent.MOUSE_RELEASED, lagTime, buttonModifiers, x, y, count, false, button);
-			me[i + 2] = new MouseEvent(target, MouseEvent.MOUSE_CLICKED, lagTime, buttonModifiers, x, y, count, false, button);
-			lagTime += getRandom();
-			++count;
+		for (int i = 0; i < clickCount; i++) {
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
+			try {
+				Thread.sleep(new Random().nextInt(100)+50);
+			} catch (InterruptedException e) {
+			}
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
 		}
-
-		return me;
+	}
+	public static void pressMouse(int x, int y, int button){
+		int buttonModifiers = getButtonModifiers(button);
+		Component target = Data.CLIENT_APPLET.getComponent(0);
+		target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
+	}
+	public static void releaseMouse(int x, int y, int button){
+		int buttonModifiers = getButtonModifiers(button);
+		Component target = Data.CLIENT_APPLET.getComponent(0);
+		target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
+		target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
 	}
 	private static int getButtonModifiers(int button) throws IllegalArgumentException {
 		switch (button) {
@@ -180,5 +185,8 @@ public class Mouse {
 	}
 	public static void setSpeed(int speed){
 		mouseSpeed=speed;
+	}
+	public static void clickMouse(Point point) {
+		clickMouse(point, 1);
 	}
 }
