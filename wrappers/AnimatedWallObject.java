@@ -12,7 +12,7 @@ public class AnimatedWallObject extends WallDecoration{
 		currentObject = o;
 		localX=x;
 		localY=y;
-		currentHook = Data.indentifiedClasses.get("AnimatedAnimableObject");
+		currentHook = Data.indentifiedClasses.get("AnimatedWallObject");
 	}
 	private int localX;
 	private int localY;
