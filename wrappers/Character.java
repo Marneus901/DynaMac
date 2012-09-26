@@ -61,6 +61,19 @@ public class Character extends Animable{
 		}
 		return -1;
 	}
+	public int getDirection(){
+		FieldHook fh = currentHook.getFieldHook("getDirection");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null){
+				double deg = ((Integer)data) * fh.getMultiplier();
+				deg = deg/45;
+				deg = deg-(deg%45);
+				return (int)deg;
+			}
+		}
+		return -1;		
+	}
 	public int getLocationX(){
 		try{
 			return getMaxX()+Client.getRSData().getBaseInfo().getX();
