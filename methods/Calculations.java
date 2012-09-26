@@ -11,10 +11,8 @@ package org.dynamac.bot.api.methods;
 
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.Rectangle;
 
 import org.dynamac.bot.api.wrappers.TileData;
-import org.dynamac.enviroment.Data;
 
 
 public class Calculations {	
@@ -61,7 +59,8 @@ public class Calculations {
 		return new Point(-1, -1);
 	}
 	public static boolean isOnScreen(int x, int y){
-		return new Rectangle(0, 0, Data.CLIENT_APPLET.getWidth(), Data.CLIENT_APPLET.getHeight()).contains(new Point(x, y));
+		Point p = Calculations.locationToScreen(x, y);
+		return (p.x>0 && p.x<515 && p.y>54 && p.y<388);
 	}
 	public static Point locationToScreen(int x, int y, int height){
 		x = x-Client.getRSData().getBaseInfo().getX();
@@ -69,9 +68,15 @@ public class Calculations {
 		return groundToScreen((int) ((x + 0.5) * 512), (int) ((y + 0.5) * 512), height);
 	}
 	public static Point locationToScreen(int x, int y){
-		x = x-Client.getRSData().getBaseInfo().getX();
-		y = y-Client.getRSData().getBaseInfo().getY();
-		return groundToScreen((int) ((x + 0.5) * 512), (int) ((y + 0.5) * 512));
+		try{
+			if(!Bank.isOpen()){
+				x = x-Client.getBaseX();
+				y = y-Client.getBaseY();
+				return groundToScreen((int) ((x + 0.5) * 512), (int) ((y + 0.5) * 512));
+			}
+		}
+		catch(Exception e){}
+		return new Point(-1, -1);
 	}
 	public static int tileHeight(int x, int y) {
 		try{
