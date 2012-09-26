@@ -11,6 +11,7 @@ package org.dynamac.bot.api.wrappers;
 
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
+import org.dynamac.enviroment.hook.FieldHook;
 
 
 public class Reference extends NodeSub{
@@ -20,5 +21,14 @@ public class Reference extends NodeSub{
 		super(o);
 		currentObject = o;
 		currentHook = Data.indentifiedClasses.get("Reference");
+	}
+	public int getIndex(){
+		FieldHook fh = currentHook.getFieldHook("getIndex");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return ((Integer)data) * fh.getMultiplier();	
+		}
+		return -1;
 	}
 }
