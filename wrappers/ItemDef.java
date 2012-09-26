@@ -30,6 +30,15 @@ public class ItemDef {
 		}
 		return null;
 	}
+	public HashTable getNodeTable(){
+		FieldHook fh = currentHook.getFieldHook("getNodeTable");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return new HashTable(data);
+		}
+		return null;
+	}
 	public int getID(){
 		FieldHook fh = currentHook.getFieldHook("getID");
 		if(fh!=null){
