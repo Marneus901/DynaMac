@@ -71,38 +71,38 @@ public class Objects {
 						continue;
 					if(g1.getBoundary1()!=null){
 						Boundary object = g1.getBoundary1();
-						if(!object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("BoundaryObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedBoundaryObject").getClassName())){
 							animatedObjects.add(new AnimatedBoundaryObject(object.currentObject, x, y).getAnimatedObject());
 						}
 					}
 					if(g1.getBoundary2()!=null){
 						Boundary object = g1.getBoundary2();
-						if(!object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("BoundaryObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedBoundaryObject").getClassName())){
 							animatedObjects.add(new AnimatedBoundaryObject(object.currentObject, x, y).getAnimatedObject());
 						}
 					}
 					if(g1.getWallDecoration1()!=null){
 						WallDecoration object = g1.getWallDecoration1();
-						if(!object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("WallObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedWallObject").getClassName())){
 							animatedObjects.add(new AnimatedWallObject(object.currentObject, x, y).getAnimatedObject());
 						}
 					}
 					if(g1.getWallDecoration2()!=null){
 						WallDecoration object = g1.getWallDecoration2();
-						if(!object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("WallObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedWallObject").getClassName())){
 							animatedObjects.add(new AnimatedWallObject(object.currentObject, x, y).getAnimatedObject());
 						}
 					}
 					if(g1.getFloorDecoration()!=null){
 						FloorDecoration object = g1.getFloorDecoration();
-						if(!object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("FloorObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedFloorObject").getClassName())){
 							animatedObjects.add(new AnimatedFloorObject(object.currentObject, x, y).getAnimatedObject());
 						}
 					}
 					if(g1.getAnimableList()!=null){
 						AnimableNode node = g1.getAnimableList();
 						Animable object = node.getAnimable();
-						if(!object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimableObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedAnimableObject").getClassName())){
 							animatedObjects.add(new AnimatedAnimableObject(object.currentObject).getAnimatedObject());
 						}
 					}
@@ -211,6 +211,109 @@ public class Objects {
 
 		}
 		return new WallObject[]{};
+	}
+	public static AnimableObject getAnimableObjectAt(int x, int y){
+		try{
+			Ground g = Client.getRSData().getGroundInfo().getGroundArray()[Client.getPlane()][x-Client.getBaseX()][y-Client.getBaseY()];
+			if(g.getAnimableList()==null)
+				return null;
+			Animable a = new Animable(g.getAnimableList().getAnimable().currentObject);
+			if(a.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimableObject").getClassName())){
+				return new AnimableObject(a.currentObject);
+			}
+		}
+		catch(Exception e){
+		}
+		return null;
+	}
+	public static AnimatedObject getAnimatedObjectAt(int x, int y){
+		try{
+			Ground g1 = Client.getRSData().getGroundInfo().getGroundArray()[Client.getPlane()][x-Client.getBaseX()][y-Client.getBaseY()];
+			if(g1.getBoundary1()!=null){
+				Boundary object = g1.getBoundary1();
+				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedBoundaryObject").getClassName())){
+					return new AnimatedBoundaryObject(object.currentObject, x, y).getAnimatedObject();
+				}
+			}
+			if(g1.getBoundary2()!=null){
+				Boundary object = g1.getBoundary2();
+				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedBoundaryObject").getClassName())){
+					return new AnimatedBoundaryObject(object.currentObject, x, y).getAnimatedObject();
+				}
+			}
+			if(g1.getWallDecoration1()!=null){
+				WallDecoration object = g1.getWallDecoration1();
+				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedWallObject").getClassName())){
+					return new AnimatedWallObject(object.currentObject, x, y).getAnimatedObject();
+				}
+			}
+			if(g1.getWallDecoration2()!=null){
+				WallDecoration object = g1.getWallDecoration2();
+				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedWallObject").getClassName())){
+					return new AnimatedWallObject(object.currentObject, x, y).getAnimatedObject();
+				}
+			}
+			if(g1.getFloorDecoration()!=null){
+				FloorDecoration object = g1.getFloorDecoration();
+				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedFloorObject").getClassName())){
+					return new AnimatedFloorObject(object.currentObject, x, y).getAnimatedObject();
+				}
+			}
+			if(g1.getAnimableList()!=null){
+				AnimableNode node = g1.getAnimableList();
+				Animable object = node.getAnimable();
+				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedAnimableObject").getClassName())){
+					return new AnimatedAnimableObject(object.currentObject).getAnimatedObject();
+				}
+			}
+		}
+		catch(Exception e){
+		}
+		return null;
+	}
+	public static BoundaryObject getBoundaryObjectAt(int x, int y){
+		try{
+			Ground g = Client.getRSData().getGroundInfo().getGroundArray()[Client.getPlane()][x-Client.getBaseX()][y-Client.getBaseY()];
+			Boundary b = g.getBoundary1();
+			if(b==null)
+				b=g.getBoundary2();
+			if(b==null)
+				return null;
+			if(b.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("BoundaryObject").getClassName())){
+				return new BoundaryObject(b.currentObject, x-Client.getBaseX(), y-Client.getBaseY());
+			}
+		}
+		catch(Exception e){
+		}
+		return null;
+	}
+	public static FloorObject getFloorObjectAt(int x, int y){
+		try{
+			Ground g = Client.getRSData().getGroundInfo().getGroundArray()[Client.getPlane()][x-Client.getBaseX()][y-Client.getBaseY()];
+			FloorDecoration a = g.getFloorDecoration();
+			if(a.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("FloorObject").getClassName())){
+				return new FloorObject(a.currentObject, x-Client.getBaseX(), y-Client.getBaseY());
+			}
+		}
+		catch(Exception e){
+		}
+		return null;
+	}
+	public static WallObject getWallObjectAt(int x, int y){
+		try{
+			Ground g = Client.getRSData().getGroundInfo().getGroundArray()[Client.getPlane()][x-Client.getBaseX()][y-Client.getBaseY()];
+			WallDecoration b = g.getWallDecoration1();
+			if(b==null)
+				b=g.getWallDecoration2();
+			if(b==null)
+				return null;
+			if(b.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("WallObject").getClassName())){
+				return new WallObject(b.currentObject, x-Client.getBaseX(), y-Client.getBaseY());
+			}
+		}
+		catch(Exception e){
+		}
+		return null;
 	}
 	/**
 	 * Credits Natfoth
