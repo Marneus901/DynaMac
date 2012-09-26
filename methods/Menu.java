@@ -36,8 +36,8 @@ public class Menu {
 		if(items.length<i)
 			return false;
 		Point menu = getLocation();
-		int xOff = new Random().nextInt((items[i].length() * 4)-4)+4;
-		int yOff = 21 + 16 * i + new Random().nextInt(9)+3;
+		int xOff = new Random().nextInt(getWidth());
+		int yOff = 21 + 16 * i + new Random().nextInt(15);
 		Mouse.moveMouse(new Point(menu.x + xOff, menu.y + yOff));
 		if (isOpen()) {
 			Mouse.clickMouse();
