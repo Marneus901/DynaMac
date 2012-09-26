@@ -48,4 +48,13 @@ public class NPCDef {
 		}
 		return "";
 	}
+	public HashTable getNodeTable(){
+		FieldHook fh = currentHook.getFieldHook("getNodeTable");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return new HashTable(data);
+		}
+		return null;
+	}
 }
