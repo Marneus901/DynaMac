@@ -17,7 +17,7 @@ public class AnimatedAnimableObject extends Animable{
 		if(fh!=null){
 			Object data = fh.getData(currentObject);
 			if(data!=null){
-				return new AnimatedObject(data, this.getMaxX(), this.getMinY());
+				return new AnimatedObject(data, this.getMinX(), this.getMinY());
 			}
 		}
 		return null;
