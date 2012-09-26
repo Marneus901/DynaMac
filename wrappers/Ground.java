@@ -30,6 +30,15 @@ public class Ground {
 		}
 		return null;		
 	}
+	public byte getPlane(){
+		FieldHook fh = currentHook.getFieldHook("getPlane");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return (Byte)data;
+		}
+		return -1;		
+	}
 	public Boundary getBoundary1(){
 		FieldHook fh = currentHook.getFieldHook("getBoundary1");
 		if(fh!=null){
