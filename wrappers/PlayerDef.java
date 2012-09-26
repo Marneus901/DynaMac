@@ -30,6 +30,15 @@ public class PlayerDef {
 		}
 		return new int[]{};
 	}
+	public int[] getColors(){
+		FieldHook fh = currentHook.getFieldHook("getColors");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return (int[])data;
+		}
+		return new int[]{};
+	}
 	public int getID(){
 		FieldHook fh = currentHook.getFieldHook("getID");
 		if(fh!=null){
@@ -38,6 +47,15 @@ public class PlayerDef {
 				return (Integer)data * fh.getMultiplier();
 		}
 		return -1;
+	}
+	public boolean isMale(){
+		FieldHook fh = currentHook.getFieldHook("isMale");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return (Boolean)data;
+		}
+		return false;
 	}
 	public long getModelHash(){
 		FieldHook fh = currentHook.getFieldHook("getModelHash");
