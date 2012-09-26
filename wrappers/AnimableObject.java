@@ -12,10 +12,13 @@ package org.dynamac.bot.api.wrappers;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.Random;
 
+import org.dynamac.bot.api.methods.Bank;
 import org.dynamac.bot.api.methods.Calculations;
 import org.dynamac.bot.api.methods.Client;
+import org.dynamac.bot.api.methods.Menu;
 import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Nodes;
 import org.dynamac.enviroment.Data;
@@ -55,6 +58,61 @@ public class AnimableObject extends Animable{
 		}
 		return false;
 	}
+	public boolean containsPoint(Point p){
+		for(Polygon poly : getWireframe())
+			if(poly.contains(p))
+				return true;
+		return false;
+	}
+	public boolean doAction(String action){
+		if(!Menu.isOpen()){
+			Point p = getRandomPoint();
+			if(p.equals(new Point(-1, -1))){
+				return false;
+			}
+			if(!containsPoint(p))
+				return false;
+			Mouse.moveMouse(p);
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+			}
+			if(Menu.getIndex(action)==0){
+				Mouse.clickMouse();
+				for(int i=0;i<20;++i){
+					if(Client.getMouseCrosshairState()==2)
+						return true;
+					if(Client.getMouseCrosshairState()==1)
+						return false;
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+					}
+				}
+				return false;
+			}
+			if(Menu.getIndex(action)>0){
+				Mouse.clickMouse(Mouse.getLastMousePos(), 3);
+				for(int i=0;i<10;++i){
+					if(Menu.isOpen())
+						break;
+					try {
+						Thread.sleep(100);
+					} catch (Exception e) {
+					}
+				}
+			}
+		}
+		return Menu.click(action);
+	}
+	public Point getRandomPoint(){
+		int[][] pts = projectVertices();
+		if(pts.length>0){
+			int i = new Random().nextInt(pts.length);
+			return new Point(pts[i][0], pts[i][1]);
+		}
+		return new Point(-1, -1);
+	}
 	public int getID(){
 		FieldHook fh = currentHook.getFieldHook("getID");
 		if(fh!=null){
@@ -66,7 +124,7 @@ public class AnimableObject extends Animable{
 	}
 	public int getLocationX(){
 		try{
-			return getMaxX()+Client.getRSData().getBaseInfo().getX();
+			return getMinX()+Client.getRSData().getBaseInfo().getX();
 		}
 		catch(Exception e){
 			return -1;
@@ -82,7 +140,7 @@ public class AnimableObject extends Animable{
 	}
 	public ObjectDef getObjectDef(){
 		try{
-			Node ref = Nodes.lookup(Client.getRSData().getObjectDefLoaders().getCache().getTable(), (long)getID());
+			Node ref = Nodes.lookup(Client.getRSData().getObjectDefLoaders().getDefCache().getTable(), (long)getID());
 			if(ref==null)
 				return null;
 			if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {
@@ -118,9 +176,78 @@ public class AnimableObject extends Animable{
 		}
 		return null;
 	}	
+	public Point[] getModelPoints(){
+		ModelLD model = getLDModel();
+		if(model==null)
+			return new Point[]{};
+		ArrayList<Point> pts = new ArrayList<Point>();
+		int[][] screenPoints = projectVertices();
+		short[] trix = model.getTriangleX();
+		short[] triy = model.getTriangleY();
+		short[] triz = model.getTriangleZ();
+		int numTriangles = Math.min(trix.length, Math.min(triy.length, triz.length));;
+        for (int i = 0; i < numTriangles; i++) {
+            int index1 = trix[i];
+            int index2 = triy[i];
+            int index3 = triz[i];
+
+            int point1X = screenPoints[index1][0];
+            int point1Y = screenPoints[index1][1];
+            int point2X = screenPoints[index2][0];
+            int point2Y = screenPoints[index2][1];
+            int point3X = screenPoints[index3][0];
+            int point3Y = screenPoints[index3][1];
+            if(point1X==-1 || point1Y==-1 ||
+            		point2X==-1 || point2Y==-1 ||
+            		point3X==-1 || point3Y==-1)
+            	continue;
+            
+            int avx = (point1X+point2X+point3X)/3;
+            int avy = (point1Y+point2Y+point3Y)/3;
+            pts.add(new Point(avx, avy));
+        }
+		return pts.toArray(new Point[]{});
+	}
 	public boolean isOnScreen(){
+		if(Bank.isOpen())
+			return false;
 		Point p = Calculations.locationToScreen(getLocationX(), getLocationY());
 		return (p.x>0 && p.x<515 && p.y>54 && p.y<388);
+	}
+	public Polygon[] getWireframe(){
+		ModelLD model = getLDModel();
+		if(model==null)
+			return new Polygon[]{};
+		ArrayList<Polygon> polys = new ArrayList<Polygon>();
+		int[][] screenPoints = projectVertices();
+		short[] trix = model.getTriangleX();
+		short[] triy = model.getTriangleY();
+		short[] triz = model.getTriangleZ();
+		int numTriangles = Math.min(trix.length, Math.min(triy.length, triz.length));;
+        for (int i = 0; i < numTriangles; i++) {
+            int index1 = trix[i];
+            int index2 = triy[i];
+            int index3 = triz[i];
+
+            int point1X = screenPoints[index1][0];
+            int point1Y = screenPoints[index1][1];
+            int point2X = screenPoints[index2][0];
+            int point2Y = screenPoints[index2][1];
+            int point3X = screenPoints[index3][0];
+            int point3Y = screenPoints[index3][1];
+            if(point1X==-1 || point1Y==-1 ||
+            		point2X==-1 || point2Y==-1 ||
+            		point3X==-1 || point3Y==-1)
+            	continue;
+            
+            Polygon p = new Polygon();
+            p.addPoint(point1X, point1Y);
+            p.addPoint(point2X, point2Y);
+            p.addPoint(point3X, point3Y);
+            
+            polys.add(p);
+        }
+		return polys.toArray(new Polygon[]{});
 	}
 	public int[][] projectVertices() {
 		float[] data = Calculations.matrixCache;
