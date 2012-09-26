@@ -15,6 +15,7 @@ import java.lang.reflect.Array;
 import org.dynamac.bot.api.wrappers.BaseInfo;
 import org.dynamac.bot.api.wrappers.DetailInfoNode;
 import org.dynamac.bot.api.wrappers.HashTable;
+import org.dynamac.bot.api.wrappers.HintArrow;
 import org.dynamac.bot.api.wrappers.Info;
 import org.dynamac.bot.api.wrappers.Interface;
 import org.dynamac.bot.api.wrappers.ItemDefLoader;
@@ -300,6 +301,19 @@ public class Client {
 		}
 		return new int[]{};
 	}
+	public static HintArrow[] getLoadedHintArrows(){
+		FieldHook fh = Data.runtimeStaticFields.get("getLoadedHintArrows");
+		if(fh!=null){
+			Object data = fh.getData(Data.CLIENT);
+			if(data!=null){
+				HintArrow[] array = new HintArrow[Array.getLength(data)];
+				for(int i=0;i<array.length;++i)
+					array[i]=new HintArrow(Array.get(data, i));
+				return array;
+			}
+		}
+		return new HintArrow[]{};
+	}
 	public static int getLoginIndex(){
 		FieldHook fh = Data.runtimeStaticFields.get("getLoginIndex");
 		if(fh!=null){
@@ -354,6 +368,15 @@ public class Client {
 		}
 		return null;
 	}
+	public static NodeList getLoadedProjectiles(){
+		FieldHook fh = Data.runtimeStaticFields.get("getLoadedProjectiles");
+		if(fh!=null){
+			Object data = fh.getData(Data.CLIENT);
+			if(data!=null)
+				return new NodeList(data);
+		}
+		return null;
+	}
 	public static int getMenuHeight(){
 		FieldHook fh = Data.runtimeStaticFields.get("getMenuHeight");
 		if(fh!=null){
@@ -386,7 +409,7 @@ public class Client {
 		if(fh!=null){
 			Object data = fh.getData(Data.CLIENT);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * fh.getMultiplier()-2;
 		}
 		return -1;
 	}
@@ -395,7 +418,7 @@ public class Client {
 		if(fh!=null){
 			Object data = fh.getData(Data.CLIENT);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * fh.getMultiplier() + 1;
 		}
 		return -1;
 	}
@@ -452,6 +475,15 @@ public class Client {
 				return data;
 		}
 		return null;
+	}
+	public static int getMouseCrosshairState(){
+		FieldHook fh = Data.runtimeStaticFields.get("getMouseCrosshairState");
+		if(fh!=null){
+			Object data = fh.getData(Data.CLIENT);
+			if(data!=null)
+				return ((Integer)data) * fh.getMultiplier();
+		}
+		return -1;
 	}
 	public static Player getMyPlayer(){
 		FieldHook fh = Data.runtimeStaticFields.get("getMyPlayer");
