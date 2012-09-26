@@ -1,5 +1,7 @@
 package org.dynamac.bot.api.methods;
 
+import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -14,6 +16,7 @@ public class Bank {
 	public static int BANK_DEPOSIT_INVENTORY_BUTTON_ID = 34;
 	public static int BANK_DEPOSIT_EQUIPMENT_BUTTON_ID = 36;
 	public static int BANK_DEPOSIT_BEAST_BUTTON_ID = 38;
+	public static int BANK_SCROLLBAR = 116;
 	public static final int[] BANKER_IDS = new int[]{
 		44, 45, 166, 494, 495, 496, 497, 498, 499, 553, 909, 953, 958, 1036, 1360, 1702, 2163, 2164, 2354, 2355,
 		2568, 2569, 2570, 2718, 2759, 3046, 3198, 3199, 3293, 3416, 3418, 3824, 4456, 4457, 4458, 4459, 4519, 4907,
@@ -21,7 +24,7 @@ public class Bank {
 		14925, 15194
 	};
 	public static final int[] BANK_BOOTH_IDS = new int[]{
-		782, 2213, 3045, 5276, 6084, 10517, 11338, 11758, 12759, 12798, 12799, 12800, 12801, 14369, 14370,
+		782, 2012, 2015, 2019, 2213, 3045, 5276, 6084, 10517, 11338, 11758, 12759, 12798, 12799, 12800, 12801, 14369, 14370,
 		16700, 19230, 20325, 20326, 20327, 20328, 22819, 24914, 25808, 26972, 29085, 34205, 34752, 35647,
 		35648, 36262, 36786, 37474, 49018, 49019, 52397, 52589
 	};
@@ -34,7 +37,15 @@ public class Bank {
 			if(invCount>0){
 				InterfaceChild button = Client.getInterfaceCache()[BANK_INTERFACE_ID].getChildren()[BANK_DEPOSIT_INVENTORY_BUTTON_ID];
 				button.click();
-				return true;
+				for(int i=0;i<20;++i){
+					if(invCount>Inventory.getCount())
+						return true;
+					try {
+						Thread.sleep(150);
+					} catch (InterruptedException e) {
+					}
+				}
+				return false;
 			}
 		}
 		return false;
@@ -55,8 +66,32 @@ public class Bank {
 				else if(amount==5 || amount==10)
 					action="Deposit-"+amount;
 				else{
-					//TODO Deposit-X algorithm
-					return false;
+					Point p = item.getInterfaceChild().getRandomPoint();
+					Mouse.moveMouse(p);
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+					}
+					Mouse.clickMouse(Mouse.RIGHT_BUTTON);
+					try {
+						Thread.sleep(150);
+					} catch (InterruptedException e) {
+					}
+					if(!Menu.isOpen())
+						return false;
+					if(Menu.contains("Deposit-"+amount))
+						return Menu.click("Deposit-"+amount);
+					else{
+						if(!Menu.click("Deposit-X"))
+							return false;
+					}
+					try {
+						Thread.sleep(1500);
+					} catch (InterruptedException e) {
+					}
+					Keyboard.sendKeys(""+amount);
+					Keyboard.sendKey((char) KeyEvent.VK_ENTER);
+					return true;
 				}
 			}
 			else
@@ -149,19 +184,17 @@ public class Bank {
 		return 0;
 	}
 	public static boolean open(){
-		AnimableObject objectToDisplay=Objects.getNearestAnimableObjectByID(BANK_BOOTH_IDS);
-		if(objectToDisplay!=null){
+		AnimableObject object = Objects.getNearestAnimableObjectByID(BANK_BOOTH_IDS);
+		if(object!=null){
 			System.out.println("[Bank:open] Bank booth found.");
-			if(objectToDisplay.isOnScreen()){
-				if(!objectToDisplay.clickTile()){
+			if(object.isOnScreen()){
+				if(!object.clickTile()){
 					System.out.println("[Bank:open] Failed to click bank tile.");
-					objectToDisplay=null;
 					return false;
 				}
 				for(int i=0;i<20;++i){
 					if(Bank.isOpen()){
 						System.out.println("[Bank:open] Bank opened.");
-						objectToDisplay=null;
 						return true;
 					}
 					try {
@@ -169,25 +202,21 @@ public class Bank {
 					} catch (Exception e) {
 					}
 				}
-				objectToDisplay=null;
 				return true;
 			}
 			System.out.println("[Bank:open] Bank booth not on screen.");
-			objectToDisplay=null;
 		}
-		objectToDisplay=Objects.getNearestAnimableObjectByID(BANK_CHEST_IDS);
-		if(objectToDisplay!=null){
+		object=Objects.getNearestAnimableObjectByID(BANK_CHEST_IDS);
+		if(object!=null){
 			System.out.println("[Bank:open] Bank chest found.");
-			if(objectToDisplay.isOnScreen()){
-				if(!objectToDisplay.clickTile()){
+			if(object.isOnScreen()){
+				if(!object.clickTile()){
 					System.out.println("[Bank:open] Failed to click chest tile.");
-					objectToDisplay=null;
 					return false;
 				}
 				for(int i=0;i<20;++i){
 					if(Bank.isOpen()){
 						System.out.println("[Bank:open] Bank opened.");
-						objectToDisplay=null;
 						return true;
 					}
 					try {
@@ -195,11 +224,9 @@ public class Bank {
 					} catch (Exception e) {
 					}
 				}
-				objectToDisplay=null;
 				return true;
 			}
 			System.out.println("[Bank:open] Bank chest not on screen.");
-			objectToDisplay=null;
 		}
 		/*NPC npcToDisplay=NPCs.getNearest(BANKER_IDS);
 		if(npcToDisplay!=null){
@@ -229,18 +256,46 @@ public class Bank {
 		}*/
 		return false;
 	}
-	public boolean widthdraw(int id, int amount){
+	public static boolean withdraw(int id, int amount){
 		InterfaceItem item = getItem(id);
 		if(item!=null){
 			if(item.getInterfaceChild().getAbsoluteY()<312 && item.getInterfaceChild().getAbsoluteY()>140){
+				if(amount==1){
+					item.click();
+					return true;
+				}
 				String action = "";
 				if(amount==0)
-					action="Widthdraw-All";
-				else if(amount==1 || amount==5 || amount==10)
-					action="Widthdraw-"+amount;
+					action="Withdraw-All";
+				else if(amount==5 || amount==10)
+					action="Withdraw-"+amount;
 				else{
-					//TODO Widthdraw-X algorithm
-					return false;
+					Point p = item.getInterfaceChild().getRandomPoint();
+					Mouse.moveMouse(p);
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+					}
+					Mouse.clickMouse(Mouse.RIGHT_BUTTON);
+					try {
+						Thread.sleep(150);
+					} catch (InterruptedException e) {
+					}
+					if(!Menu.isOpen())
+						return false;
+					if(Menu.contains("Withdraw-"+amount))
+						return Menu.click("Withdraw-"+amount);
+					else{
+						if(!Menu.click("Withdraw-X"))
+							return false;
+					}
+					try {
+						Thread.sleep(1500);
+					} catch (InterruptedException e) {
+					}
+					Keyboard.sendKeys(""+amount);
+					Keyboard.sendKey((char) KeyEvent.VK_ENTER);
+					return true;
 				}
 				int invCount = Inventory.getCount();
 				item.doAction(action);
@@ -254,7 +309,12 @@ public class Bank {
 				}
 			}
 			else{
-				//TODO scrolling
+				InterfaceChild scrollBar=Interfaces.get(BANK_INTERFACE_ID, BANK_SCROLLBAR);
+				if(scrollBar==null)
+					return false;
+				if(!Interfaces.scrollTo(item.getInterfaceChild(), scrollBar))
+					return false;
+				return withdraw(id, amount);
 			}
 		}
 		return false;
