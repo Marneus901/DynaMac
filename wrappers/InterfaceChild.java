@@ -20,6 +20,7 @@ import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Interfaces;
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.ClassHook;
+import org.dynamac.enviroment.hook.FieldHook;
 
 
 public class InterfaceChild {
@@ -28,6 +29,7 @@ public class InterfaceChild {
 	public Interface parentInterface;
 	public InterfaceChild parentInterfaceChild;
 	public int index;
+	public int displayTime;
 	public InterfaceChild getParentInterfaceChild(){
 		return parentInterfaceChild;
 	}
@@ -39,16 +41,20 @@ public class InterfaceChild {
 		index=idx;
 		currentObject = o;
 		currentHook = Data.indentifiedClasses.get("InterfaceChild");
+		displayTime=getDisplayTime();
 	}
 	public InterfaceChild(Object o, InterfaceChild ic, int idx){
 		parentInterfaceChild=ic;
 		index=idx;
 		currentObject = o;
 		currentHook = Data.indentifiedClasses.get("InterfaceChild");
+		displayTime=getDisplayTime();
 	}
 	public void click(){
 		Point p = getRandomPoint();
-		if(!p.equals(new Point(-1, -1)))
+		if(getBounds().contains(Mouse.getLastMousePos()))
+			Mouse.clickMouse();
+		else if(!p.equals(new Point(-1, -1)))
 			Mouse.clickMouse(p, 1);
 	}
 	public boolean doAction(String action){
@@ -118,6 +124,27 @@ public class InterfaceChild {
 	}
 	public int getAbsoluteY(){
 		return getAbsoluteLocation().y;
+	}
+	public Animator getAnimator(){
+		FieldHook fh = currentHook.getFieldHook("getAnimator");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return new Animator(data);
+		}
+		return null;
+	}
+	public int getAnimationID(){
+		Animator animator = getAnimator();
+		if(animator!=null){
+			Animation animation = animator.getAnimation();
+			if(animation!=null)
+				return animation.getID();
+		}
+		return -1;
+	}
+	public Rectangle getBounds(){
+		return new Rectangle(getAbsoluteX(), getAbsoluteY(), getWidth(), getHeight());
 	}
 	public int getRelativeX(){
 		Object data = currentHook.getData("getRelativeX", currentObject);
@@ -353,10 +380,30 @@ public class InterfaceChild {
 			return Boolean.parseBoolean(data.toString());
 		return false;
 	}
+	public boolean isHovering(){
+		Object data = currentHook.getData("isHovering", currentObject);
+		if(data!=null)
+			return Boolean.parseBoolean(data.toString());
+		return false;
+	}
 	public boolean isVisible(){
 		Object data = currentHook.getData("isVisible", currentObject);
 		if(data!=null)
 			return Boolean.parseBoolean(data.toString());
+		return false;
+	}
+	public int getDisplayTime(){
+		Object data = currentHook.getData("getDisplayTime", currentObject);
+		if(data!=null)
+			return (Integer)data * currentHook.getFieldHook("getDisplayTime").getMultiplier();
+		return -1;
+	}
+	public boolean isDisplayed(){
+		int curr = getDisplayTime();
+		if(curr>displayTime){
+			displayTime=curr;
+			return true;
+		}
 		return false;
 	}
 	public boolean isVerticallyFlipped(){
