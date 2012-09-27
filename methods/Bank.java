@@ -31,6 +31,11 @@ public class Bank {
 	public static final int[] BANK_CHEST_IDS = new int[]{
 		2693, 4483, 8981, 12308, 14382, 20607, 21301, 27663, 42192, 57437, 62691
 	};
+	
+	/**
+	 * Deposit whole inventory using the Deposit Inventory Button
+	 * @return true if successful, false otherwise
+	 */
 	public static boolean depositInventory(){
 		if(isOpen()){
 			int invCount = Inventory.getCount();
@@ -50,12 +55,26 @@ public class Bank {
 		}
 		return false;
 	}
+	
+	/**
+	 * Deposit item with the given name
+	 * @param name name of the item
+	 * @param amount amount of the item
+	 * @return true if successful, false otherwise
+	 */
 	public static boolean depositItem(String name, int amount){
 		InterfaceItem item = Inventory.getItemByName(name);
 		if(item!=null)
 			return depositItem(item.getID(), amount);
 		return false;
 	}
+	
+	/**
+	 * Deposit a item with a given id
+	 * @param id id of the item
+	 * @param amount amount of the item
+	 * @return true if successful, false otherwise
+	 */
 	public static boolean depositItem(int id, int amount){
 		InterfaceItem item = Inventory.getItemByID(id);
 		if(item!=null){
@@ -100,6 +119,12 @@ public class Bank {
 		}
 		return false;
 	}
+	
+	/**
+	 * Deposit all the items except the given ones
+	 * @param items items ids
+	 * @return true if successful, false otherwise
+	 */
 	public static boolean depositAllExcept(int... items) {
 		if (isOpen()) {
 			boolean deposit = true;
@@ -135,6 +160,11 @@ public class Bank {
 		}
 		return false;
 	}
+	
+	/**
+	 * Deposit equipment by using the Deposit Equiment button
+	 * @return true if successful, false otherwise
+	 */
 	public static boolean depositEquipment(){
 		if(isOpen()){
 			InterfaceChild button = Client.getInterfaceCache()[BANK_INTERFACE_ID].getChildren()[BANK_DEPOSIT_EQUIPMENT_BUTTON_ID];
@@ -143,6 +173,11 @@ public class Bank {
 		}
 		return false;
 	}
+	
+	/**
+	 * Deposit your familiars using the Deposit Beast button
+	 * @return true if succesful, false otherwise
+	 */
 	public static boolean depositFamiliar(){
 		if(isOpen()){
 			InterfaceChild button = Client.getInterfaceCache()[BANK_INTERFACE_ID].getChildren()[BANK_DEPOSIT_BEAST_BUTTON_ID];
@@ -151,18 +186,38 @@ public class Bank {
 		}
 		return false;
 	}
+	
+	/**
+	 * Checks if bank interface is open
+	 * @return true if it's open, false otherwise
+	 */
 	public static boolean isOpen(){
 		return Client.getInterfaceCache()[BANK_INTERFACE_ID]!=null;
 	}
+	
+	/**
+	 * Gets the current tab
+	 * @return tab
+	 */
 	public int getCurrentTab(){
 		return ((Client.getSettings().getData()[1248] >>> 24) - 136) / 8;
 	}
+	
+	/**
+	 * Get specified item
+	 * @return item
+	 */
 	public static InterfaceItem getItem(int id){
 		for(InterfaceItem item : getItems())
 			if(item.getID()==id)
 				return item;
 		return null;
 	}
+	
+	/**
+	 * Get all the items
+	 * @return array of all the items
+	 */
 	public static InterfaceItem[] getItems(){
 		ArrayList<InterfaceItem> bankItems = new ArrayList<InterfaceItem>();
 		Interface bank = Client.getInterfaceCache()[BANK_INTERFACE_ID];
@@ -177,12 +232,23 @@ public class Bank {
 		}
 		return bankItems.toArray(new InterfaceItem[]{});
 	}
+	
+	/**
+	 * Get the amount of an item
+	 * @param id id of the item
+	 * @return amount of an item
+	 */
 	public static int getItemCount(int id){
 		InterfaceItem item = getItem(id);
 		if(item!=null)
 			return item.getStackSize();
 		return 0;
 	}
+	
+	/**
+	 * Opens the bank interface
+	 * @return true if successful, false otherwise
+	 */
 	public static boolean open(){
 		AnimableObject object = Objects.getNearestAnimableObjectByID(BANK_BOOTH_IDS);
 		if(object!=null){
@@ -256,6 +322,13 @@ public class Bank {
 		}*/
 		return false;
 	}
+	
+	/**
+	 * Withdraws the amount of the specified item id
+	 * @param id id of the item
+	 * @param amount amount to withdraw
+	 * @return true if successful, false otherwise
+	 */
 	public static boolean withdraw(int id, int amount){
 		InterfaceItem item = getItem(id);
 		if(item!=null){
