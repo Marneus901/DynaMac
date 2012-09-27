@@ -1,6 +1,6 @@
 /******************************************************
 * Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
+* ï¿½ 2012 MarneusScripts.com                            *
 * **************************************************** *
 * Access to this source is unauthorized without prior  *
 * authorization from its appropriate author(s).        *
@@ -20,10 +20,20 @@ public class Calculations {
 	public static double distance(int x1, int x2, int y1, int y2) {
 		return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 	}
+	public static double distance(Tile curr, Tile dest) {
+		return Math.sqrt((curr.getX() - dest.getX()) * (curr.getX() - dest.getX()) + (curr.getY() - dest.getY()) * (curr.getY() - dest.getY()));
+	}
 	public static double distanceTo(int x, int y) {
 		int x2 = Client.getMyPlayer().getLocationX();
 		int y2 = Client.getMyPlayer().getLocationY();
 		return Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
+	}
+	public static int distanceTo(Tile tile) {
+		if (tile == null) { 
+			return -1;
+		} else {
+			return  (int) distance(new Tile(Players.getMyPlayer().getLocationX(), Players.getMyPlayer().getLocationY(), Players.getMyPlayer().getHeight()), tile);
+		}
 	}
 	public static Polygon getTilePolygon(int x, int y){
 		Polygon p = new Polygon();
