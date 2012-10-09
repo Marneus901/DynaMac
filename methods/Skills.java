@@ -58,7 +58,7 @@ public class Skills {
 			return 0;
 		else if (real == 99 || level > 99)
 			return 0;
-		return XP_TABLE[level] - getSkillExperience(index);
+		return XP_TABLE[level+1] - getSkillExperience(index);
 	}
 	public static int getExpTillNextLevel(int index){
 		return getExpTillLevel(index, getSkillLevel(index));
