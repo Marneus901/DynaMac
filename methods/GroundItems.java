@@ -8,9 +8,27 @@ import org.dynamac.bot.api.wrappers.Item;
 import org.dynamac.bot.api.wrappers.Node;
 import org.dynamac.bot.api.wrappers.NodeList;
 import org.dynamac.bot.api.wrappers.NodeListCache;
+import org.dynamac.bot.api.wrappers.Tile;
 import org.dynamac.enviroment.Data;
 
 public class GroundItems {
+	public static GroundItem[] getAll() {
+		ArrayList<GroundItem> temp = new ArrayList<GroundItem>();
+		Tile tile = Players.getMyPlayer().getLocation();
+		int minX = Math.max(Client.getBaseX(), tile.getX() - 104), minY = Math.max(Client.getBaseY(), tile.getY() - 104);
+		int maxX = Math.min(Client.getBaseX() + 104, tile.getX() + 104), maxY = Math.min(Client.getBaseY() + 104, tile.getY() + 104);
+		for (int x = minX; x < maxX; x++) {
+			for (int y = minY; y < maxY; y++) {
+				GroundItem[] items = getItemsAt(x, y);
+				for (final GroundItem item : items) {
+					if (item != null) {
+						temp.add(item);
+					}
+				}
+			}
+		}
+		return temp.toArray(new GroundItem[]{});
+	}
 	public static GroundItem[] getItemsAt(int x, int y){
 		try{
 			ArrayList<GroundItem> items = new ArrayList<GroundItem>();
@@ -29,5 +47,39 @@ public class GroundItems {
 		catch(Exception e){
 		}
 		return new GroundItem[]{};
+	}
+	public static GroundItem getNearestItemByID(int...ids) {
+		GroundItem temp = null;
+		double dist = Double.MAX_VALUE;
+		for (GroundItem ao : getAll()) {
+			int id = ao.item.getID();
+			for (int i : ids) {
+				if (i == id) {
+					double distance = Calculations.distanceTo(ao.getLocationX(), ao.getLocationY());
+					if (distance < dist) {
+						dist = distance;
+						temp = ao;
+					}
+				}
+			}
+		}
+		return temp;
+	}
+	public static GroundItem getNearestItemByName(String...names) {
+		GroundItem temp = null;
+		double dist = Double.MAX_VALUE;
+		for (GroundItem ao : getAll()) {
+			String name = ao.item.getItemDef().getName();
+			for (String i : names) {
+				if (i.equals(name)) {
+					double distance = Calculations.distanceTo(ao.getLocationX(), ao.getLocationY());
+					if (distance < dist) {
+						dist = distance;
+						temp = ao;
+					}
+				}
+			}
+		}
+		return temp;
 	}
 }
