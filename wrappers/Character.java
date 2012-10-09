@@ -43,6 +43,8 @@ public class Character extends Animable{
 		}
 		return false;
 	}
+	
+	
 	public Animator getAnimator(){
 		FieldHook fh = currentHook.getFieldHook("getAnimator");
 		if(fh!=null){
@@ -89,6 +91,10 @@ public class Character extends Animable{
 		catch(Exception e){
 			return -1;
 		}
+	}
+	
+	public Tile getLocation() {
+		return new Tile(getLocationX(), getLocationY(), getPlane());
 	}
 	public int getLocalX(){
 		try{
