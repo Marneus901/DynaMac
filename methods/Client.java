@@ -284,7 +284,7 @@ public class Client {
 		return null;
 	}
 	public static int[] getLevelArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getLevelArray");
+		FieldHook fh = Data.runtimeStaticFields.get("getSkillLevels");
 		if(fh!=null){
 			Object data = fh.getData(Data.CLIENT);
 			if(data!=null)
