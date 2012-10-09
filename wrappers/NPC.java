@@ -15,7 +15,7 @@ import org.dynamac.enviroment.hook.FieldHook;
 
 
 public class NPC extends Character{
-	private Object currentObject;
+	public Object currentObject;
 	private ClassHook currentHook;
 	public NPC(Object o){
 		super(o);

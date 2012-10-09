@@ -15,7 +15,7 @@ import org.dynamac.enviroment.hook.FieldHook;
 
 
 public class NPCDef {
-	private Object currentObject;
+	public Object currentObject;
 	private ClassHook currentHook;
 	public NPCDef(Object o){
 		currentObject=o;
