@@ -23,6 +23,55 @@ public class ModelLD extends Model{
 		currentObject = o;
 		currentHook = Data.indentifiedClasses.get("ModelLD");
 	}
+	
+/*    public Point getCenter(){
+        int minX = 9999999;
+        int minY = 9999999;
+        
+        int maxX = -9999999;
+        int maxY = -9999999;
+        
+    	int maxZ = -99999999, minZ = 99999999;
+   
+    	maxX = getVerticiesX()[0];
+    	minX = getVerticiesX()[0];
+    	for(int i = 0; i < getVerticiesX().length; i++) {
+    		if(getVerticiesX()[i] > maxX)
+    			maxX = getVerticiesX()[i];
+    		else if(getVerticiesX()[i] < minX)
+    			minX = getVerticiesX()[i];
+    	}
+    	maxY = getVerticiesY()[0];
+    	minY = getVerticiesY()[0];
+    	for(int i = 0; i < getVerticiesY().length; i++) {
+    		if(getVerticiesY()[i] > maxY)
+    			maxY = getVerticiesY()[i];
+    		else if(getVerticiesY()[i] < minY)
+    			minY = getVerticiesY()[i];
+    	}
+    	
+    	maxZ = getVerticiesZ()[0];
+    	minZ = getVerticiesZ()[0];
+    	for(int i = 0; i < getVerticiesZ().length; i++) {
+    		if(getVerticiesZ()[i] > maxZ)
+    			maxZ = getVerticiesZ()[i];
+    		else if(getVerticiesZ()[i] < minZ)
+    			minZ = getVerticiesZ()[i];
+    	}
+    	
+    	System.out.println("MinX" + minX);
+    	System.out.println("MaxX" + maxX);
+
+    	System.out.println("MinY" + minY);
+    	System.out.println("MaxY" + maxY);
+    	
+        int deltaX = (maxX-minX) >> 1;
+        int deltaY = (maxY-(-minY)) >> 1;
+        int deltaZ = (maxZ-minZ) >> 1;
+
+        return new Point(minX+deltaX, minY+deltaY);    
+    }*/
+	
 	public int[] getVerticiesX(){
 		FieldHook fh = currentHook.getFieldHook("getVerticiesX");
 		if(fh!=null){
