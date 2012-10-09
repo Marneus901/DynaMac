@@ -1,12 +1,12 @@
 /******************************************************
-* Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
-* **************************************************** *
-* Access to this source is unauthorized without prior  *
-* authorization from its appropriate author(s).        *
-* You are not permitted to release, nor distribute this* 
-* work without appropriate author(s) authorization.    *
-********************************************************/
+ * Created by Marneus901                                *
+ * © 2012 MarneusScripts.com                            *
+ * **************************************************** *
+ * Access to this source is unauthorized without prior  *
+ * authorization from its appropriate author(s).        *
+ * You are not permitted to release, nor distribute this* 
+ * work without appropriate author(s) authorization.    *
+ ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
 import java.awt.Point;
@@ -53,7 +53,7 @@ public class BoundaryObject extends Boundary{
 			}
 		}
 		return false;
-	}
+	}		
 	public boolean clickTile(){
 		if(isOnScreen()){
 			Polygon p = Calculations.getTilePolygon(getLocationX(), getLocationY());
@@ -72,6 +72,7 @@ public class BoundaryObject extends Boundary{
 				return true;
 		return false;
 	}
+
 	public boolean doAction(String action){
 		if(!Menu.isOpen()){
 			Point p = getRandomPoint();
@@ -113,11 +114,20 @@ public class BoundaryObject extends Boundary{
 		}
 		return Menu.click(action);
 	}
+	public Point getCenterOfModel() {
+		Polygon[] wireframe = getWireframe();
+		Rectangle thetangle = new Rectangle(realBounds(wireframe).x, realBounds(wireframe).y, realBounds(wireframe).height, realBounds(wireframe).width);
+		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
+	}
 	public Point getRandomPoint(){
-		int[][] pts = projectVertices();
-		if(pts.length>0){
-			int i = new Random().nextInt(pts.length);
-			return new Point(pts[i][0], pts[i][1]);
+		try{
+			int[][] pts = projectVertices();
+			if(pts.length>0){
+				int i = new Random().nextInt(pts.length);
+				return new Point(pts[i][0], pts[i][1]);
+			}
+		}
+		catch(Exception e){			
 		}
 		return new Point(-1, -1);
 	}
@@ -145,6 +155,10 @@ public class BoundaryObject extends Boundary{
 		catch(Exception e){
 			return -1;
 		}
+	}
+
+	public Tile getLocation() {
+		return new Tile(getLocationX(), getLocationY(), getPlane());
 	}
 	public double getLocalX(){
 		return locX;
@@ -200,31 +214,27 @@ public class BoundaryObject extends Boundary{
 		short[] triy = model.getTriangleY();
 		short[] triz = model.getTriangleZ();
 		int numTriangles = Math.min(trix.length, Math.min(triy.length, triz.length));;
-        for (int i = 0; i < numTriangles; i++) {
-            int index1 = trix[i];
-            int index2 = triy[i];
-            int index3 = triz[i];
+		for (int i = 0; i < numTriangles; i++) {
+			int index1 = trix[i];
+			int index2 = triy[i];
+			int index3 = triz[i];
 
-            int point1X = screenPoints[index1][0];
-            int point1Y = screenPoints[index1][1];
-            int point2X = screenPoints[index2][0];
-            int point2Y = screenPoints[index2][1];
-            int point3X = screenPoints[index3][0];
-            int point3Y = screenPoints[index3][1];
-            if(point1X==-1 || point1Y==-1 ||
-            		point2X==-1 || point2Y==-1 ||
-            		point3X==-1 || point3Y==-1)
-            	continue;
-            
-            int avx = (point1X+point2X+point3X)/3;
-            int avy = (point1Y+point2Y+point3Y)/3;
-            pts.add(new Point(avx, avy));
-        }
+			int point1X = screenPoints[index1][0];
+			int point1Y = screenPoints[index1][1];
+			int point2X = screenPoints[index2][0];
+			int point2Y = screenPoints[index2][1];
+			int point3X = screenPoints[index3][0];
+			int point3Y = screenPoints[index3][1];
+			if(point1X==-1 || point1Y==-1 ||
+					point2X==-1 || point2Y==-1 ||
+					point3X==-1 || point3Y==-1)
+				continue;
+
+			int avx = (point1X+point2X+point3X)/3;
+			int avy = (point1Y+point2Y+point3Y)/3;
+			pts.add(new Point(avx, avy));
+		}
 		return pts.toArray(new Point[]{});
-	}
-	public boolean isOnScreen(){
-		Point p = Calculations.locationToScreen(getLocationX(), getLocationY());
-		return (p.x>0 && p.x<515 && p.y>54 && p.y<388);
 	}
 	public Polygon[] getWireframe(){
 		ModelLD model = getLDModel();
@@ -236,30 +246,34 @@ public class BoundaryObject extends Boundary{
 		short[] triy = model.getTriangleY();
 		short[] triz = model.getTriangleZ();
 		int numTriangles = Math.min(trix.length, Math.min(triy.length, triz.length));;
-        for (int i = 0; i < numTriangles; i++) {
-            int index1 = trix[i];
-            int index2 = triy[i];
-            int index3 = triz[i];
+		for (int i = 0; i < numTriangles; i++) {
+			int index1 = trix[i];
+			int index2 = triy[i];
+			int index3 = triz[i];
 
-            int point1X = screenPoints[index1][0];
-            int point1Y = screenPoints[index1][1];
-            int point2X = screenPoints[index2][0];
-            int point2Y = screenPoints[index2][1];
-            int point3X = screenPoints[index3][0];
-            int point3Y = screenPoints[index3][1];
-            if(point1X==-1 || point1Y==-1 ||
-            		point2X==-1 || point2Y==-1 ||
-            		point3X==-1 || point3Y==-1)
-            	continue;
-            
-            Polygon p = new Polygon();
-            p.addPoint(point1X, point1Y);
-            p.addPoint(point2X, point2Y);
-            p.addPoint(point3X, point3Y);
-            
-            polys.add(p);
-        }
+			int point1X = screenPoints[index1][0];
+			int point1Y = screenPoints[index1][1];
+			int point2X = screenPoints[index2][0];
+			int point2Y = screenPoints[index2][1];
+			int point3X = screenPoints[index3][0];
+			int point3Y = screenPoints[index3][1];
+			if(point1X==-1 || point1Y==-1 ||
+					point2X==-1 || point2Y==-1 ||
+					point3X==-1 || point3Y==-1)
+				continue;
+
+			Polygon p = new Polygon();
+			p.addPoint(point1X, point1Y);
+			p.addPoint(point2X, point2Y);
+			p.addPoint(point3X, point3Y);
+
+			polys.add(p);
+		}
 		return polys.toArray(new Polygon[]{});
+	}
+	public boolean isOnScreen(){
+		Point p = Calculations.locationToScreen(getLocationX(), getLocationY());
+		return (p.x>0 && p.x<515 && p.y>54 && p.y<388);
 	}
 	public int[][] projectVertices() {
 		float[] data = Calculations.matrixCache;
@@ -308,5 +322,42 @@ public class BoundaryObject extends Boundary{
 			}
 		}
 		return screen;
+	}
+	public Rectangle realBounds(Polygon[] polys) {
+		int maxheight = -9999999;
+		int minheight = 9999999;
+		int maxwidth = -9999999;
+		int minwidth = 9999999;
+		int maxX = -9999999;
+		int minX = 9999999;
+		int maxY = -9999999;
+		int minY = 9999999;
+
+		for(Polygon p : polys) {
+			if(p.getBounds().height > maxheight) {
+				maxheight = p.getBounds().height;
+			} else if(p.getBounds().height < minheight) {
+				minheight = p.getBounds().height;
+			}
+			if(p.getBounds().width > maxwidth) {
+				maxwidth = p.getBounds().width;
+			} else if(p.getBounds().width < minwidth) {
+				minwidth = p.getBounds().width;
+			}
+			if(p.getBounds().x > maxX) {
+				maxX = p.getBounds().x;
+			} else if(p.getBounds().x < minX) {
+				minX = p.getBounds().x;
+			}
+			if(p.getBounds().y > maxY) {
+				maxY = p.getBounds().y;
+			} else if(p.getBounds().y < minY) {
+				minY = p.getBounds().y;
+			}
+		}
+		return new Rectangle(((maxX + minX)/2), ((maxY + minY)/2), ((maxwidth + minwidth)/2), ((maxheight + minheight)/2));
+	}
+	public Polygon setWireFrame(int startX, int endX, int startY, int endY, int startZ, int endZ) {
+		return null;
 	}
 }

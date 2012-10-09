@@ -26,6 +26,47 @@ public class AnimatedObject{
 	}
 	private int localX;
 	private int localY;
+	
+	public Rectangle realBounds(Polygon[] polys) {
+		int maxheight = -9999999;
+		int minheight = 9999999;
+		int maxwidth = -9999999;
+		int minwidth = 9999999;
+		int maxX = -9999999;
+		int minX = 9999999;
+		int maxY = -9999999;
+		int minY = 9999999;
+
+		for(Polygon p : polys) {
+			if(p.getBounds().height > maxheight) {
+				maxheight = p.getBounds().height;
+			} else if(p.getBounds().height < minheight) {
+				minheight = p.getBounds().height;
+			}
+			if(p.getBounds().width > maxwidth) {
+				maxwidth = p.getBounds().width;
+			} else if(p.getBounds().width < minwidth) {
+				minwidth = p.getBounds().width;
+			}
+			if(p.getBounds().x > maxX) {
+				maxX = p.getBounds().x;
+			} else if(p.getBounds().x < minX) {
+				minX = p.getBounds().x;
+			}
+			if(p.getBounds().y > maxY) {
+				maxY = p.getBounds().y;
+			} else if(p.getBounds().y < minY) {
+				minY = p.getBounds().y;
+			}
+		}
+		return new Rectangle(((maxX + minX)/2), ((maxY + minY)/2), ((maxwidth + minwidth)/2), ((maxheight + minheight)/2));
+	}
+	
+	public Point getCenterOfModel() {
+		Rectangle thetangle = new Rectangle(realBounds(getWireframe()).x, realBounds(getWireframe()).y, realBounds(getWireframe()).height, realBounds(getWireframe()).width);
+		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
+	}
+	
 	public boolean clickModel(){
 		if(isOnScreen() && getLDModel()!=null){
 			int[][] pts = projectVertices();
@@ -38,6 +79,18 @@ public class AnimatedObject{
 		}
 		return false;
 	}
+	
+	public boolean clickCenterOfModel(){
+		if(isOnScreen() && getLDModel()!=null){
+			Point p = new Point(getCenterOfModel());
+			if(p.x>0 && p.x<515 && p.y>54 && p.y<388){
+				Mouse.clickMouse(p, 1);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean clickTile(){
 		if(isOnScreen()){
 			Polygon p = Calculations.getTilePolygon(getLocationX(), getLocationY());
@@ -98,10 +151,14 @@ public class AnimatedObject{
 		return false;
 	}
 	public Point getRandomPoint(){
-		int[][] pts = projectVertices();
-		if(pts.length>0){
-			int i = new Random().nextInt(pts.length);
-			return new Point(pts[i][0], pts[i][1]);
+		try{
+			int[][] pts = projectVertices();
+			if(pts.length>0){
+				int i = new Random().nextInt(pts.length);
+				return new Point(pts[i][0], pts[i][1]);
+			}
+		}
+		catch(Exception e){			
 		}
 		return new Point(-1, -1);
 	}
