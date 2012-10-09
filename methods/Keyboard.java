@@ -13,6 +13,26 @@ public class Keyboard {
 		}
 		return KeyEvent.KEY_LOCATION_STANDARD;
 	}
+	public static void pressKey(char s){
+		int code = s;
+		if (s >= 'a' && s <= 'z') {
+			code -= 32;
+		}
+		Component keyboardTarget = Data.CLIENT_APPLET.getComponent(0);
+		KeyEvent event = new KeyEvent(keyboardTarget, KeyEvent.KEY_PRESSED, 0, 0, code, s, Keyboard.getLocation(s));
+		keyboardTarget.dispatchEvent(event); 
+		event = new KeyEvent(keyboardTarget, KeyEvent.KEY_TYPED, 0, 0, KeyEvent.VK_UNDEFINED, s, 0);
+		keyboardTarget.dispatchEvent(event);
+	}
+	public static void releaseKey(char s){
+		int code = s;
+		if (s >= 'a' && s <= 'z') {
+			code -= 32;
+		}
+		Component keyboardTarget = Data.CLIENT_APPLET.getComponent(0);
+		KeyEvent event = new KeyEvent(keyboardTarget, KeyEvent.KEY_RELEASED, 0, 0, code, s, Keyboard.getLocation(s));
+		keyboardTarget.dispatchEvent(event);
+	}
 	public static void sendKey(char s){
 		int code = s;
 		if (s >= 'a' && s <= 'z') {
