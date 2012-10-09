@@ -11,7 +11,9 @@ package org.dynamac.bot.api.methods;
 
 import java.awt.Point;
 import java.awt.Polygon;
+import java.util.Vector;
 
+import org.dynamac.bot.api.wrappers.Tile;
 import org.dynamac.bot.api.wrappers.TileData;
 
 
@@ -25,6 +27,18 @@ public class Calculations {
 		int y2 = Client.getMyPlayer().getLocationY();
 		return Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
 	}
+	
+	public static Tile[] getSurrounding(final Tile t) {
+        final Vector<Tile> neighbors = new Vector<Tile>();
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                if (j != i || i != 0) {
+                    neighbors.add(new Tile(t.getX() + i, t.getY() + j, t.getPlane()));
+                }
+            }
+        } return neighbors.toArray(new Tile[neighbors.size()]);
+    }
+	
 	public static Polygon getTilePolygon(int x, int y){
 		Polygon p = new Polygon();
 		Point center = Calculations.locationToScreen(x, y);
