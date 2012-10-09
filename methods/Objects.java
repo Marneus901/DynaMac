@@ -24,8 +24,10 @@ import org.dynamac.bot.api.wrappers.Boundary;
 import org.dynamac.bot.api.wrappers.BoundaryObject;
 import org.dynamac.bot.api.wrappers.FloorDecoration;
 import org.dynamac.bot.api.wrappers.FloorObject;
+import org.dynamac.bot.api.wrappers.GameObject;
 import org.dynamac.bot.api.wrappers.Ground;
 import org.dynamac.bot.api.wrappers.ObjectDef;
+import org.dynamac.bot.api.wrappers.Tile;
 import org.dynamac.bot.api.wrappers.WallDecoration;
 import org.dynamac.bot.api.wrappers.WallObject;
 import org.dynamac.enviroment.Data;
@@ -212,6 +214,31 @@ public class Objects {
 		}
 		return new WallObject[]{};
 	}
+	public static GameObject[] getAllAt(Tile t){
+		return getAllAt(t.getX(), t.getY());
+	}
+	public static GameObject[] getAllAt(int x, int y){
+		ArrayList<GameObject> objects = new ArrayList<GameObject>();
+		for(GameObject go : getAllObjects()){
+			if(go.getLocation().equals(new Tile(x, y, 0)))
+				objects.add(go);
+		}
+		return objects.toArray(new GameObject[]{});	
+	}
+	public static GameObject[] getAllObjects(){
+		ArrayList<GameObject> objects = new ArrayList<GameObject>();
+		for(AnimableObject ao : getAllAnimableObjects())
+			objects.add(new GameObject(ao));
+		for(AnimatedObject ao : getAllAnimatedObjects())
+			objects.add(new GameObject(ao));
+		for(BoundaryObject ao : getAllBoundaryObjects())
+			objects.add(new GameObject(ao));
+		for(FloorObject ao : getAllFloorObjects())
+			objects.add(new GameObject(ao));
+		for(WallObject ao : getAllWallObjects())
+			objects.add(new GameObject(ao));
+		return objects.toArray(new GameObject[]{});
+	}
 	public static AnimableObject getAnimableObjectAt(int x, int y){
 		try{
 			Ground g = Client.getRSData().getGroundInfo().getGroundArray()[Client.getPlane()][x-Client.getBaseX()][y-Client.getBaseY()];
@@ -315,6 +342,18 @@ public class Objects {
 		}
 		return null;
 	}
+	public static GameObject getObjectAt(Tile t){
+		if(t==null)
+			return null;
+		return getObjectAt(t.getX(), t.getY());
+	}
+	public static GameObject getObjectAt(int x, int y){
+		for(GameObject go : getAllObjects()){
+			if(go.getLocation().equals(new Tile(x, y, 0)))
+				return go;
+		}
+		return null;
+	}
 	/**
 	 * Credits Natfoth
 	 * @param inputID
@@ -370,6 +409,13 @@ public class Objects {
 		}
 		return allWallObjects.toArray(new WallObject[]{});
 	}
+	public static GameObject[] getObjectsByID(int id){
+		ArrayList<GameObject> allObjects = new ArrayList<GameObject>();
+		for (GameObject o : Objects.getAllObjects()) { 
+			if(o.getID() == id) allObjects.add(o); 
+		}
+		return allObjects.toArray(new GameObject[]{});
+	}
 	public static AnimableObject[] getAnimableObjectsByName(String name){
 		ArrayList<AnimableObject> objects = new ArrayList<AnimableObject>();
 		for(AnimableObject ao : getAllAnimableObjects()){
@@ -424,6 +470,17 @@ public class Objects {
 				objects.add(ao);
 		}
 		return objects.toArray(new WallObject[]{});
+	}
+	public static GameObject[] getObjectsByName(String name){
+		ArrayList<GameObject> objects = new ArrayList<GameObject>();
+		for(GameObject ao : getAllObjects()){
+			ObjectDef def = ao.getObjectDef();
+			if(def==null)
+				continue;
+			if(def.getName().equals(name))
+				objects.add(ao);
+		}
+		return objects.toArray(new GameObject[]{});
 	}
 	public static AnimableObject getNearestAnimableObjectByID(int...ids) {
 		AnimableObject temp = null;
@@ -497,6 +554,23 @@ public class Objects {
 		WallObject temp = null;
 		double dist = Double.MAX_VALUE;
 		for (WallObject ao : getAllWallObjects()) {
+			int id = ao.getID();
+			for (int i : ids) {
+				if (i == id) {
+					double distance = Calculations.distanceTo(ao.getLocationX(), ao.getLocationY());
+					if (distance < dist) {
+						dist = distance;
+						temp = ao;
+					}
+				}
+			}
+		}
+		return temp;
+	}
+	public static GameObject getNearestObjectByID(int...ids) {
+		GameObject temp = null;
+		double dist = Double.MAX_VALUE;
+		for (GameObject ao : getAllObjects()) {
 			int id = ao.getID();
 			for (int i : ids) {
 				if (i == id) {
