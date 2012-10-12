@@ -33,23 +33,26 @@ public class Menu {
 		return clickMain(items, i);
 	}
 	public static boolean clickMain(String[] items, int i) {
-		if(items.length<i)
-			return false;
-		Point menu = getLocation();
-		int xOff = new Random().nextInt(getWidth());
-		int yOff = 21 + 16 * i + new Random().nextInt(15);
-		Mouse.moveMouse(new Point(menu.x + xOff, menu.y + yOff));
-		if (isOpen()) {
-			Mouse.clickMouse();
-			return true;
+		try{
+			if(items.length<i)
+				return false;
+			Point menu = getLocation();
+			int xOff = new Random().nextInt(getWidth());
+			int yOff = 21 + 16 * i + new Random().nextInt(15);
+			Mouse.move(new Point(menu.x + xOff, menu.y + yOff));
+			if (isOpen()) {
+				Mouse.click();
+				return true;
+			}
 		}
+		catch(Exception e){}
 		return false;
 	}
 	public static boolean clickSub(String[] items, int mIdx, int sIdx) {
 		Point menuLoc = getLocation();
 		int x = new Random().nextInt((items[mIdx].length() * 4)-4)+4;
 		int y = 21 + 16 * mIdx + new Random().nextInt(9)+3;
-		Mouse.moveMouse(menuLoc.x + x, menuLoc.y + y);
+		Mouse.move(menuLoc.x + x, menuLoc.y + y);
 		try {
 			Thread.sleep(new Random().nextInt(25)+125);
 		} catch (Exception e) {
