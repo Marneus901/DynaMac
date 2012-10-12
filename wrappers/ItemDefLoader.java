@@ -30,8 +30,17 @@ public class ItemDefLoader {
 		}
 		return false;
 	}
-	public Cache getCache(){
-		FieldHook fh = currentHook.getFieldHook("getCache");
+	public Cache getDefCache(){
+		FieldHook fh = currentHook.getFieldHook("getDefCache");
+		if(fh!=null){
+			Object data = fh.getData(currentObject);
+			if(data!=null)
+				return new Cache(data);
+		}
+		return null;
+	}
+	public Cache getModelCache(){
+		FieldHook fh = currentHook.getFieldHook("getModelCache");
 		if(fh!=null){
 			Object data = fh.getData(currentObject);
 			if(data!=null)

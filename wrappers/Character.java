@@ -37,7 +37,12 @@ public class Character extends Animable{
 			Rectangle r = p.getBounds();
 			Point pt = new Point(new Random().nextInt(r.width)+r.x, new Random().nextInt(r.height)+r.y);
 			if(pt.x>0 && pt.x<515 && pt.y>54 && pt.y<388){
-				Mouse.clickMouse(pt, 1);
+				Mouse.move(pt);
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
+				Mouse.click();
 				return true;
 			}
 		}

@@ -33,7 +33,7 @@ public class Item {
 	}
 	public ItemDef getItemDef(){
 		try{
-			Node ref = Nodes.lookup(Client.getItemDefLoader().getCache().getTable(), getID());
+			Node ref = Nodes.lookup(Client.getItemDefLoader().getDefCache().getTable(), getID());
 			if(ref==null)
 				return null;
 			if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {

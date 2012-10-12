@@ -144,18 +144,22 @@ public class ModelLD extends Model{
 		int numVertices = Math.min(getVerticiesX().length, Math.min(getVerticiesY().length, getVerticiesZ().length));
 		int[][] screen = new int[numVertices][3];
 
+		float xX = data[0];
+		float yX = data[1];
+		//2 same as 3 practically
+		float zX = data[3];
+		float xY = data[4];
+		float yY = data[5];
+		//6 same as 7 practically
+		float zY = data[7];
+		float xZ = data[8];
+		float yZ = data[9];
+		//10 same as 11
+		float zZ = data[11];
 		float xOff = data[12];
 		float yOff = data[13];
+		//14 same as 15
 		float zOff = data[15];
-		float xX = data[0];
-		float xY = data[4];
-		float xZ = data[8];
-		float yX = data[1];
-		float yY = data[5];
-		float yZ = data[9];
-		float zX = data[3];
-		float zY = data[7];
-		float zZ = data[11];
 
 		int height = Calculations.tileHeight((int)locX, (int)locY);
 		for (int index = 0; index < numVertices; index++) {
@@ -166,7 +170,7 @@ public class ModelLD extends Model{
 			float _z = (zOff + (zX * vertexX + zY * vertexY + zZ * vertexZ));
 			float _x = (xOff + (xX * vertexX + xY * vertexY + xZ * vertexZ));
 			float _y = (yOff + (yX * vertexX + yY * vertexY + yZ * vertexZ));
-			
+
 			float fx = ((float)256.0 + ((float)256.0 * _x) / _z);
 			float fy = ((float)166.0 + ((float)167.0 * _y) / _z);
 			if(fx<520 && fx>0 && fy<390 && fy>50){
