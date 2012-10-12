@@ -12,6 +12,7 @@ import org.dynamac.bot.api.wrappers.InterfaceItem;
 
 public class Bank {
 	public static int BANK_INTERFACE_ID = 762;
+	public static int BANK_CLOSE_BUTTON_ID = 45;
 	public static int BANK_SLOTS_INTERFACE_ID = 95;
 	public static int BANK_DEPOSIT_INVENTORY_BUTTON_ID = 34;
 	public static int BANK_DEPOSIT_EQUIPMENT_BUTTON_ID = 36;
@@ -31,6 +32,21 @@ public class Bank {
 	public static final int[] BANK_CHEST_IDS = new int[]{
 		2693, 4483, 8981, 12308, 14382, 20607, 21301, 27663, 42192, 57437, 62691
 	};
+	public static boolean close(){
+		InterfaceChild ic = Interfaces.get(BANK_INTERFACE_ID, BANK_CLOSE_BUTTON_ID);
+		if(ic!=null){
+			ic.click();
+			for(int i=0;i<20;++i){
+				if(!isOpen())
+					return true;
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+		return false;
+	}
 	public static boolean depositInventory(){
 		if(isOpen()){
 			int invCount = Inventory.getCount();
@@ -67,12 +83,12 @@ public class Bank {
 					action="Deposit-"+amount;
 				else{
 					Point p = item.getInterfaceChild().getRandomPoint();
-					Mouse.moveMouse(p);
+					Mouse.move(p);
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
 					}
-					Mouse.clickMouse(Mouse.RIGHT_BUTTON);
+					Mouse.rightClick();
 					try {
 						Thread.sleep(150);
 					} catch (InterruptedException e) {
@@ -154,7 +170,7 @@ public class Bank {
 	public static boolean isOpen(){
 		return Client.getInterfaceCache()[BANK_INTERFACE_ID]!=null;
 	}
-	public int getCurrentTab(){
+	public static int getCurrentTab(){
 		return ((Client.getSettings().getData()[1248] >>> 24) - 136) / 8;
 	}
 	public static InterfaceItem getItem(int id){
@@ -188,7 +204,7 @@ public class Bank {
 		if(object!=null){
 			System.out.println("[Bank:open] Bank booth found.");
 			if(object.isOnScreen()){
-				if(!object.clickTile()){
+				if(!object.doAction("Bank")){
 					System.out.println("[Bank:open] Failed to click bank tile.");
 					return false;
 				}
@@ -210,7 +226,7 @@ public class Bank {
 		if(object!=null){
 			System.out.println("[Bank:open] Bank chest found.");
 			if(object.isOnScreen()){
-				if(!object.clickTile()){
+				if(!object.clickTile()){//Check for top action
 					System.out.println("[Bank:open] Failed to click chest tile.");
 					return false;
 				}
@@ -271,12 +287,12 @@ public class Bank {
 					action="Withdraw-"+amount;
 				else{
 					Point p = item.getInterfaceChild().getRandomPoint();
-					Mouse.moveMouse(p);
+					Mouse.move(p);
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
 					}
-					Mouse.clickMouse(Mouse.RIGHT_BUTTON);
+					Mouse.rightClick();
 					try {
 						Thread.sleep(150);
 					} catch (InterruptedException e) {
