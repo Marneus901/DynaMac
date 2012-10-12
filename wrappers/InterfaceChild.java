@@ -52,10 +52,19 @@ public class InterfaceChild {
 	}
 	public void click(){
 		Point p = getRandomPoint();
-		if(getBounds().contains(Mouse.getLastMousePos()))
-			Mouse.clickMouse();
-		else if(!p.equals(new Point(-1, -1)))
-			Mouse.clickMouse(p, 1);
+		if(getBounds().contains(Mouse.getLocation()))
+			Mouse.click();
+		else if(!p.equals(new Point(-1, -1))){
+			Mouse.move(p);
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+			}
+			Mouse.click();
+		}
+	}
+	public boolean containsPoint(Point p){
+		return getBounds().contains(p);
 	}
 	public boolean doAction(String action){
 		if(!Menu.isOpen()){
@@ -63,13 +72,29 @@ public class InterfaceChild {
 			if(p.equals(new Point(-1, -1))){
 				return false;
 			}
-			Mouse.moveMouse(p);
+			if(!containsPoint(p))
+				return false;
+			Mouse.move(p);
 			try {
 				Thread.sleep(100);
 			} catch (Exception e) {
 			}
+			if(Menu.getIndex(action)==0){
+				Mouse.click();
+				for(int i=0;i<20;++i){
+					if(Client.getMouseCrosshairState()==2)
+						return true;
+					if(Client.getMouseCrosshairState()==1)
+						return false;
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+					}
+				}
+				return false;
+			}
 			if(Menu.getIndex(action)>0){
-				Mouse.clickMouse(Mouse.getLastMousePos(), 3);
+				Mouse.rightClick();
 				for(int i=0;i<10;++i){
 					if(Menu.isOpen())
 						break;
