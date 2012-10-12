@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import org.dynamac.bot.api.wrappers.NPC;
 import org.dynamac.bot.api.wrappers.NPCNode;
+import org.dynamac.bot.api.wrappers.Tile;
 
 public class NPCs {
 	/**
@@ -35,8 +36,41 @@ public class NPCs {
 				}
 			}
 		}
-		return temp;
+		if(temp != null)
+			return temp;
+		return null;
 	}
+
+	/**
+	 * Some basic recursion added along with a few more null checks, noticed
+	 * null pointers being returned occasionally.
+	 * @author Gregdw, Marneus901
+	 * @param npcIDs
+	 * @return The closest NPC with a valid id from the list given on screen
+	 */
+	public static NPC getNearestOnScreen(int...ids) {
+		NPC temp = null;
+		double dist = Double.MAX_VALUE;
+		for (NPC npc : getNPCArray()) {
+			if(npc != null && npc.getNPCDef() != null && npc.getNPCDef().getID() > 1) {
+				int id = npc.getNPCDef().getID();
+				for (int i : ids) {
+					if (i == id) {
+						double distance = Calculations.distanceTo(npc.getLocationX(), npc.getLocationY());
+						if (distance < dist) {
+							dist = distance;
+							temp = npc;
+						}
+					}
+				}
+			}
+		}
+		if(temp != null)
+			if(temp.isOnScreen())
+				return temp;
+		return getNearestOnScreen(ids);
+	}
+
 	/**
 	 * @author Connor132, Marneus901
 	 * @param npcIDs
@@ -69,7 +103,7 @@ public class NPCs {
 		}
 		return matchedNPCs.toArray(new NPC[]{});
 	}
-	
+
 	public static NPC[] getNPCArray(){
 		ArrayList<NPC> npcs = new ArrayList<NPC>();
 		for(NPCNode node : Client.getNPCNodeArray()){
@@ -83,4 +117,19 @@ public class NPCs {
 		}
 		return npcs.toArray(new NPC[]{});
 	}
+
+	public static NPC getNPCAt(Tile t){
+		if(t==null)
+			return null;
+		return getNPCAt(t.getX(), t.getY());
+	}
+
+	public static NPC getNPCAt(int x, int y){
+		for(NPC npc : getNPCArray()){
+			if(npc.getLocation().equals(new Tile(x, y, Client.getPlane())))
+				return npc;
+		}
+		return null;
+	}
+
 }
