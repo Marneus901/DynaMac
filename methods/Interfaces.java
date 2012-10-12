@@ -66,15 +66,14 @@ public class Interfaces {
 			pos = scrollBarArea.getVerticalScrollbarThumbSize() - 1;
 		}
 		Point p = new Point(scrollBarArea.getAbsoluteX() + new Random().nextInt(scrollBarArea.getWidth()-2)+2, scrollBarArea.getAbsoluteY() + pos);
-		Mouse.moveMouse(p);
+		Mouse.move(p);
 		for(int i=0;i<3;++i){
 			int curr = component.getAbsoluteY();
-			Mouse.pressMouse(p.x, p.y, 1);
+			Mouse.click();
 			try {
 				Thread.sleep(new Random().nextInt(150)+100);
 			} catch (InterruptedException e) {
 			}
-			Mouse.releaseMouse(Mouse.getLastMousePos().x, Mouse.getLastMousePos().y, 1);
 			if(component.getAbsoluteY()!=curr)
 				break;
 		}
@@ -86,12 +85,12 @@ public class Interfaces {
 			return true;
 		final boolean scrollUp = component.getAbsoluteY() < areaY;
 		p = scrollBar.getChildren()[scrollUp ? 4 : 5].getRandomPoint();
-		Mouse.moveMouse(p);
+		Mouse.move(p);
 		try {
 			Thread.sleep(new Random().nextInt(150));
 		} catch (InterruptedException e) {
 		}
-		Mouse.pressMouse(p.x, p.y, 1);
+		Mouse.press(Mouse.LEFT_BUTTON);
 		for(int i=0;i<20;++i){
 			if(component.getAbsoluteY() >= areaY && component.getAbsoluteY() <= areaY + areaHeight - component.getVerticalScrollbarThumbSize())
 				break;
@@ -103,7 +102,7 @@ public class Interfaces {
 			if(curr!=component.getAbsoluteY())
 				i=0;
 		}
-		Mouse.releaseMouse(p.x, p.y, 1);
+		Mouse.release(Mouse.LEFT_BUTTON);
 		return component.getAbsoluteY() >= areaY && component.getAbsoluteY() <= areaY + areaHeight - component.getVerticalScrollbarThumbSize();
 	}
 }
