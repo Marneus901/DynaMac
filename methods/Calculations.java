@@ -11,23 +11,37 @@ package org.dynamac.bot.api.methods;
 
 import java.awt.Point;
 import java.awt.Polygon;
+import java.util.Random;
 import java.util.Vector;
 
+import org.dynamac.bot.api.wrappers.Player;
 import org.dynamac.bot.api.wrappers.Tile;
 import org.dynamac.bot.api.wrappers.TileData;
 
-
 public class Calculations {	
 	public static float[] matrixCache = new float[]{};
+	public static int angleToTile(Tile t) {
+		Tile me = Players.getMyPlayer().getLocation();
+		int angle = (int) Math.toDegrees(Math.atan2(t.getY() - me.getY(), t.getX() - me.getX()));
+		return angle >= 0 ? angle : 360 + angle;
+	}
+	public static double distanceBetween(Point pt1, Point pt2){
+		return distance(pt1.x, pt2.x, pt1.y, pt2.y);
+	}
+	public static double distanceBetween(Tile t1, Tile t2){
+		return distance(t1.getX(), t2.getX(), t1.getY(), t2.getY());
+	}
 	public static double distance(int x1, int x2, int y1, int y2) {
 		return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+	}
+	public static double distanceTo(Tile t){
+		return distanceTo(t.getX(), t.getY());
 	}
 	public static double distanceTo(int x, int y) {
 		int x2 = Client.getMyPlayer().getLocationX();
 		int y2 = Client.getMyPlayer().getLocationY();
 		return Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
 	}
-	
 	public static Tile[] getSurrounding(final Tile t) {
         final Vector<Tile> neighbors = new Vector<Tile>();
         for (int i = -1; i <= 1; i++) {
@@ -72,6 +86,9 @@ public class Calculations {
 		}
 		return new Point(-1, -1);
 	}
+	public static boolean isOnScreen(Tile t){
+		return isOnScreen(t.getX(), t.getY());
+	}
 	public static boolean isOnScreen(int x, int y){
 		Point p = Calculations.locationToScreen(x, y);
 		return (p.x>0 && p.x<515 && p.y>54 && p.y<388);
@@ -91,6 +108,9 @@ public class Calculations {
 		}
 		catch(Exception e){}
 		return new Point(-1, -1);
+	}
+	public static int random(int min, int max){
+		return new Random().nextInt(max-min)+min;
 	}
 	public static int tileHeight(int x, int y) {
 		try{
@@ -118,13 +138,32 @@ public class Calculations {
 		catch(Exception e){
 		}
 		return 0;
-	}		
+	}	
+	public static boolean tileOnMap(Tile t){
+		if(t==null)
+			return false;
+		return !worldToMap(t.getX(), t.getY()).equals(new Point(-1, -1));
+	}
+	public static Point tileToScreen(Tile t){
+		return locationToScreen(t.getX(), t.getY());
+	}	
+	public static Point tileToMap(Tile t){
+		Player p = Players.getMyPlayer();
+		if(p!=null){
+			Point center = worldToMap(p.getLocationX(), p.getLocationY());
+			Point tile = worldToMap(t.getX(), t.getY());
+			if(Calculations.distanceBetween(center, tile)<70)
+				return worldToMap(t.getX(), t.getY());
+		}
+		return new Point(-1, -1);
+	}
 	public static Point worldToMap(int x, int y){	
-		x-= Client.getRSData().getBaseInfo().getX();	
-		y-= Client.getRSData().getBaseInfo().getY();	
-		int regionTileX = Client.getMyPlayer().getLocationX() - Client.getRSData().getBaseInfo().getX();
-		int regionTileY = Client.getMyPlayer().getLocationY() - Client.getRSData().getBaseInfo().getY();
-
+		x-= Client.getBaseX();	
+		y-= Client.getBaseY();	
+		int regionTileX = Client.getMyPlayer().getLocationX() - Client.getBaseX();
+		int regionTileY = Client.getMyPlayer().getLocationY() - Client.getBaseY();
+		if(x>104 || x<0 || y>104 || y<0)
+			return new Point(-1, -1);
 		final int cX = (int) (x * 4 + 2) - (regionTileX << 9) / 0x80;		
 		final int cY = (int) (y * 4 + 2) - (regionTileY << 9) / 0x80;		
 		final int actDistSq = cX * cX + cY * cY;	
@@ -142,7 +181,11 @@ public class Calculations {
 				sin = 0x100 * sin / fact;			
 				cos = 0x100 * cos / fact;		
 			}	
-			return new Point((cos * cX + sin * cY >> 0xf) + 550 + 154 / 2, -(cos * cY - sin * cX >> 0xf) + 58 + 154 / 2);	
+			Point ret = new Point((cos * cX + sin * cY >> 0xf) + 550 + 154 / 2, -(cos * cY - sin * cX >> 0xf) + 58 + 154 / 2);
+			if(x==regionTileX && y==regionTileY)
+				return ret;
+			else if(Calculations.distanceBetween(ret, Players.getMyPlayer().getLocation().getTileOnMap())<70)
+				return ret;	
 		}	
 		return new Point(-1, -1);
 	}
@@ -154,7 +197,7 @@ public class Calculations {
 		final float _x = data[8] * z + (data[4] * y + (data[12] + data[0] * x));
 		final float _y = data[9] * z + (data[5] * y + (data[1] * x + data[13]));	
 		return new Point(			
-			Math.round((int)(260.0 + (256.0 * _x) / _z))-4,	
+			Math.round((int)(260.0 + (256.0 * _x) / _z)),	
 			Math.round((int)(171.0 + (167.0 * _y) / _z))		
 		);		
 	}								
