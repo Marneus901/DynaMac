@@ -27,6 +27,7 @@ import org.dynamac.bot.api.wrappers.ObjectDefLoader;
 import org.dynamac.bot.api.wrappers.Player;
 import org.dynamac.bot.api.wrappers.RenderLD;
 import org.dynamac.bot.api.wrappers.Settings;
+import org.dynamac.bot.api.wrappers.Tile;
 import org.dynamac.enviroment.Data;
 import org.dynamac.enviroment.hook.FieldHook;
 import org.dynamac.rsapplet.canvas.Canvas;
@@ -143,6 +144,13 @@ public class Client {
 		}
 		return null;
 	}
+	public static Tile getDestination(){
+		int x = getDestinationX();
+		int y= getDestinationY();
+		if(x!=-1 && y!=-1)
+			return new Tile(x, y, getPlane());
+		return new Tile(-1, -1);
+	}
 	public static int getDestinationX(){
 		FieldHook fh = Data.runtimeStaticFields.get("getDestinationX");
 		if(fh!=null){
@@ -257,23 +265,6 @@ public class Client {
 		}
 		return null;
 	}
-	public static boolean isItemSelected(){
-		FieldHook fh = Data.runtimeStaticFields.get("isItemSelected");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return (Boolean)data;
-		}
-		return false;
-	}
-	public static boolean isLoggedIn(){
-		try{
-			return Client.getRSData().getGroundInfo()!=null;
-		}
-		catch(Exception e){
-			return false;
-		}
-	}
 	public static Object getKeyboard(){
 		FieldHook fh = Data.runtimeStaticFields.get("getKeyboard");
 		if(fh!=null){
@@ -340,24 +331,6 @@ public class Client {
 				return (int[])data;
 		}
 		return new int[]{};
-	}
-	public static boolean isMenuCollapsed(){
-		FieldHook fh = Data.runtimeStaticFields.get("isMenuCollapsed");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return (Boolean)data;
-		}
-		return false;
-	}
-	public static boolean isMenuOpen(){
-		FieldHook fh = Data.runtimeStaticFields.get("isMenuOpen");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return (Boolean)data;
-		}
-		return false;
 	}
 	public static NodeList getMenuItems(){
 		FieldHook fh = Data.runtimeStaticFields.get("getMenuItems");
@@ -628,15 +601,6 @@ public class Client {
 		}
 		return null;
 	}
-	public static boolean isSpellSelected(){
-		FieldHook fh = Data.runtimeStaticFields.get("isSpellSelected");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return (Boolean)data;
-		}
-		return false;
-	}
 	public static int[] getSkillExperienceMaxes(){
 		FieldHook fh = Data.runtimeStaticFields.get("getSkillExperienceMaxes");
 		if(fh!=null){
@@ -726,5 +690,49 @@ public class Client {
 				return data.toString();
 		}
 		return "";
+	}
+	public static boolean isItemSelected(){
+		FieldHook fh = Data.runtimeStaticFields.get("isItemSelected");
+		if(fh!=null){
+			Object data = fh.getData(Data.CLIENT);
+			if(data!=null)
+				return (Boolean)data;
+		}
+		return false;
+	}
+	public static boolean isLoggedIn(){
+		try{
+			return Client.getRSData().getGroundInfo()!=null;
+		}
+		catch(Exception e){
+			return false;
+		}
+	}
+	public static boolean isMenuCollapsed(){
+		FieldHook fh = Data.runtimeStaticFields.get("isMenuCollapsed");
+		if(fh!=null){
+			Object data = fh.getData(Data.CLIENT);
+			if(data!=null)
+				return (Boolean)data;
+		}
+		return false;
+	}
+	public static boolean isMenuOpen(){
+		FieldHook fh = Data.runtimeStaticFields.get("isMenuOpen");
+		if(fh!=null){
+			Object data = fh.getData(Data.CLIENT);
+			if(data!=null)
+				return (Boolean)data;
+		}
+		return false;
+	}
+	public static boolean isSpellSelected(){
+		FieldHook fh = Data.runtimeStaticFields.get("isSpellSelected");
+		if(fh!=null){
+			Object data = fh.getData(Data.CLIENT);
+			if(data!=null)
+				return (Boolean)data;
+		}
+		return false;
 	}
 }
