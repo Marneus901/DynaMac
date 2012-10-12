@@ -29,13 +29,21 @@ import org.dynamac.enviroment.hook.FieldHook;
 public class AnimableObject extends Animable{
 	public Object currentObject;
 	public ClassHook currentHook;
+
+	/*private int x = 0;
+	private int y = 0;
+	private int height = 0;
+	private int width = 0;*/
+
+	Polygon[] poly = null;
+
 	public AnimableObject(Object o){
 		super(o);
 		currentObject = o;
 		currentHook = Data.indentifiedClasses.get("AnimableObject");
-	}
-	
+	}/*
 	public Rectangle realBounds(Polygon[] polys) {
+		poly = polys;
 		int maxheight = -9999999;
 		int minheight = 9999999;
 		int maxwidth = -9999999;
@@ -44,7 +52,6 @@ public class AnimableObject extends Animable{
 		int minX = 9999999;
 		int maxY = -9999999;
 		int minY = 9999999;
-
 		for(Polygon p : polys) {
 			if(p.getBounds().height > maxheight) {
 				maxheight = p.getBounds().height;
@@ -67,27 +74,49 @@ public class AnimableObject extends Animable{
 				minY = p.getBounds().y;
 			}
 		}
-		return new Rectangle(((maxX + minX)/2), ((maxY + minY)/2), ((maxwidth + minwidth)/2), ((maxheight + minheight)/2));
+
+		return new Rectangle(minX, maxX, minY, maxY);
 	}
-	
 	public Point getCenterOfModel() {
-		Rectangle thetangle = new Rectangle(realBounds(getWireframe()).x, realBounds(getWireframe()).y, realBounds(getWireframe()).height, realBounds(getWireframe()).width);
+		if(this.x != 0 && this.y != 0 && this.width != 0 && this.height != 0) {
+			Rectangle thetangle = new Rectangle(this.x, this.y, this.width, this.height);
+			return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
+		}
+		Polygon[] frames = getWireframe();
+		Rectangle thetangle = new Rectangle(realBounds(frames).x, realBounds(frames).y, realBounds(frames).width, realBounds(frames).height);
 		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
 	}
-	
+
+	public Rectangle getRectangle() {
+		return new Rectangle(this.x, this.y, this.width, this.height);
+	}
+
+	public Polygon getGameScreenLocation() {
+		return Calculations.getTilePolygon(this.getLocationX(), this.getLocationY());
+	}*/
+
+	public Tile getLocation() {
+		return new Tile(this.getLocationX(), this.getLocationY());
+	}
+
 	public boolean clickModel(){
 		if(isOnScreen() && getLDModel()!=null){
 			int[][] pts = projectVertices();
 			int randInd = new Random().nextInt(pts.length);
 			Point p = new Point(pts[randInd][0], pts[randInd][1]);
 			if(p.x>0 && p.x<515 && p.y>54 && p.y<388){
-				Mouse.clickMouse(p, 1);
+				Mouse.move(p);
+				try {
+					Thread.sleep(new Random().nextInt(100) + 50);
+				} catch (Exception e) {
+				}
+				Mouse.click();
 				return true;
 			}
 		}
 		return false;
 	}
-	
+/*
 	public boolean clickCenterOfModel(){
 		if(isOnScreen() && getLDModel()!=null){
 			Point p = new Point(getCenterOfModel());
@@ -97,14 +126,19 @@ public class AnimableObject extends Animable{
 			}
 		}
 		return false;
-	}
+	}*/
 	public boolean clickTile(){
 		if(isOnScreen()){
 			Polygon p = Calculations.getTilePolygon(getLocationX(), getLocationY());
 			Rectangle r = p.getBounds();
 			Point pt = new Point(new Random().nextInt(r.width)+r.x, new Random().nextInt(r.height)+r.y);
 			if(pt.x>0 && pt.x<515 && pt.y>54 && pt.y<388){
-				Mouse.clickMouse(pt, 1);
+				Mouse.move(pt);
+				try {
+					Thread.sleep(new Random().nextInt(100) + 50);
+				} catch (Exception e) {
+				}
+				Mouse.click();
 				return true;
 			}
 		}
@@ -124,13 +158,13 @@ public class AnimableObject extends Animable{
 			}
 			if(!containsPoint(p))
 				return false;
-			Mouse.moveMouse(p);
+			Mouse.move(p);
 			try {
 				Thread.sleep(100);
 			} catch (Exception e) {
 			}
 			if(Menu.getIndex(action)==0){
-				Mouse.clickMouse();
+				Mouse.click();
 				for(int i=0;i<20;++i){
 					if(Client.getMouseCrosshairState()==2)
 						return true;
@@ -144,7 +178,7 @@ public class AnimableObject extends Animable{
 				return false;
 			}
 			if(Menu.getIndex(action)>0){
-				Mouse.clickMouse(Mouse.getLastMousePos(), 3);
+				Mouse.rightClick();
 				for(int i=0;i<10;++i){
 					if(Menu.isOpen())
 						break;
@@ -242,26 +276,26 @@ public class AnimableObject extends Animable{
 		short[] triy = model.getTriangleY();
 		short[] triz = model.getTriangleZ();
 		int numTriangles = Math.min(trix.length, Math.min(triy.length, triz.length));;
-        for (int i = 0; i < numTriangles; i++) {
-            int index1 = trix[i];
-            int index2 = triy[i];
-            int index3 = triz[i];
+		for (int i = 0; i < numTriangles; i++) {
+			int index1 = trix[i];
+			int index2 = triy[i];
+			int index3 = triz[i];
 
-            int point1X = screenPoints[index1][0];
-            int point1Y = screenPoints[index1][1];
-            int point2X = screenPoints[index2][0];
-            int point2Y = screenPoints[index2][1];
-            int point3X = screenPoints[index3][0];
-            int point3Y = screenPoints[index3][1];
-            if(point1X==-1 || point1Y==-1 ||
-            		point2X==-1 || point2Y==-1 ||
-            		point3X==-1 || point3Y==-1)
-            	continue;
-            
-            int avx = (point1X+point2X+point3X)/3;
-            int avy = (point1Y+point2Y+point3Y)/3;
-            pts.add(new Point(avx, avy));
-        }
+			int point1X = screenPoints[index1][0];
+			int point1Y = screenPoints[index1][1];
+			int point2X = screenPoints[index2][0];
+			int point2Y = screenPoints[index2][1];
+			int point3X = screenPoints[index3][0];
+			int point3Y = screenPoints[index3][1];
+			if(point1X==-1 || point1Y==-1 ||
+					point2X==-1 || point2Y==-1 ||
+					point3X==-1 || point3Y==-1)
+				continue;
+
+			int avx = (point1X+point2X+point3X)/3;
+			int avy = (point1Y+point2Y+point3Y)/3;
+			pts.add(new Point(avx, avy));
+		}
 		return pts.toArray(new Point[]{});
 	}
 	public Polygon[] getWireframe(){
@@ -274,29 +308,29 @@ public class AnimableObject extends Animable{
 		short[] triy = model.getTriangleY();
 		short[] triz = model.getTriangleZ();
 		int numTriangles = Math.min(trix.length, Math.min(triy.length, triz.length));;
-        for (int i = 0; i < numTriangles; i++) {
-            int index1 = trix[i];
-            int index2 = triy[i];
-            int index3 = triz[i];
+		for (int i = 0; i < numTriangles; i++) {
+			int index1 = trix[i];
+			int index2 = triy[i];
+			int index3 = triz[i];
 
-            int point1X = screenPoints[index1][0];
-            int point1Y = screenPoints[index1][1];
-            int point2X = screenPoints[index2][0];
-            int point2Y = screenPoints[index2][1];
-            int point3X = screenPoints[index3][0];
-            int point3Y = screenPoints[index3][1];
-            if(point1X==-1 || point1Y==-1 ||
-            		point2X==-1 || point2Y==-1 ||
-            		point3X==-1 || point3Y==-1)
-            	continue;
-            
-            Polygon p = new Polygon();
-            p.addPoint(point1X, point1Y);
-            p.addPoint(point2X, point2Y);
-            p.addPoint(point3X, point3Y);
-            
-            polys.add(p);
-        }
+			int point1X = screenPoints[index1][0];
+			int point1Y = screenPoints[index1][1];
+			int point2X = screenPoints[index2][0];
+			int point2Y = screenPoints[index2][1];
+			int point3X = screenPoints[index3][0];
+			int point3Y = screenPoints[index3][1];
+			if(point1X==-1 || point1Y==-1 ||
+					point2X==-1 || point2Y==-1 ||
+					point3X==-1 || point3Y==-1)
+				continue;
+
+			Polygon p = new Polygon();
+			p.addPoint(point1X, point1Y);
+			p.addPoint(point2X, point2Y);
+			p.addPoint(point3X, point3Y);
+
+			polys.add(p);
+		}
 		return polys.toArray(new Polygon[]{});
 	}
 	public boolean isOnScreen(){
