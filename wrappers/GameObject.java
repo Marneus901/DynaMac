@@ -2,7 +2,6 @@ package org.dynamac.bot.api.wrappers;
 
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -15,6 +14,7 @@ import org.dynamac.bot.api.methods.Nodes;
 import org.dynamac.enviroment.Data;
 
 public class GameObject {
+	@SuppressWarnings("unused")
 	private int minx, miny, maxx, maxy;
 	private byte plane;
 	private ModelLD model;
@@ -22,6 +22,27 @@ public class GameObject {
 	private int orientation=0;
 	@SuppressWarnings("unused")//Used to see what type of object GameObject is referencing - do not remove.
 	private Object reference;
+	/*
+	private int x = 0;
+	private int y = 0;
+	private int height = 0;
+	private int width = 0;
+
+
+
+	public int getX() {
+		return this.x;
+	}
+	public int getY() {
+		return this.y;
+	}
+	public int getHeight() {
+		return this.height;
+	}
+	public int getWidth() {
+		return this.width;
+	}*/
+
 	public GameObject(AnimableObject ao){
 		minx=ao.getMinX();
 		miny=ao.getMinY();
@@ -35,12 +56,12 @@ public class GameObject {
 	public GameObject(AnimatedObject ao){
 		Interactable inter = ao.getInteractable();
 		if(inter!=null){
-		Animable anim = new Animable(inter.currentObject);
-		minx=anim.getMinX();
-		miny=anim.getMinY();
-		maxx=anim.getMaxX();
-		maxy=anim.getMaxY();
-		plane=anim.getPlane();
+			Animable anim = new Animable(inter.currentObject);
+			minx=anim.getMinX();
+			miny=anim.getMinY();
+			maxx=anim.getMaxX();
+			maxy=anim.getMaxY();
+			plane=anim.getPlane();
 		}
 		else{
 			minx=ao.getLocalX();
@@ -83,58 +104,13 @@ public class GameObject {
 		id=ao.getID();
 		reference=ao;
 	}
-/*	public boolean click(){
-		if(!containsPoint(Mouse.getLastMousePos())){
-			Point p = getRandomPoint();
-			if(p.equals(new Point(-1, -1)))
-				return false;
-			Mouse.moveMouse(p);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-			}
-		}
-		if(Menu.contains(getName(), false)){
-			int index=Menu.getFirstIndexByOption(getName());
-			if(index==0){
-				Mouse.clickMouse();
-				for(int i=0;i<20;++i){
-					if(Client.getMouseCrosshairState()==2)
-						return true;
-					if(Client.getMouseCrosshairState()==1)
-						return false;
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-					}
-				}
-				return false;
-			}
-			Mouse.clickMouse(Mouse.getLastMousePos(), 3);
-			for(int i=0;i<10;++i){
-				if(Menu.isOpen())
-					break;
-				try {
-					Thread.sleep(100);
-				} catch (Exception e) {
-				}
-			}
-			if(Menu.isOpen())
-				return Menu.clickIndex(index);
-			return false;
-		}
-		else{
-			if(containsPoint(Mouse.getLastMousePos())){
-				Mouse.clickMouse();
-				return true;
-			}
-			return false;
-		}
-	}*/
+
 	public boolean containsPoint(Point p){
-		for(Polygon poly : getWireframe())
-			if(poly.contains(p))
+		Polygon[] ps = getWireframe();
+		for(int i=0;i<ps.length;++i)
+			if(ps[i].contains(p)){
 				return true;
+			}
 		return false;
 	}
 	public boolean doAction(String action){
@@ -143,15 +119,18 @@ public class GameObject {
 			if(p.equals(new Point(-1, -1))){
 				return false;
 			}
-			if(!containsPoint(p))
+			if(!containsPoint(p)){
 				return false;
-			Mouse.moveMouse(p);
+			}
+			//Mouse.moveMouse(p);
+			Mouse.move(p);
 			try {
 				Thread.sleep(100);
 			} catch (Exception e) {
 			}
 			if(Menu.getIndex(action)==0){
-				Mouse.clickMouse();
+				//Mouse.clickMouse();
+				Mouse.click();
 				for(int i=0;i<20;++i){
 					if(Client.getMouseCrosshairState()==2)
 						return true;
@@ -165,7 +144,8 @@ public class GameObject {
 				return false;
 			}
 			if(Menu.getIndex(action)>0){
-				Mouse.clickMouse(Mouse.getLastMousePos(), 3);
+				//Mouse.clickMouse(3);
+				Mouse.rightClick();
 				for(int i=0;i<10;++i){
 					if(Menu.isOpen())
 						break;
@@ -190,47 +170,7 @@ public class GameObject {
 	public Tile getLocation(){
 		return new Tile(getLocationX(), getLocationY(), 0);
 	}
-	
-	public Rectangle realBounds(Polygon[] polys) {
-		int maxheight = -9999999;
-		int minheight = 9999999;
-		int maxwidth = -9999999;
-		int minwidth = 9999999;
-		int maxX = -9999999;
-		int minX = 9999999;
-		int maxY = -9999999;
-		int minY = 9999999;
 
-		for(Polygon p : polys) {
-			if(p.getBounds().height > maxheight) {
-				maxheight = p.getBounds().height;
-			} else if(p.getBounds().height < minheight) {
-				minheight = p.getBounds().height;
-			}
-			if(p.getBounds().width > maxwidth) {
-				maxwidth = p.getBounds().width;
-			} else if(p.getBounds().width < minwidth) {
-				minwidth = p.getBounds().width;
-			}
-			if(p.getBounds().x > maxX) {
-				maxX = p.getBounds().x;
-			} else if(p.getBounds().x < minX) {
-				minX = p.getBounds().x;
-			}
-			if(p.getBounds().y > maxY) {
-				maxY = p.getBounds().y;
-			} else if(p.getBounds().y < minY) {
-				minY = p.getBounds().y;
-			}
-		}
-		return new Rectangle(((maxX + minX)/2), ((maxY + minY)/2), ((maxwidth + minwidth)/2), ((maxheight + minheight)/2));
-	}
-	
-	public Point getCenterOfModel() {
-		Rectangle thetangle = new Rectangle(realBounds(getWireframe()).x, realBounds(getWireframe()).y, realBounds(getWireframe()).height, realBounds(getWireframe()).width);
-		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
-	}
-	
 	public int getLocationX(){
 		try{
 			return minx+Client.getBaseX();
@@ -249,7 +189,70 @@ public class GameObject {
 	}
 	public ModelLD getModel(){
 		return model;
-	}
+	}/*
+	public Point getModelPoint() {
+
+		//if(obj == null) return new Point(-1, -1);
+
+		final ModelLD mod = this.getModel();
+
+		final int[] xPoints = mod.getVerticiesX();
+		final int[] yPoints =mod.getVerticiesY();
+		final int[] zPoints =mod.getVerticiesZ();
+
+		final int i = new Random(0).nextInt(mod.getTriangleZ().length);
+
+		final int i1 = mod.getTriangleX()[i],
+				i2 = mod.getTriangleY()[i],
+				i3 = mod.getTriangleZ()[i];
+
+		final int ax = getX(), ay = getY();
+
+		final Point[] indicePoints = new Point[3];
+
+		indicePoints[0] = Calculations.worldToScreen(xPoints[i1] + ax,
+				yPoints[i1] + Calculations.tileHeight(ax, ay),
+				zPoints[i1] + ay);
+
+		indicePoints[1] = Calculations.worldToScreen(xPoints[i2] + ax,
+				yPoints[i2] + Calculations.tileHeight(ax, ay),
+				zPoints[i2] + ay);
+
+		indicePoints[2] = Calculations.worldToScreen(xPoints[i3] + ax,
+				yPoints[i3] + Calculations.tileHeight(ax, ay),
+				zPoints[i3] + ay);
+
+		final int xPoint = blend(min(indicePoints[0].x, indicePoints[1].x, indicePoints[2].x), 
+				max(indicePoints[0].x, indicePoints[1].x, indicePoints[2].x), new Random((long) 0.0).nextInt((int) 1.0));
+
+		final int[][] xIndexes = new int[2][2];
+
+		for(int xIndex = 0, xIndexCount = 0; xIndex < 3 && xIndexCount < 2; xIndex++) {
+			final int x1 = indicePoints[xIndex].x;
+			final int x2 = indicePoints[xIndex == 2 ? 0 : xIndex + 1].x;
+
+			if(Math.min(x1, x2) <= Math.max(x1, x2)) {
+				xIndexes[xIndexCount++] = new int[] {xIndex, xIndex == 2 ? 0 : xIndex + 1};
+			}
+		}
+
+		final int d1 = Math.min(indicePoints[xIndexes[0][0]].x, indicePoints[xIndexes[0][1]].x) +
+				Math.abs(indicePoints[xIndexes[0][0]].x - indicePoints[xIndexes[0][1]].x);
+		final int d2 = Math.min(indicePoints[xIndexes[1][0]].x, indicePoints[xIndexes[1][1]].x) +
+				Math.abs(indicePoints[xIndexes[1][0]].x - indicePoints[xIndexes[1][1]].x);
+
+		final double xRatio1 = d1 == 0 ? 0.0 : xPoint / d1;
+		final double xRatio2 = d2 == 0 ? 0.0 : xPoint / d2;
+
+		final int yLimit1 = (int)(Math.abs(indicePoints[xIndexes[0][0]].y - indicePoints[xIndexes[0][1]].y) * xRatio1);
+		final int yLimit2 = (int)(Math.abs(indicePoints[xIndexes[1][0]].y - indicePoints[xIndexes[1][1]].y) * xRatio2);
+
+		final int yPoint = min(indicePoints[0].y, indicePoints[1].y, 
+				indicePoints[2].y) + new Random(yLimit1).nextInt(yLimit2);
+
+		return new Point(xPoint, yPoint);
+
+	}*/
 	public String getName(){
 		ObjectDef def = getObjectDef();
 		if(def!=null)
@@ -304,10 +307,9 @@ public class GameObject {
 						point2X==-1 || point2Y==-1 ||
 						point3X==-1 || point3Y==-1)
 					continue;
-
-				int avx = (point1X+point2X+point3X)/3;
-				int avy = (point1Y+point2Y+point3Y)/3;
-				pts.add(new Point(avx, avy));
+				pts.add(new Point(point1X, point1Y));
+				pts.add(new Point(point2X, point2Y));
+				pts.add(new Point(point3X, point3Y));
 			}
 			return pts.toArray(new Point[]{});
 		}
@@ -321,17 +323,17 @@ public class GameObject {
 	}
 	public Point getRandomPoint(){
 		try{
-			int[][] pts = projectVertices();
-			if(pts.length>0){
-				int i = new Random().nextInt(pts.length);
-				return new Point(pts[i][0], pts[i][1]);
-			}
+			Point[] pts = getModelPoints();
+			if(pts.length>0)
+				return pts[new Random().nextInt(pts.length)];
 		}
 		catch(Exception e){			
+			e.printStackTrace();
 		}
 		return new Point(-1, -1);
 	}
 	public Polygon[] getWireframe(){
+		ModelLD model = getModel();
 		if(model==null)
 			return new Polygon[]{};
 		ArrayList<Polygon> polys = new ArrayList<Polygon>();
@@ -339,29 +341,31 @@ public class GameObject {
 		short[] trix = model.getTriangleX();
 		short[] triy = model.getTriangleY();
 		short[] triz = model.getTriangleZ();
-		int numTriangles = Math.min(trix.length, Math.min(triy.length, triz.length));;
+		int numTriangles = Math.min(trix.length, Math.min(triy.length, triz.length));
 		for (int i = 0; i < numTriangles; i++) {
-			int index1 = trix[i];
-			int index2 = triy[i];
-			int index3 = triz[i];
+			try{
+				int index1 = trix[i];
+				int index2 = triy[i];
+				int index3 = triz[i];
 
-			int point1X = screenPoints[index1][0];
-			int point1Y = screenPoints[index1][1];
-			int point2X = screenPoints[index2][0];
-			int point2Y = screenPoints[index2][1];
-			int point3X = screenPoints[index3][0];
-			int point3Y = screenPoints[index3][1];
-			if(point1X==-1 || point1Y==-1 ||
-					point2X==-1 || point2Y==-1 ||
-					point3X==-1 || point3Y==-1)
-				continue;
+				int point1X = screenPoints[index1][0];
+				int point1Y = screenPoints[index1][1];
+				int point2X = screenPoints[index2][0];
+				int point2Y = screenPoints[index2][1];
+				int point3X = screenPoints[index3][0];
+				int point3Y = screenPoints[index3][1];
+				if(point1X==-1 || point1Y==-1 ||
+						point2X==-1 || point2Y==-1 ||
+						point3X==-1 || point3Y==-1)
+					continue;
 
-			Polygon p = new Polygon();
-			p.addPoint(point1X, point1Y);
-			p.addPoint(point2X, point2Y);
-			p.addPoint(point3X, point3Y);
-
-			polys.add(p);
+				Polygon p = new Polygon();
+				p.addPoint(point1X, point1Y);
+				p.addPoint(point2X, point2Y);
+				p.addPoint(point3X, point3Y);
+				polys.add(p);
+			}
+			catch(Exception e){}
 		}
 		return polys.toArray(new Polygon[]{});
 	}
@@ -370,56 +374,79 @@ public class GameObject {
 			return false;
 		Point p = Calculations.locationToScreen(getLocationX(), getLocationY());
 		return (p.x>0 && p.x<515 && p.y>54 && p.y<388);
-	}
-	public int[][] projectVertices() {
-		float[] data = Calculations.matrixCache;
-		if(model==null)
-			return new int[][]{{-1, -1, -1}};
-		double locX = (minx+0.5)*512;
-		double locY = (miny+0.5)*512;
-		locX+=(maxx+0.5)*512;
-		locX/=2;
-		locY+=(maxy+0.5)*512;
-		locY/=2;
-		int numVertices = Math.min(model.getVerticiesX().length, Math.min(model.getVerticiesY().length, model.getVerticiesZ().length));
-		int[][] screen = new int[numVertices][3];
-
-		float xOff = data[12];
-		float yOff = data[13];
-		float zOff = data[15];
-		float xX = data[0];
-		float xY = data[4];
-		float xZ = data[8];
-		float yX = data[1];
-		float yY = data[5];
-		float yZ = data[9];
-		float zX = data[3];
-		float zY = data[7];
-		float zZ = data[11];
-
-		int height = Calculations.tileHeight((int)locX, (int)locY);
-		for (int index = 0; index < numVertices; index++) {
-			int vertexX = (int) (model.getVerticiesX()[index] + locX);
-			int vertexY = model.getVerticiesY()[index] + height;
-			int vertexZ = (int) (model.getVerticiesZ()[index] + locY);
-
-			float _z = (zOff + (zX * vertexX + zY * vertexY + zZ * vertexZ));
-			float _x = (xOff + (xX * vertexX + xY * vertexY + xZ * vertexZ));
-			float _y = (yOff + (yX * vertexX + yY * vertexY + yZ * vertexZ));
-
-			float fx = ((float)256.0 + ((float)256.0 * _x) / _z);
-			float fy = ((float)166.0 + ((float)167.0 * _y) / _z);
-			if(fx<520 && fx>0 && fy<390 && fy>50){
-				screen[index][0] = (int)fx;
-				screen[index][1] = (int)fy;
-				screen[index][2] = 1;
-			}
-			else{
-				screen[index][0] = -1;
-				screen[index][1] = -1;
-				screen[index][2] = 0;
+	}/*
+	private int min(final int... values) {
+		int min = values[0];
+		for(final int value : values) {
+			if(value < min) {
+				min = value;
 			}
 		}
-		return screen;
+
+		return min;
+	}
+
+	private int max(final int... values) {
+		int max = values[0];
+		for(final int value : values) {
+			if(value > max) {
+				max = value;
+			}
+		}
+
+		return max;
+	}*/
+	public int[][] projectVertices() {
+		float[] data = Calculations.matrixCache;
+		ModelLD model = getModel();
+		if(model==null){
+			return new int[][]{{-1, -1, -1}};
+		}
+		try{
+			double locX = (getLocalX()+0.5)*512;
+			double locY = (getLocalY()+0.5)*512;
+			int numVertices = Math.min(model.getVerticiesX().length, Math.min(model.getVerticiesY().length, model.getVerticiesZ().length));
+			int[][] screen = new int[numVertices][3];
+
+			float xOff = data[12];
+			float yOff = data[13];
+			float zOff = data[15];
+			float xX = data[0];
+			float xY = data[4];
+			float xZ = data[8];
+			float yX = data[1];
+			float yY = data[5];
+			float yZ = data[9];
+			float zX = data[3];
+			float zY = data[7];
+			float zZ = data[11];
+
+			int height = Calculations.tileHeight((int)locX, (int)locY);
+			for (int index = 0; index < numVertices; index++) {
+				int vertexX = (int) (model.getVerticiesX()[index] + locX);
+				int vertexY = model.getVerticiesY()[index] + height;
+				int vertexZ = (int) (model.getVerticiesZ()[index] + locY);
+
+				float _z = (zOff + (zX * vertexX + zY * vertexY + zZ * vertexZ));
+				float _x = (xOff + (xX * vertexX + xY * vertexY + xZ * vertexZ));
+				float _y = (yOff + (yX * vertexX + yY * vertexY + yZ * vertexZ));
+
+				float fx = ((float)256.0 + ((float)256.0 * _x) / _z);
+				float fy = ((float)166.0 + ((float)167.0 * _y) / _z);
+				if(fx<520 && fx>0 && fy<390 && fy>50){
+					screen[index][0] = (int)fx;
+					screen[index][1] = (int)fy;
+					screen[index][2] = 1;
+				}
+				else{
+					screen[index][0] = -1;
+					screen[index][1] = -1;
+					screen[index][2] = 0;
+				}
+			}
+			return screen;
+		}
+		catch(Exception e){}
+		return new int[][]{{}};
 	}
 }

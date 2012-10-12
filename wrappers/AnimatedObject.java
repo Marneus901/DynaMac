@@ -26,7 +26,7 @@ public class AnimatedObject{
 	}
 	private int localX;
 	private int localY;
-	
+	/*
 	public Rectangle realBounds(Polygon[] polys) {
 		int maxheight = -9999999;
 		int minheight = 9999999;
@@ -65,7 +65,7 @@ public class AnimatedObject{
 	public Point getCenterOfModel() {
 		Rectangle thetangle = new Rectangle(realBounds(getWireframe()).x, realBounds(getWireframe()).y, realBounds(getWireframe()).height, realBounds(getWireframe()).width);
 		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
-	}
+	}*/
 	
 	public boolean clickModel(){
 		if(isOnScreen() && getLDModel()!=null){
@@ -73,13 +73,18 @@ public class AnimatedObject{
 			int randInd = new Random().nextInt(pts.length);
 			Point p = new Point(pts[randInd][0], pts[randInd][1]);
 			if(p.x>0 && p.x<515 && p.y>54 && p.y<388){
-				Mouse.clickMouse(p, 1);
+				Mouse.move(p);
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
+				Mouse.click();
 				return true;
 			}
 		}
 		return false;
 	}
-	
+	/*
 	public boolean clickCenterOfModel(){
 		if(isOnScreen() && getLDModel()!=null){
 			Point p = new Point(getCenterOfModel());
@@ -89,7 +94,7 @@ public class AnimatedObject{
 			}
 		}
 		return false;
-	}
+	}*/
 	
 	public boolean clickTile(){
 		if(isOnScreen()){
@@ -97,7 +102,12 @@ public class AnimatedObject{
 			Rectangle r = p.getBounds();
 			Point pt = new Point(new Random().nextInt(r.width)+r.x, new Random().nextInt(r.height)+r.y);
 			if(pt.x>0 && pt.x<515 && pt.y>54 && pt.y<388){
-				Mouse.clickMouse(pt, 1);
+				Mouse.move(pt);
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
+				Mouse.click();
 				return true;
 			}
 		}
@@ -111,13 +121,13 @@ public class AnimatedObject{
 			}
 			if(!containsPoint(p))
 				return false;
-			Mouse.moveMouse(p);
+			Mouse.move(p);
 			try {
 				Thread.sleep(100);
 			} catch (Exception e) {
 			}
 			if(Menu.getIndex(action)==0){
-				Mouse.clickMouse();
+				Mouse.click();
 				for(int i=0;i<20;++i){
 					if(Client.getMouseCrosshairState()==2)
 						return true;
@@ -131,7 +141,7 @@ public class AnimatedObject{
 				return false;
 			}
 			if(Menu.getIndex(action)>0){
-				Mouse.clickMouse(Mouse.getLastMousePos(), 3);
+				Mouse.rightClick();
 				for(int i=0;i<10;++i){
 					if(Menu.isOpen())
 						break;
@@ -199,6 +209,9 @@ public class AnimatedObject{
 		catch(Exception e){
 		}
 		return null;
+	}
+	public Tile getLocation(){
+		return new Tile(getLocationX(), getLocationY());
 	}
 	public int getLocationX(){
 		try{
@@ -328,29 +341,31 @@ public class AnimatedObject{
 		short[] trix = model.getTriangleX();
 		short[] triy = model.getTriangleY();
 		short[] triz = model.getTriangleZ();
-		int numTriangles = Math.min(trix.length, Math.min(triy.length, triz.length));;
+		int numTriangles = Math.min(trix.length, Math.min(triy.length, triz.length));
 		for (int i = 0; i < numTriangles; i++) {
-			int index1 = trix[i];
-			int index2 = triy[i];
-			int index3 = triz[i];
-
-			int point1X = screenPoints[index1][0];
-			int point1Y = screenPoints[index1][1];
-			int point2X = screenPoints[index2][0];
-			int point2Y = screenPoints[index2][1];
-			int point3X = screenPoints[index3][0];
-			int point3Y = screenPoints[index3][1];
-			if(point1X==-1 || point1Y==-1 ||
-					point2X==-1 || point2Y==-1 ||
-					point3X==-1 || point3Y==-1)
-				continue;
-
-			Polygon p = new Polygon();
-			p.addPoint(point1X, point1Y);
-			p.addPoint(point2X, point2Y);
-			p.addPoint(point3X, point3Y);
-
-			polys.add(p);
+			try{
+				int index1 = trix[i];
+				int index2 = triy[i];
+				int index3 = triz[i];
+	
+				int point1X = screenPoints[index1][0];
+				int point1Y = screenPoints[index1][1];
+				int point2X = screenPoints[index2][0];
+				int point2Y = screenPoints[index2][1];
+				int point3X = screenPoints[index3][0];
+				int point3Y = screenPoints[index3][1];
+				if(point1X==-1 || point1Y==-1 ||
+						point2X==-1 || point2Y==-1 ||
+						point3X==-1 || point3Y==-1)
+					continue;
+	
+				Polygon p = new Polygon();
+				p.addPoint(point1X, point1Y);
+				p.addPoint(point2X, point2Y);
+				p.addPoint(point3X, point3Y);
+				polys.add(p);
+			}
+			catch(Exception e){}
 		}
 		return polys.toArray(new Polygon[]{});
 	}

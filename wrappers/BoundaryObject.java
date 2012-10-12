@@ -48,7 +48,12 @@ public class BoundaryObject extends Boundary{
 			int randInd = new Random().nextInt(pts.length);
 			Point p = new Point(pts[randInd][0], pts[randInd][1]);
 			if(p.x>0 && p.x<515 && p.y>54 && p.y<388){
-				Mouse.clickMouse(p, 1);
+				Mouse.move(p);
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
+				Mouse.click();
 				return true;
 			}
 		}
@@ -60,7 +65,12 @@ public class BoundaryObject extends Boundary{
 			Rectangle r = p.getBounds();
 			Point pt = new Point(new Random().nextInt(r.width)+r.x, new Random().nextInt(r.height)+r.y);
 			if(pt.x>0 && pt.x<515 && pt.y>54 && pt.y<388){
-				Mouse.clickMouse(pt, 1);
+				Mouse.move(pt);
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
+				Mouse.click();
 				return true;
 			}
 		}
@@ -72,7 +82,6 @@ public class BoundaryObject extends Boundary{
 				return true;
 		return false;
 	}
-
 	public boolean doAction(String action){
 		if(!Menu.isOpen()){
 			Point p = getRandomPoint();
@@ -81,13 +90,13 @@ public class BoundaryObject extends Boundary{
 			}
 			if(!containsPoint(p))
 				return false;
-			Mouse.moveMouse(p);
+			Mouse.move(p);
 			try {
 				Thread.sleep(100);
 			} catch (Exception e) {
 			}
 			if(Menu.getIndex(action)==0){
-				Mouse.clickMouse();
+				Mouse.click();
 				for(int i=0;i<20;++i){
 					if(Client.getMouseCrosshairState()==2)
 						return true;
@@ -101,7 +110,7 @@ public class BoundaryObject extends Boundary{
 				return false;
 			}
 			if(Menu.getIndex(action)>0){
-				Mouse.clickMouse(Mouse.getLastMousePos(), 3);
+				Mouse.rightClick();
 				for(int i=0;i<10;++i){
 					if(Menu.isOpen())
 						break;
@@ -113,12 +122,12 @@ public class BoundaryObject extends Boundary{
 			}
 		}
 		return Menu.click(action);
-	}
+	}/*
 	public Point getCenterOfModel() {
 		Polygon[] wireframe = getWireframe();
 		Rectangle thetangle = new Rectangle(realBounds(wireframe).x, realBounds(wireframe).y, realBounds(wireframe).height, realBounds(wireframe).width);
 		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
-	}
+	}*/
 	public Point getRandomPoint(){
 		try{
 			int[][] pts = projectVertices();

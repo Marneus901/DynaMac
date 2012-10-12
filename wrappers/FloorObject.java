@@ -42,7 +42,7 @@ public class FloorObject extends FloorDecoration{
 	}
 	private int locX;
 	private int locY;
-	
+	/*
 	public Rectangle realBounds(Polygon[] polys) {
 		int maxheight = -9999999;
 		int minheight = 9999999;
@@ -82,7 +82,7 @@ public class FloorObject extends FloorDecoration{
 		Rectangle thetangle = new Rectangle(realBounds(getWireframe()).x, realBounds(getWireframe()).y, realBounds(getWireframe()).height, realBounds(getWireframe()).width);
 		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
 	}
-	
+	*/
 	public Tile getLocation() {
 		return new Tile(getLocationX(), getLocationY(), getPlane());
 	}
@@ -93,7 +93,12 @@ public class FloorObject extends FloorDecoration{
 			int randInd = new Random().nextInt(pts.length);
 			Point p = new Point(pts[randInd][0], pts[randInd][1]);
 			if(p.x>0 && p.x<515 && p.y>54 && p.y<388){
-				Mouse.clickMouse(p, 1);
+				Mouse.move(p);
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
+				Mouse.click();
 				return true;
 			}
 		}
@@ -105,7 +110,12 @@ public class FloorObject extends FloorDecoration{
 			Rectangle r = p.getBounds();
 			Point pt = new Point(new Random().nextInt(r.width)+r.x, new Random().nextInt(r.height)+r.y);
 			if(pt.x>0 && pt.x<515 && pt.y>54 && pt.y<388){
-				Mouse.clickMouse(pt, 1);
+				Mouse.move(pt);
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
+				Mouse.click();
 				return true;
 			}
 		}
@@ -125,13 +135,13 @@ public class FloorObject extends FloorDecoration{
 			}
 			if(!containsPoint(p))
 				return false;
-			Mouse.moveMouse(p);
+			Mouse.move(p);
 			try {
 				Thread.sleep(100);
 			} catch (Exception e) {
 			}
 			if(Menu.getIndex(action)==0){
-				Mouse.clickMouse();
+				Mouse.click();
 				for(int i=0;i<20;++i){
 					if(Client.getMouseCrosshairState()==2)
 						return true;
@@ -145,7 +155,7 @@ public class FloorObject extends FloorDecoration{
 				return false;
 			}
 			if(Menu.getIndex(action)>0){
-				Mouse.clickMouse(Mouse.getLastMousePos(), 3);
+				Mouse.rightClick();
 				for(int i=0;i<10;++i){
 					if(Menu.isOpen())
 						break;
