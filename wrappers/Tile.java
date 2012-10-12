@@ -9,7 +9,9 @@ import java.util.Vector;
 import org.dynamac.bot.api.methods.Calculations;
 import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.GroundItems;
+import org.dynamac.bot.api.methods.Menu;
 import org.dynamac.bot.api.methods.Mouse;
+import org.dynamac.bot.api.methods.NPCs;
 import org.dynamac.bot.api.methods.Objects;
 import org.dynamac.bot.api.wrappers.Character;
 
@@ -20,7 +22,21 @@ public class Tile {
 	private int x;
 	private int y;
 	private int plane;
-
+	public Tile(int x, int y){
+		this.plane=Client.getPlane();
+		if(x<=104 || y<=104){
+			this.localX=x;
+			this.localY=y;
+			this.x=x+Client.getBaseX();
+			this.y=y+Client.getBaseY();
+		}
+		else{
+			this.x=x;
+			this.y=y;
+			this.localX=x-Client.getBaseX();
+			this.localY=y-Client.getBaseY();
+		}
+	}
 	public Tile(int x, int y, int plane){
 		this.plane=plane;
 		if(x<=104 || y<=104){
@@ -41,7 +57,12 @@ public class Tile {
 		Rectangle r = p.getBounds();
 		Point pt = new Point(new Random().nextInt(r.width)+r.x, new Random().nextInt(r.height)+r.y);
 		if(pt.x>0 && pt.x<515 && pt.y>54 && pt.y<388){
-			Mouse.clickMouse(pt, 1);
+			Mouse.move(pt);
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+			}
+			Mouse.click();
 			return true;
 		}
 
@@ -49,11 +70,35 @@ public class Tile {
 	}
 	public boolean clickMap(){
 		if(isOnMap()){
-			Mouse.clickMouse(getTileOnMap());
+			Mouse.move(getTileOnMap());
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+			}
+			Mouse.click();
 			return true;
 		}
 		return false;
 	}
+
+	/**
+	 * Creates an area out of a base tile of your choosing.
+	 * 
+	 * @Autor Greg
+	 * @param height
+	 * @param width
+	 * @return
+	 */
+	public TileArea computeArea(int height, int width) {
+		int genH = height / 2;
+		int genW = width / 2;
+		int A = getX() - genW;
+		int B = getY() + genH;
+		int C = getX() + genW;
+		int D = getY() - genH;
+		return new TileArea(new Tile(A,B, getPlane()), new Tile(C,D, getPlane()));
+	}
+
 	public boolean containsGameObject() {
 		for(GameObject go : Objects.getAllObjects())
 			if(go.getLocationX() == x && go.getLocationY() == y) {
@@ -61,11 +106,64 @@ public class Tile {
 			} 
 		return false;
 	}
+
+	public boolean containsNPC() {
+		for(NPC npc : NPCs.getNPCArray())
+			if(npc.getLocationX() == x && npc.getLocationY() == y) {
+				return true;
+			} 
+		return false;
+	}
+
 	public boolean containsGroundItem() {
 		GroundItem[] items = GroundItems.getItemsAt(x, y);
 		if(items!=null && items.length>0)
 			return true;
 		return false;
+	}
+	public boolean containsPoint(Point p){
+		return getBounds().contains(p);
+	}
+	public boolean doAction(String action){
+		if(!Menu.isOpen()){
+			Point p = getRandomPoint();
+			if(p.equals(new Point(-1, -1))){
+				return false;
+			}
+			if(!containsPoint(p))
+				return false;
+			Mouse.move(p);
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+			}
+			if(Menu.getIndex(action)==0){
+				Mouse.click();
+				for(int i=0;i<20;++i){
+					if(Client.getMouseCrosshairState()==2)
+						return true;
+					if(Client.getMouseCrosshairState()==1)
+						return false;
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+					}
+				}
+				return false;
+			}
+			if(Menu.getIndex(action)>0){
+				Mouse.rightClick();
+				for(int i=0;i<10;++i){
+					if(Menu.isOpen())
+						break;
+					try {
+						Thread.sleep(100);
+					} catch (Exception e) {
+					}
+				}
+			}
+		}
+		return Menu.click(action);
 	}
 	public boolean equals(Tile t) {
 		return x == t.getX() && y == t.getY() && t.getPlane() == getPlane();
@@ -104,6 +202,16 @@ public class Tile {
 	public Polygon getPolygon(){
 		return Calculations.getTilePolygon(x, y);
 	}
+	public Point getRandomPoint(){
+		Point center = getScreenLocation();
+		Polygon tile = getPolygon();
+		for(int i=0;i<5;++i){
+			Point newPt = new Point(Calculations.random(center.x-10, center.x+10), Calculations.random(center.y-10, center.y+10));
+			if(tile.contains(newPt))
+				return newPt;
+		}
+		return new Point(-1, -1);
+	}
 	public Point getScreenLocation(){
 		return Calculations.locationToScreen(x, y);
 	}
@@ -118,7 +226,7 @@ public class Tile {
 		} return neighbors.toArray(new Tile[neighbors.size()]);
 	}
 	public Point getTileOnMap(){
-		return Calculations.worldToMap(getLocalX(), getLocalY());
+		return Calculations.worldToMap(x, y);
 	}
 	public int getX(){
 		return x;
@@ -127,6 +235,13 @@ public class Tile {
 		return y;
 	}
 	public boolean isOnMap(){
-		return getTileOnMap().x != -1 && getTileOnMap().y != -1;
+		return !getTileOnMap().equals(new Point(-1, -1));
 	}	
+	public boolean isOnScreen(){
+		return !Calculations.tileToScreen(this).equals(new Point(-1, -1));
+	}
+	@Override
+	public String toString(){
+		return "("+x+", "+y+", "+plane+")";
+	}
 }
