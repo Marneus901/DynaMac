@@ -6,14 +6,13 @@ import java.util.Random;
 import org.dynamac.bot.api.methods.Calculations;
 import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Mouse;
+import org.dynamac.bot.api.walking.TheWalker;
 import org.dynamac.bot.api.wrappers.BoundaryObject;
 import org.dynamac.bot.api.wrappers.InterfaceChild;
 import org.dynamac.bot.api.wrappers.Tile;
 
 
 public class Walking {
-
-
 	/**
 	 * Generates a straight path to a target.
 	 * 
@@ -98,12 +97,18 @@ public class Walking {
 
 		return path.toArray(new Tile[path.size()]);
 	}
+	public static Tile getDestination(){
+		return Client.getDestination();
+	}
 	public static int getEnergy(){
 		try {
 			return Integer.parseInt(Interfaces.get(750, 6).getText());
 		} catch (final NumberFormatException ignored) {
 			return -1;
 		}
+	}
+	public static boolean hasDestination(){
+		return !getDestination().equals(new Tile(-1, -1));
 	}
 	/**
 	 * Inverts a path.
@@ -150,6 +155,11 @@ public class Walking {
 			}
 		}
 	}
+	public static boolean walkPath(Tile[] path) {
+		if (!Players.getMyPlayer().isMoving() || Calculations.distanceTo(new Tile(Client.getDestinationX(), Client.getDestinationY())) <= 5)
+			return new TheWalker().walkTo(path, true);
+		return false;
+	}
 	/**
 	 * Walks to every tile on a path and waits for a complete stop after every
 	 * tile has been walked to.
@@ -157,12 +167,14 @@ public class Walking {
 	 * @param path
 	 *            The path to be walked.
 	 */
-	public static void walkPath(Tile[] path) {
+	public static void walkTiles(Tile[] path) {
 		try {
 			for (Tile tile : path) {
 				Point p = Calculations.worldToMap(tile.getX(), tile.getY());
 				if (!p.equals(new Point(-1, -1))) {
-					Mouse.clickMouse(p, 1);
+					Mouse.move(p);
+					Thread.sleep(new Random().nextInt(100) + 50);
+					Mouse.click();
 					Thread.sleep(1000);
 					while (Client.getMyPlayer().isMoving())
 						Thread.sleep(100);
@@ -172,7 +184,9 @@ public class Walking {
 					for (Tile tile2 : path2) {
 						Point p2 = Calculations.worldToMap(tile2.getX(), tile2.getY());
 						if (!p2.equals(new Point(-1, -1))) {
-							Mouse.clickMouse(p2, 1);
+							Mouse.move(p2);
+							Thread.sleep(new Random().nextInt(100) + 50);
+							Mouse.click();
 							Thread.sleep(1000);
 							while (Client.getMyPlayer().isMoving())
 								Thread.sleep(100);
@@ -203,7 +217,9 @@ public class Walking {
 			for (Tile tile : path) {
 				Point p = Calculations.worldToMap(tile.getX(), tile.getY());
 				if (!p.equals(new Point(-1, -1))) {
-					Mouse.clickMouse(p, 1);
+					Mouse.move(p);
+					Thread.sleep(new Random().nextInt(100) + 50);
+					Mouse.click();
 					Thread.sleep(1000);
 					while (Client.getMyPlayer().isMoving()) {
 						if(Calculations.isOnScreen(tile.getX(), tile.getY()))
@@ -217,7 +233,9 @@ public class Walking {
 					for (Tile tile2 : path2) {
 						Point p2 = Calculations.worldToMap(tile2.getX(), tile2.getY());
 						if (!p2.equals(new Point(-1, -1))) {
-							Mouse.clickMouse(p2, 1);
+							Mouse.move(p2);
+							Thread.sleep(new Random().nextInt(100) + 50);
+							Mouse.click();
 							Thread.sleep(1000);
 							while (Client.getMyPlayer().isMoving()) {
 								if(Calculations.isOnScreen(tile2.getX(), tile2.getY()))
@@ -233,6 +251,33 @@ public class Walking {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public static boolean walkTile(Tile t){
+		if(t.isOnScreen())
+			return t.doAction("Walk here");
+		else if(t.isOnMap())
+			return Walking.walkTileOnMap(t);
+		return false;
+	}
+	public static boolean walkTileOnMap(Tile t){
+		Point p = Calculations.tileToMap(t);
+		if(!p.equals(new Point(-1, -1))){
+			Mouse.move(p);
+			try {
+				Thread.sleep(new Random().nextInt(100) + 50);
+			} catch (Exception e1) {
+			}
+			Mouse.click();
+			for(int i=0;i<20;++i){
+				try {
+					if(hasDestination())
+						return true;
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+		return false;
 	}
 }
 
