@@ -46,6 +46,19 @@ public class Keyboard {
 		event = new KeyEvent(keyboardTarget, KeyEvent.KEY_RELEASED, 0, 0, code, s, Keyboard.getLocation(s));
 		keyboardTarget.dispatchEvent(event);
 	}
+	/**
+	*@author Inf3cti0us 
+     	* Erases all text of the given WidgetChild.
+    	* @param textComponent - The component wher the text is found.
+    	*/
+	   public void eraseAllText(final InterfaceChild textComponent){
+        final String text = textComponent.getText();
+        for(int i = 0; i <= text.length(); ++i){
+            Keyboard.sendKey((char) KeyEvent.VK_BACK_SPACE, Random.nextInt(500, 600));
+        }
+
+    }
+
 	public static void sendKeys(String str){
 		for(int i=0;i<str.length();++i){
 			sendKey(str.charAt(i));
