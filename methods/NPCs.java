@@ -1,6 +1,6 @@
 /******************************************************
  * Created by Marneus901                                *
- * © 2012 MarneusScripts.com                            *
+ * ï¿½ 2012 MarneusScripts.com                            *
  * **************************************************** *
  * Access to this source is unauthorized without prior  *
  * authorization from its appropriate author(s).        *
@@ -39,6 +39,25 @@ public class NPCs {
 		if(temp != null)
 			return temp;
 		return null;
+	}
+	
+	public NPC getNearest(String... name) {
+		NPC temp = null;
+		double dist = Double.MAX_VALUE;
+		for (NPC npc : NPCs.getNPCArray()) {
+			String npcName = npc.getNPCDef().getName();
+			for (String i : name) {
+				if (i.equalsIgnoreCase(npcName)) {
+					double distance = Calculations.distanceTo(
+							npc.getLocationX(), npc.getLocationY());
+					if (distance < dist) {
+						dist = distance;
+						temp = npc;
+					}
+				}
+			}
+		}
+		return temp;
 	}
 
 	/**
