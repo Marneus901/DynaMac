@@ -1,6 +1,6 @@
 /******************************************************
  * Created by Marneus901                                *
- * © 2012 MarneusScripts.com                            *
+ * ï¿½ 2012 MarneusScripts.com                            *
  * **************************************************** *
  * Access to this source is unauthorized without prior  *
  * authorization from its appropriate author(s).        *
@@ -36,9 +36,8 @@ public class NPCs {
 				}
 			}
 		}
-		if(temp != null)
-			return temp;
-		return null;
+
+		return temp;
 	}
 
 	/**
@@ -118,17 +117,15 @@ public class NPCs {
 		return npcs.toArray(new NPC[]{});
 	}
 
-	public static NPC getNPCAt(Tile t){
-		if(t==null)
-			return null;
-		return getNPCAt(t.getX(), t.getY());
+	public static NPC getNPCAt(Tile tile){
+		return tile != null ? getNPCAt(tile.getX(), tile.getY()) : null;
 	}
 
 	public static NPC getNPCAt(int x, int y){
-		for(NPC npc : getNPCArray()){
+		for(NPC npc : getNPCArray())
 			if(npc.getLocation().equals(new Tile(x, y, Client.getPlane())))
 				return npc;
-		}
+		
 		return null;
 	}
 
