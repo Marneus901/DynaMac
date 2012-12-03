@@ -1,10 +1,21 @@
+/******************************************************
+* Created by Marneus901                                *
+* © 2012 MarneusScripts.com                            *
+* **************************************************** *
+* Access to this source is unauthorized without prior  *
+* authorization from its appropriate author(s).        *
+* You are not permitted to release, nor distribute this* 
+* work without appropriate author(s) authorization.    *
+********************************************************/
 package org.dynamac.bot.api.methods;
 
+import java.awt.Component;
 import java.awt.event.KeyEvent;
 
 import org.dynamac.bot.api.wrappers.GameObject;
 import org.dynamac.bot.api.wrappers.InterfaceChild;
 import org.dynamac.bot.api.wrappers.Tile;
+import org.dynamac.environment.Data;
 
 public class Camera {
 	public static int getAngleTo(int degrees) {
@@ -71,11 +82,13 @@ public class Camera {
 	}
 
 	public static boolean isUp(){
-		return getPitch()>=95;
+		return getPitch()>=85;
 	}
 	public static void setAngle(int degrees) {
 		if (getAngleTo(degrees) > 5) {
-			Keyboard.pressKey((char) KeyEvent.VK_LEFT);
+			Component keyboardTarget = Data.CLIENT_APPLET.getComponent(0);
+			KeyEvent event = new KeyEvent(keyboardTarget, KeyEvent.KEY_PRESSED, 0, 0, KeyEvent.VK_LEFT, (char)KeyEvent.VK_UNDEFINED, KeyEvent.KEY_LOCATION_STANDARD);
+			keyboardTarget.dispatchEvent(event); 
 			for(int i=0;i<20;++i){
 				int curr = getAngleTo(degrees);
 				if(curr<=5)
@@ -87,9 +100,12 @@ public class Camera {
 				} catch (InterruptedException e) {
 				}
 			}
-			Keyboard.releaseKey((char) KeyEvent.VK_LEFT);
+			event = new KeyEvent(keyboardTarget, KeyEvent.KEY_RELEASED, 0, 0, KeyEvent.VK_LEFT, (char)KeyEvent.VK_UNDEFINED, KeyEvent.KEY_LOCATION_STANDARD);
+			keyboardTarget.dispatchEvent(event);
 		} else if (getAngleTo(degrees) < -5) {
-			Keyboard.pressKey((char) KeyEvent.VK_RIGHT);
+			Component keyboardTarget = Data.CLIENT_APPLET.getComponent(0);
+			KeyEvent event = new KeyEvent(keyboardTarget, KeyEvent.KEY_PRESSED, 0, 0, KeyEvent.VK_RIGHT, (char)KeyEvent.VK_UNDEFINED, KeyEvent.KEY_LOCATION_STANDARD);
+			keyboardTarget.dispatchEvent(event); 
 			for(int i=0;i<20;++i){
 				int curr = getAngleTo(degrees);
 				if(curr>=-5)
@@ -101,7 +117,8 @@ public class Camera {
 				} catch (InterruptedException e) {
 				}
 			}
-			Keyboard.releaseKey((char) KeyEvent.VK_RIGHT);
+			event = new KeyEvent(keyboardTarget, KeyEvent.KEY_RELEASED, 0, 0, KeyEvent.VK_RIGHT, (char)KeyEvent.VK_UNDEFINED, KeyEvent.KEY_LOCATION_STANDARD);
+			keyboardTarget.dispatchEvent(event);
 		}
 	}
 	public static void setCompass(final char direction) {
@@ -130,7 +147,9 @@ public class Camera {
 	}
 	public static void setPitch(boolean up){
 		int curr = getPitch();
-		Keyboard.pressKey(up?(char)KeyEvent.VK_UP:(char)KeyEvent.VK_DOWN);
+		Component keyboardTarget = Data.CLIENT_APPLET.getComponent(0);
+		KeyEvent event = new KeyEvent(keyboardTarget, KeyEvent.KEY_PRESSED, 0, 0, (up?KeyEvent.VK_UP:KeyEvent.VK_DOWN), (char)KeyEvent.VK_UNDEFINED, KeyEvent.KEY_LOCATION_STANDARD);
+		keyboardTarget.dispatchEvent(event); 
 		for(int i=0;i<20;++i){
 			if(getPitch()>curr){
 				i=0;
@@ -143,11 +162,14 @@ public class Camera {
 			} catch (InterruptedException e) {
 			}
 		}
-		Keyboard.releaseKey(up?(char)KeyEvent.VK_UP:(char)KeyEvent.VK_DOWN);
+		event = new KeyEvent(keyboardTarget, KeyEvent.KEY_RELEASED, 0, 0, (up?KeyEvent.VK_UP:KeyEvent.VK_DOWN), (char)KeyEvent.VK_UNDEFINED, KeyEvent.KEY_LOCATION_STANDARD);
+		keyboardTarget.dispatchEvent(event);
 	}
 	public static void setPitch(int alt){
 		int curr = getPitch();
-		Keyboard.pressKey(alt>curr?(char)KeyEvent.VK_UP:(char)KeyEvent.VK_DOWN);
+		Component keyboardTarget = Data.CLIENT_APPLET.getComponent(0);
+		KeyEvent event = new KeyEvent(keyboardTarget, KeyEvent.KEY_PRESSED, 0, 0, (alt>curr?KeyEvent.VK_UP:KeyEvent.VK_DOWN), (char)KeyEvent.VK_UNDEFINED, KeyEvent.KEY_LOCATION_STANDARD);
+		keyboardTarget.dispatchEvent(event); 
 		for(int i=0;i<20;++i){
 			if(getPitch()>curr){
 				i=0;
@@ -160,7 +182,8 @@ public class Camera {
 			} catch (InterruptedException e) {
 			}
 		}
-		Keyboard.releaseKey(alt>curr?(char)KeyEvent.VK_UP:(char)KeyEvent.VK_DOWN);
+		event = new KeyEvent(keyboardTarget, KeyEvent.KEY_RELEASED, 0, 0, (alt>curr?KeyEvent.VK_UP:KeyEvent.VK_DOWN), (char)KeyEvent.VK_UNDEFINED, KeyEvent.KEY_LOCATION_STANDARD);
+		keyboardTarget.dispatchEvent(event);
 	}
 	public static void turnTo(org.dynamac.bot.api.wrappers.Character c) {
 		int angle = getAngleTo(c);
