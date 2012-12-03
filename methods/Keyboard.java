@@ -1,10 +1,19 @@
+/******************************************************
+* Created by Marneus901                                *
+* © 2012 MarneusScripts.com                            *
+* **************************************************** *
+* Access to this source is unauthorized without prior  *
+* authorization from its appropriate author(s).        *
+* You are not permitted to release, nor distribute this* 
+* work without appropriate author(s) authorization.    *
+********************************************************/
 package org.dynamac.bot.api.methods;
 
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
-import org.dynamac.enviroment.Data;
+import org.dynamac.environment.Data;
 
 public class Keyboard {	
 	public static int getLocation(final char ch) {

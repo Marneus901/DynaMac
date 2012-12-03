@@ -9,22 +9,30 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Cache {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook table;
 	public Cache(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Cache");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Cache");
+			table=currentHook.getFieldHook("getTable");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		table=null;
 	}
 	public HashTable getTable(){
-		FieldHook fh = currentHook.getFieldHook("getTable");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(table==null)
+			table=currentHook.getFieldHook("getTable");
+		if(table!=null){
+			Object data = table.get(currentObject);
 			if(data!=null)
 				return new HashTable(data);
 		}

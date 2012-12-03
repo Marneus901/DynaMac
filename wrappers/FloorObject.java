@@ -20,69 +20,36 @@ import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Menu;
 import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Nodes;
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class FloorObject extends FloorDecoration{
 	public Object currentObject;
-	public ClassHook currentHook;
-	public FloorObject(Object o){
-		super(o);
-		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("FloorObject");
-	}
+	public static ClassHook currentHook;
+	private int locX;
+	private int locY;
+	private static FieldHook id;
+	private static FieldHook model;
+	private static FieldHook objectDefLoader;
 	public FloorObject(Object o, int locx, int locy){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("FloorObject");
 		locX=locx;
 		locY=locy;
-	}
-	private int locX;
-	private int locY;
-	/*
-	public Rectangle realBounds(Polygon[] polys) {
-		int maxheight = -9999999;
-		int minheight = 9999999;
-		int maxwidth = -9999999;
-		int minwidth = 9999999;
-		int maxX = -9999999;
-		int minX = 9999999;
-		int maxY = -9999999;
-		int minY = 9999999;
-
-		for(Polygon p : polys) {
-			if(p.getBounds().height > maxheight) {
-				maxheight = p.getBounds().height;
-			} else if(p.getBounds().height < minheight) {
-				minheight = p.getBounds().height;
-			}
-			if(p.getBounds().width > maxwidth) {
-				maxwidth = p.getBounds().width;
-			} else if(p.getBounds().width < minwidth) {
-				minwidth = p.getBounds().width;
-			}
-			if(p.getBounds().x > maxX) {
-				maxX = p.getBounds().x;
-			} else if(p.getBounds().x < minX) {
-				minX = p.getBounds().x;
-			}
-			if(p.getBounds().y > maxY) {
-				maxY = p.getBounds().y;
-			} else if(p.getBounds().y < minY) {
-				minY = p.getBounds().y;
-			}
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("FloorObject");
+			id=currentHook.getFieldHook("getID");
+			model=currentHook.getFieldHook("getModel");
+			objectDefLoader=currentHook.getFieldHook("getObjectDefLoader");
 		}
-		return new Rectangle(((maxX + minX)/2), ((maxY + minY)/2), ((maxwidth + minwidth)/2), ((maxheight + minheight)/2));
 	}
-	
-	public Point getCenterOfModel() {
-		Rectangle thetangle = new Rectangle(realBounds(getWireframe()).x, realBounds(getWireframe()).y, realBounds(getWireframe()).height, realBounds(getWireframe()).width);
-		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
+	public static void resetHooks(){
+		currentHook=null;
+		id=null;
+		model=null;
+		objectDefLoader=null;
 	}
-	*/
 	public Tile getLocation() {
 		return new Tile(getLocationX(), getLocationY(), getPlane());
 	}
@@ -181,11 +148,12 @@ public class FloorObject extends FloorDecoration{
 		return new Point(-1, -1);
 	}
 	public int getID(){
-		FieldHook fh = currentHook.getFieldHook("getID");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(id==null)
+			id=currentHook.getFieldHook("getID");
+		if(id!=null){
+			Object data = id.get(currentObject);
 			if(data!=null)
-				return (Integer)data * fh.getMultiplier();
+				return ((Integer)data) * id.getIntMultiplier();
 		}
 		return -1;		
 	}
@@ -216,12 +184,12 @@ public class FloorObject extends FloorDecoration{
 			Node ref = Nodes.lookup(Client.getRSData().getObjectDefLoaders().getDefCache().getTable(), (long)getID());
 			if(ref==null)
 				return null;
-			if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {
+			if (SoftReference.isInstance(ref.currentObject)){
 				SoftReference sr = new SoftReference(ref.currentObject);
 				Object def = sr.getSoftReference().get();
 				return new ObjectDef(def);
 			}
-			else if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("HardReference").getClassName())) {
+			else if (HardReference.isInstance(ref.currentObject)) {
 				HardReference hr = new HardReference(ref.currentObject);
 				Object def = hr.getHardReference();
 				return new ObjectDef(def);
@@ -232,18 +200,20 @@ public class FloorObject extends FloorDecoration{
 		return null;
 	}
 	public ObjectDefLoader getObjectDefLoader(){
-		FieldHook fh = currentHook.getFieldHook("getObjectDefLoader");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(objectDefLoader==null)
+			objectDefLoader=currentHook.getFieldHook("getObjectDefLoader");
+		if(objectDefLoader!=null){
+			Object data = objectDefLoader.get(currentObject);
 			if(data!=null)
 				return new ObjectDefLoader(data);
 		}
 		return null;
 	}
 	public ModelLD getLDModel(){
-		FieldHook fh = currentHook.getFieldHook("getModel");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(model==null)
+			model=currentHook.getFieldHook("getModel");
+		if(model!=null){
+			Object data = model.get(currentObject);
 			if(data!=null)
 				return new ModelLD(data);
 		}

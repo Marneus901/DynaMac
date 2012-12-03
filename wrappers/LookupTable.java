@@ -13,42 +13,29 @@ import org.dynamac.environment.Data;
 import org.dynamac.reflection.ClassHook;
 import org.dynamac.reflection.FieldHook;
 
-public class InteractableLocation {
+public class LookupTable{
 	public Object currentObject;
 	public static ClassHook currentHook;
-	private static FieldHook x;
-	private static FieldHook y;
-	public InteractableLocation(Object o){
+	private static FieldHook identityTable;
+	public LookupTable(Object o){
 		currentObject = o;
 		if(currentHook==null){
-			currentHook = Data.runtimeClassHooks.get("InteractableLocation");
-			x = currentHook.getFieldHook("getX");
-			y = currentHook.getFieldHook("getY");
+			currentHook = Data.runtimeClassHooks.get("LookupTable");
+			identityTable = currentHook.getFieldHook("getIdentityTable");
 		}
 	}
 	public static void resetHooks(){
 		currentHook=null;
-		x=null;
-		y=null;
+		identityTable=null;
 	}
-	public float getX(){
-		if(x==null)
-			x = currentHook.getFieldHook("getX");
-		if(x!=null){
-			Object data = x.get(currentObject);
+	public int[] getIdentityTable(){
+		if(identityTable==null)
+			identityTable = currentHook.getFieldHook("getIdentityTable");
+		if(identityTable!=null){
+			Object data = identityTable.get(currentObject);
 			if(data!=null)
-				return (Float)data;
+				return ((int[])data);	
 		}
-		return -1;
-	}
-	public float getY(){
-		if(y==null)
-			y = currentHook.getFieldHook("getY");
-		if(y!=null){
-			Object data = y.get(currentObject);
-			if(data!=null)
-				return (Float)data;
-		}
-		return -1;
+		return new int[]{};
 	}
 }

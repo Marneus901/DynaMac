@@ -9,22 +9,30 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class TileData {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook heights;
 	public TileData(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("TileData");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("TileData");
+			heights = currentHook.getFieldHook("getHeights");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		heights=null;
 	}
 	public int[][] getHeights(){
-		FieldHook fh = currentHook.getFieldHook("getHeights");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(heights==null)
+			heights = currentHook.getFieldHook("getHeights");
+		if(heights!=null){
+			Object data = heights.get(currentObject);
 			if(data!=null)
 				return (int[][])data;
 		}

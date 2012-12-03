@@ -10,126 +10,109 @@
 package org.dynamac.bot.api.wrappers;
 
 import org.dynamac.bot.api.methods.Calculations;
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class ModelLD extends Model{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook verticesX;
+	private static FieldHook verticesY;
+	private static FieldHook verticesZ;
+	private static FieldHook triangleX;
+	private static FieldHook triangleY;
+	private static FieldHook triangleZ;
+	private static FieldHook triangleColor;
 	public ModelLD(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("ModelLD");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("ModelLD");
+			verticesX = currentHook.getFieldHook("getVerticiesX");
+			verticesY = currentHook.getFieldHook("getVerticiesY");
+			verticesZ = currentHook.getFieldHook("getVerticiesZ");
+			triangleX = currentHook.getFieldHook("getTriangleX");
+			triangleY = currentHook.getFieldHook("getTriangleY");
+			triangleZ = currentHook.getFieldHook("getTriangleZ");
+			triangleColor = currentHook.getFieldHook("getTriangleColor");
+		}
 	}
-	
-/*    public Point getCenter(){
-        int minX = 9999999;
-        int minY = 9999999;
-        
-        int maxX = -9999999;
-        int maxY = -9999999;
-        
-    	int maxZ = -99999999, minZ = 99999999;
-   
-    	maxX = getVerticiesX()[0];
-    	minX = getVerticiesX()[0];
-    	for(int i = 0; i < getVerticiesX().length; i++) {
-    		if(getVerticiesX()[i] > maxX)
-    			maxX = getVerticiesX()[i];
-    		else if(getVerticiesX()[i] < minX)
-    			minX = getVerticiesX()[i];
-    	}
-    	maxY = getVerticiesY()[0];
-    	minY = getVerticiesY()[0];
-    	for(int i = 0; i < getVerticiesY().length; i++) {
-    		if(getVerticiesY()[i] > maxY)
-    			maxY = getVerticiesY()[i];
-    		else if(getVerticiesY()[i] < minY)
-    			minY = getVerticiesY()[i];
-    	}
-    	
-    	maxZ = getVerticiesZ()[0];
-    	minZ = getVerticiesZ()[0];
-    	for(int i = 0; i < getVerticiesZ().length; i++) {
-    		if(getVerticiesZ()[i] > maxZ)
-    			maxZ = getVerticiesZ()[i];
-    		else if(getVerticiesZ()[i] < minZ)
-    			minZ = getVerticiesZ()[i];
-    	}
-    	
-    	System.out.println("MinX" + minX);
-    	System.out.println("MaxX" + maxX);
-
-    	System.out.println("MinY" + minY);
-    	System.out.println("MaxY" + maxY);
-    	
-        int deltaX = (maxX-minX) >> 1;
-        int deltaY = (maxY-(-minY)) >> 1;
-        int deltaZ = (maxZ-minZ) >> 1;
-
-        return new Point(minX+deltaX, minY+deltaY);    
-    }*/
-	
+	public static void resetHooks(){
+		currentHook=null;
+		verticesX=null;
+		verticesY=null;
+		verticesZ=null;
+		triangleX=null;
+		triangleY=null;
+		triangleZ=null;
+		triangleColor=null;
+	}
 	public int[] getVerticiesX(){
-		FieldHook fh = currentHook.getFieldHook("getVerticiesX");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(verticesX==null)
+			verticesX = currentHook.getFieldHook("getVerticiesX");
+		if(verticesX!=null){
+			Object data = verticesX.get(currentObject);
 			if(data!=null)
 				return (int[])data;
 		}
 		return new int[]{};
 	}
 	public int[] getVerticiesY(){
-		FieldHook fh = currentHook.getFieldHook("getVerticiesY");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(verticesY==null)
+			verticesY = currentHook.getFieldHook("getVerticiesY");
+		if(verticesY!=null){
+			Object data = verticesY.get(currentObject);
 			if(data!=null)
 				return (int[])data;
 		}
 		return new int[]{};
 	}
 	public int[] getVerticiesZ(){
-		FieldHook fh = currentHook.getFieldHook("getVerticiesZ");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(verticesZ==null)
+			verticesZ = currentHook.getFieldHook("getVerticiesZ");
+		if(verticesZ!=null){
+			Object data = verticesZ.get(currentObject);
 			if(data!=null)
 				return (int[])data;
 		}
 		return new int[]{};
 	}
 	public short[] getTriangleX(){
-		FieldHook fh = currentHook.getFieldHook("getTriangleX");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(triangleX==null)
+			triangleX = currentHook.getFieldHook("getTriangleX");
+		if(triangleX!=null){
+			Object data = triangleX.get(currentObject);
 			if(data!=null)
 				return (short[])data;
 		}
 		return new short[]{};
 	}
 	public short[] getTriangleY(){
-		FieldHook fh = currentHook.getFieldHook("getTriangleY");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(triangleY==null)
+			triangleY = currentHook.getFieldHook("getTriangleY");
+		if(triangleY!=null){
+			Object data = triangleY.get(currentObject);
 			if(data!=null)
 				return (short[])data;
 		}
 		return new short[]{};
 	}
 	public short[] getTriangleZ(){
-		FieldHook fh = currentHook.getFieldHook("getTriangleZ");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(triangleZ==null)
+			triangleZ = currentHook.getFieldHook("getTriangleZ");
+		if(triangleZ!=null){
+			Object data = triangleZ.get(currentObject);
 			if(data!=null)
 				return (short[])data;
 		}
 		return new short[]{};
 	}
 	public short[] getTriangleColor(){
-		FieldHook fh = currentHook.getFieldHook("getTriangleColor");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(triangleColor==null)
+			triangleColor = currentHook.getFieldHook("getTriangleColor");
+		if(triangleColor!=null){
+			Object data = triangleColor.get(currentObject);
 			if(data!=null)
 				return (short[])data;
 		}

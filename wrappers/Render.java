@@ -9,15 +9,18 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
 
 public class Render {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
 	public Render(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Render");
+		if(currentHook==null)
+			currentHook = Data.runtimeClassHooks.get("Render");
+	}
+	public static void resetHooks(){
+		currentHook=null;
 	}
 }

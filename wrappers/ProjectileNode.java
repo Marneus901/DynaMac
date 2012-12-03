@@ -9,23 +9,31 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class ProjectileNode extends Animable{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook projectile;
 	public ProjectileNode(Object o){
 		super(o);
 		currentObject=o;
-		currentHook = Data.indentifiedClasses.get("ProjectileNode");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("ProjectileNode");
+			projectile = currentHook.getFieldHook("getProjectile");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		projectile=null;
 	}
 	public Projectile getProjectile(){
-		FieldHook fh = currentHook.getFieldHook("getProjectile");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(projectile==null)
+			projectile = currentHook.getFieldHook("getProjectile");
+		if(projectile!=null){
+			Object data = projectile.get(currentObject);
 			if(data!=null)
 				return new Projectile(data);
 		}

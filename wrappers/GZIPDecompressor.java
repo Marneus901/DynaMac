@@ -11,22 +11,30 @@ package org.dynamac.bot.api.wrappers;
 
 import java.util.zip.Inflater;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class GZIPDecompressor {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook inflator;
 	public GZIPDecompressor(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("GZIPDecompressor");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("GZIPDecompressor");
+			inflator = currentHook.getFieldHook("getInflater");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		inflator=null;
 	}
 	public Inflater getInflater(){
-		FieldHook fh = currentHook.getFieldHook("getInflater");		
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(inflator!=null)
+			inflator = currentHook.getFieldHook("getInflater");		
+		if(inflator!=null){
+			Object data = inflator.get(currentObject);
 			if(data!=null)
 				return (Inflater)data;
 		}

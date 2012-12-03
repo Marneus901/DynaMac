@@ -1,21 +1,29 @@
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class ObjectComposite {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook model;
 	public ObjectComposite(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("ObjectComposite");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("ObjectComposite");
+			model = currentHook.getFieldHook("getModel");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		model=null;
 	}
 	public ModelLD getModel(){
-		FieldHook fh = currentHook.getFieldHook("getModel");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(model==null)
+			model = currentHook.getFieldHook("getModel");
+		if(model!=null){
+			Object data = model.get(currentObject);
 			if(data!=null)
 				return new ModelLD(data);
 		}

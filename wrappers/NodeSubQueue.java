@@ -9,22 +9,30 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class NodeSubQueue {
 	private Object currentObject;
-	private ClassHook currentHook;
+	private static ClassHook currentHook;
+	private static FieldHook tail;
 	public NodeSubQueue(Object o){
 		currentObject=o;
-		currentHook = Data.indentifiedClasses.get("NodeSubQueue");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("NodeSubQueue");
+			tail = currentHook.getFieldHook("getTail");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		tail=null;
 	}
 	public NodeSub getTail(){
-		FieldHook fh = currentHook.getFieldHook("getTail");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(tail==null)
+			tail = currentHook.getFieldHook("getTail");
+		if(tail!=null){
+			Object data = tail.get(currentObject);
 			if(data!=null)
 				return new NodeSub(data);
 		}

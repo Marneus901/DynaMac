@@ -122,7 +122,7 @@ public class Tile {
 		return false;
 	}
 	public boolean containsPoint(Point p){
-		return getBounds().contains(p);
+		return getPolygon().contains(p);
 	}
 	public boolean doAction(String action){
 		if(!Menu.isOpen()){
@@ -169,7 +169,7 @@ public class Tile {
 		return x == t.getX() && y == t.getY() && t.getPlane() == getPlane();
 	}
 	public Rectangle getBounds(){
-		return new Rectangle(getX(),getY(),32,32);
+		return getPolygon().getBounds();
 	}
 	public Tile getClosestTile(final Tile tile) {
 		final Tile player = new Tile(c.getLocationX(),c.getLocationY(), getPlane());
@@ -213,7 +213,7 @@ public class Tile {
 		return new Point(-1, -1);
 	}
 	public Point getScreenLocation(){
-		return Calculations.locationToScreen(x, y);
+		return Calculations.tileToScreen(this);
 	}
 	public Tile[] getSurrounding(final Tile t) {
 		final Vector<Tile> neighbors = new Vector<Tile>();

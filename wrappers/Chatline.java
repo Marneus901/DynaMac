@@ -9,22 +9,30 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Chatline {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook message;
 	public Chatline(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Chatline");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Chatline");
+			message = currentHook.getFieldHook("getMessage");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		message=null;
 	}
 	public String getMessage(){
-		FieldHook fh = currentHook.getFieldHook("getMessage");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(message==null)
+			message = currentHook.getFieldHook("getMessage");
+		if(message!=null){
+			Object data = message.get(currentObject);
 			if(data!=null)
 				return data.toString();
 		}

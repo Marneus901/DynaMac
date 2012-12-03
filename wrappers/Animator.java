@@ -9,22 +9,30 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Animator {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook animation;
 	public Animator(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Animator");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Animator");
+			animation=currentHook.getFieldHook("getAnimation");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		animation=null;
 	}
 	public Animation getAnimation(){
-		FieldHook fh = currentHook.getFieldHook("getAnimation");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(animation==null)
+			animation=currentHook.getFieldHook("getAnimation");
+		if(animation!=null){
+			Object data = animation.get(currentObject);
 			if(data!=null)
 				return new Animation(data);
 		}

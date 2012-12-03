@@ -9,23 +9,31 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class NodeListCache extends Node{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook nodeList;
 	public NodeListCache(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("NodeListCache");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("NodeListCache");
+			nodeList = currentHook.getFieldHook("getNodeList");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		nodeList=null;
 	}
 	public NodeList getNodeList(){
-		FieldHook fh = currentHook.getFieldHook("getNodeList");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(nodeList==null)
+			nodeList = currentHook.getFieldHook("getNodeList");
+		if(nodeList!=null){
+			Object data = nodeList.get(currentObject);
 			if(data!=null)
 				return new NodeList(data);
 		}

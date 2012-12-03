@@ -9,16 +9,19 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
 
 public class ModelSoftware extends Model{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
 	public ModelSoftware(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("ModelSoftware");
+		if(currentHook==null)
+			currentHook = Data.runtimeClassHooks.get("ModelSoftware");
+	}
+	public static void resetHooks(){
+		currentHook=null;
 	}
 }

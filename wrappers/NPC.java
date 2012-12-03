@@ -10,39 +10,42 @@
 package org.dynamac.bot.api.wrappers;
 
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.Random;
 
 import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Menu;
 import org.dynamac.bot.api.methods.Mouse;
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class NPC extends Character{
 	public Object currentObject;
-	private ClassHook currentHook;
+	private static ClassHook currentHook;
+	private static FieldHook level;
+	private static FieldHook def;
+	private static FieldHook name;
 	public NPC(Object o){
 		super(o);
 		currentObject=o;
-		currentHook = Data.indentifiedClasses.get("NPC");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("NPC");
+			level = currentHook.getFieldHook("getLevel");
+			def = currentHook.getFieldHook("getNPCDef");
+			name = currentHook.getFieldHook("getNPCName");
+		}
 	}
-
+	public static void resetHooks(){
+		currentHook=null;
+		level=null;
+		def=null;
+		name=null;
+	}
 	public boolean containsPoint(Point test) {
 		return getLocation().getPolygon().contains(test);
 	}
-
-	/**
-	 * Temporary Fix, when we start injecting, this will be resolved
-	 * @author Greg
-	 * @return
-	 */
-
 	public boolean doAction(String action){
 		if(!Menu.isOpen()){
-			Point p = getRandomPoint();
+			Point p = getLocation().getRandomPoint();
 			if(p.equals(new Point(-1, -1))){
 				return false;
 			}
@@ -82,11 +85,12 @@ public class NPC extends Character{
 		return Menu.click(action);
 	}
 	public int getLevel(){
-		FieldHook fh = currentHook.getFieldHook("getLevel");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(level==null)
+			level = currentHook.getFieldHook("getLevel");
+		if(level!=null){
+			Object data = level.get(currentObject);
 			if(data!=null)
-				return (Integer)data * fh.getMultiplier();
+				return (Integer)data * level.getIntMultiplier();
 		}
 		return -1;
 	}
@@ -97,53 +101,23 @@ public class NPC extends Character{
 		return -1;
 	}
 	public NPCDef getNPCDef(){
-		FieldHook fh = currentHook.getFieldHook("getNPCDef");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(def==null)
+			def = currentHook.getFieldHook("getNPCDef");
+		if(def!=null){
+			Object data = def.get(currentObject);
 			if(data!=null)
 				return new NPCDef(data);
 		}
 		return null;
 	}
 	public String getNPCName(){
-		FieldHook fh = currentHook.getFieldHook("getNPCName");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(name==null)
+			name = currentHook.getFieldHook("getNPCName");
+		if(name!=null){
+			Object data = name.get(currentObject);
 			if(data!=null)
 				return data.toString();
 		}
 		return "";
-	}
-
-	public Point getRandomPoint() {
-		return getRandomPoint(this.getLocation().getPolygon().getBounds());
-	}
-
-	public Point getRandomPoint(Rectangle p) {
-		boolean found = false;
-		Point Return = null;
-		for (int i = 0; i < 30; i++) {
-			Rectangle r = p.getBounds();
-			Return = new Point(r.x + new Random(r.width).nextInt(), r.y + new Random(r.height).nextInt());
-			if (r.contains(Return)) {
-				System.out.println(Return);
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			int xOff = new Random().nextInt(16);
-			int yOff = new Random().nextInt(16);
-			if (new Random().nextInt(3) == 1)
-				xOff *= -1;
-			if (new Random().nextInt(3) == 1)
-				yOff *= -1;
-			System.out.println(xOff + "," + yOff);
-			Return = new Point(((int) p.getBounds().getCenterX()) + xOff,
-					((int) p.getBounds().getCenterY()) + yOff);
-		}
-		if (Return == null)
-			return null;
-		return new Point(Return.x, Return.y);
 	}
 }

@@ -1,21 +1,30 @@
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class AnimatedAnimableObject extends Animable{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook animatedObject;
 	public AnimatedAnimableObject(Object o) {
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("AnimatedAnimableObject");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("AnimatedAnimableObject");
+			animatedObject = currentHook.getFieldHook("getAnimatedObject");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		animatedObject=null;
 	}
 	public AnimatedObject getAnimatedObject(){
-		FieldHook fh = currentHook.getFieldHook("getAnimatedObject");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(animatedObject==null)
+			animatedObject = currentHook.getFieldHook("getAnimatedObject");
+		if(animatedObject!=null){
+			Object data = animatedObject.get(currentObject);
 			if(data!=null){
 				return new AnimatedObject(data, this.getMinX(), this.getMinY());
 			}

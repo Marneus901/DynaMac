@@ -9,22 +9,30 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Viewport {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook floats;
 	public Viewport(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Viewport");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Viewport");
+			floats = currentHook.getFieldHook("getFloats");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		floats=null;
 	}
 	public float[] getFloats(){
-		FieldHook fh = currentHook.getFieldHook("getFloats");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(floats==null)
+			floats = currentHook.getFieldHook("getFloats");
+		if(floats!=null){
+			Object data = floats.get(currentObject);
 			if(data!=null)
 				return (float[])data;
 		}

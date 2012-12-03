@@ -10,49 +10,69 @@
 package org.dynamac.bot.api.wrappers;
 
 import org.dynamac.bot.api.methods.Nodes;
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class ObjectDefLoader {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook defCache;
+	private static FieldHook modelCache;
+	private static FieldHook composite;
+	private static FieldHook groundActions;
 	public ObjectDefLoader(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("ObjectDefLoader");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("ObjectDefLoader");
+			defCache = currentHook.getFieldHook("getDefCache");
+			modelCache = currentHook.getFieldHook("getModelCache");
+			composite = currentHook.getFieldHook("getComposite");
+			groundActions = currentHook.getFieldHook("getGroundActions");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		defCache=null;
+		modelCache=null;
+		composite=null;
+		groundActions=null;
 	}
 	public Cache getDefCache(){
-		FieldHook fh = currentHook.getFieldHook("getDefCache");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(defCache==null)
+			defCache = currentHook.getFieldHook("getDefCache");
+		if(defCache!=null){
+			Object data = defCache.get(currentObject);
 			if(data!=null)
 				return new Cache(data);
 		}
 		return null;
 	}
 	public Cache getModelCache(){
-		FieldHook fh = currentHook.getFieldHook("getModelCache");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(modelCache==null)
+			modelCache = currentHook.getFieldHook("getModelCache");
+		if(modelCache!=null){
+			Object data = modelCache.get(currentObject);
 			if(data!=null)
 				return new Cache(data);
 		}
 		return null;
 	}
 	public ObjectComposite getComposite(){
-		FieldHook fh = currentHook.getFieldHook("getComposite");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(composite==null)
+			composite = currentHook.getFieldHook("getComposite");
+		if(composite!=null){
+			Object data = composite.get(currentObject);
 			if(data!=null)
 				return new ObjectComposite(data);
 		}
 		return null;
 	}
 	public String[] getGroundActions(){
-		FieldHook fh = currentHook.getFieldHook("getGroundActions");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(groundActions==null)
+			groundActions = currentHook.getFieldHook("getGroundActions");
+		if(groundActions!=null){
+			Object data = groundActions.get(currentObject);
 			if(data!=null)
 				return (String[])data;
 		}

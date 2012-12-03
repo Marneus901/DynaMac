@@ -1,16 +1,22 @@
-package org.dynamac.bot.api.wrappers;
+/******************************************************
+* Created by Marneus901                                *
+* © 2012 MarneusScripts.com                            *
+* **************************************************** *
+* Access to this source is unauthorized without prior  *
+* authorization from its appropriate author(s).        *
+* You are not permitted to release, nor distribute this* 
+* work without appropriate author(s) authorization.    *
+********************************************************/
+package org.dynamac.bot.api.methods;
 
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
-import org.dynamac.bot.api.methods.Client;
-import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.wrappers.Interface;
 import org.dynamac.bot.api.wrappers.InterfaceChild;
-import org.dynamac.enviroment.Data;
-
+import org.dynamac.environment.Data;
 /**
  * 
  * @author  Steven10172

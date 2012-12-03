@@ -1,4 +1,14 @@
+/******************************************************
+* Created by Marneus901                                *
+* © 2012 MarneusScripts.com                            *
+* **************************************************** *
+* Access to this source is unauthorized without prior  *
+* authorization from its appropriate author(s).        *
+* You are not permitted to release, nor distribute this* 
+* work without appropriate author(s) authorization.    *
+********************************************************/
 package org.dynamac.bot.api.methods;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
@@ -103,7 +113,7 @@ public class Walking {
 	public static int getEnergy(){
 		try {
 			return Integer.parseInt(Interfaces.get(750, 6).getText());
-		} catch (final NumberFormatException ignored) {
+		} catch (Exception ignored) {
 			return -1;
 		}
 	}
@@ -124,12 +134,21 @@ public class Walking {
 		}
 		return invertedPath;
 	}
+	public static boolean isPathLocal(Tile[] path){
+		for(Tile t : path)
+			if(t.isOnMap())
+				return true;
+		return false;
+	}
 	public static boolean isRunEnabled(){
-		return Settings.get(173)==1;
+		return Settings.get(463)==1;
 	}
 	
 	public static boolean isWalking(){
 		return Players.getMyPlayer().isMoving();
+	}
+	public static void paintPath(Graphics g){
+		TheWalker.drawMap(g);
 	}
 	public static Tile[] randomizePath(Tile[] path, int xDist, int yDist) {
 		Tile[] newPath = new Tile[path.length];

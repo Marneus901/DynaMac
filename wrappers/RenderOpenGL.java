@@ -9,16 +9,19 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
 
 public class RenderOpenGL extends Render{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
 	public RenderOpenGL(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("RenderOpenGL");
+		if(currentHook==null)
+			currentHook = Data.runtimeClassHooks.get("RenderOpenGL");
+	}
+	public static void resetHooks(){
+		currentHook=null;
 	}
 }

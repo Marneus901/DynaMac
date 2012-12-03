@@ -1,3 +1,12 @@
+/******************************************************
+* Created by Marneus901                                *
+* © 2012 MarneusScripts.com                            *
+* **************************************************** *
+* Access to this source is unauthorized without prior  *
+* authorization from its appropriate author(s).        *
+* You are not permitted to release, nor distribute this* 
+* work without appropriate author(s) authorization.    *
+********************************************************/
 package org.dynamac.bot.api.methods;
 
 import java.awt.Color;
@@ -7,17 +16,16 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Random;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.mousepathgen.PathGen;
+import org.dynamac.environment.Data;
+
+import com.marneusscripts.injection.wrappers.MouseListener;
 
 public class Mouse {
 	public static final int LEFT_BUTTON = MouseEvent.BUTTON1;
 	public static final int MIDDLE_BUTTON = MouseEvent.BUTTON2;
 	public static final int RIGHT_BUTTON = MouseEvent.BUTTON3;
-	private static Point lastPoint = new Point(-1, -1);
 	private static boolean isPressed = false;
 	public static int mouseSpeed=10;
-	private static PathGen pathGen = new PathGen();
 	private static MouseEvent[] createPath(Component target, Point[] path) {
 		MouseEvent[] me = new MouseEvent[path.length];
 		long lagTime = System.currentTimeMillis();
@@ -71,13 +79,10 @@ public class Mouse {
 	public static void drag(int x, int y){
 		Component mouseTarget = Data.CLIENT_APPLET.getComponent(0);
 		Component mouseMotionTarget = mouseTarget;
-		PathGen pathGen = new PathGen();
-		Point last = getLocation();
-		MouseEvent[] me = createDragPath(mouseMotionTarget,mouseTarget, pathGen.makeMousePath(last.x, last.y, x, y), LEFT_BUTTON);
+		MouseEvent[] me = createDragPath(mouseMotionTarget,mouseTarget, MousePathGenerator.generatePath(x, y), LEFT_BUTTON);
 		isPressed=true;
 		for (int i = 0; i < me.length; ++i) {
-			mouseMotionTarget.dispatchEvent(me[i]);
-			lastPoint=me[i].getPoint();
+			Client.getMouse().sendEvent(me[i]);
 			sleep(Math.max(0, mouseSpeed - 2 + new Random().nextInt(4)));
 		}
 		isPressed=false;
@@ -85,18 +90,18 @@ public class Mouse {
 	public static void exit(int x,int y) {
 		Component target = getTarget();
 		MouseEvent me = new MouseEvent(target,MouseEvent.MOUSE_EXITED,System.currentTimeMillis(),0,x,y,0,false,MouseEvent.NOBUTTON);
-		target.dispatchEvent(me);
+		Client.getMouse().sendEvent(me);
 	}
 	public static void enter(int x,int y) {
 		Component target = getTarget();
 		MouseEvent me = new MouseEvent(target,MouseEvent.MOUSE_ENTERED,System.currentTimeMillis(),0,x,y,0,false,MouseEvent.NOBUTTON);
-		target.dispatchEvent(me);
+		Client.getMouse().sendEvent(me);
 	}
 	public static Point getLocation(){
-		Point lastPos = getRealLocation();
-		if(!lastPos.equals(new Point(-1, -1)))
-			return lastPos;
-		return lastPoint;
+		MouseListener mouse = Client.getMouse();
+		if(mouse!=null)
+			return new Point(mouse.getX(), mouse.getY());
+		return new Point(-1, -1);
 	}
 	public static Point getRealLocation(){
 		Point p = Data.CLIENT_APPLET.getMousePosition();
@@ -118,10 +123,8 @@ public class Mouse {
 	}
 	public static void move(int x, int y){
 		Component target = getTarget();
-		Point last = getLocation();
-		for (MouseEvent me : createPath(target, pathGen.makeMousePath(last.x, last.y, x, y))) {
-			target.dispatchEvent(me);
-			lastPoint = me.getPoint();
+		for (MouseEvent me : createPath(target, MousePathGenerator.generatePath(x, y))) {
+			Client.getMouse().sendEvent(me);
 			sleep(Math.max(0, mouseSpeed - 2 + new Random().nextInt(4)));
 		}
 	}
@@ -143,7 +146,7 @@ public class Mouse {
 	public static void press(int x, int y, int button){
 		int buttonModifiers = getButtonModifiers(button);
 		Component target = getTarget();
-		target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
+		Client.getMouse().sendEvent(new MouseEvent(target, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
 		isPressed=true;
 	}
 	public static void release(int button){
@@ -153,9 +156,9 @@ public class Mouse {
 	public static void release(int x, int y, int button){
 		int buttonModifiers = getButtonModifiers(button);
 		Component target = getTarget();
-		target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
+		Client.getMouse().sendEvent(new MouseEvent(target, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
 		isPressed=false;
-		target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
+		Client.getMouse().sendEvent(new MouseEvent(target, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), buttonModifiers, x, y, 1, false, button));
 	}
 	public static void rightClick(){
 		press(RIGHT_BUTTON);

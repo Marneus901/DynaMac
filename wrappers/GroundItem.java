@@ -10,7 +10,6 @@ import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Menu;
 import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Nodes;
-import org.dynamac.enviroment.Data;
 
 public class GroundItem {
 	public int locationX;
@@ -102,12 +101,12 @@ public class GroundItem {
 			Node ref = Nodes.lookup(Client.getItemDefLoader().getModelCache().getTable(), item.getID());
 			if(ref==null)
 				return null;
-			if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {
+			if (SoftReference.isInstance(ref.currentObject)){
 				SoftReference sr = new SoftReference(ref.currentObject);
 				Object def = sr.getSoftReference().get();
 				return new ModelLD(def);
 			}
-			else if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("HardReference").getClassName())) {
+			else if (HardReference.isInstance(ref.currentObject)) {
 				HardReference hr = new HardReference(ref.currentObject);
 				Object def = hr.getHardReference();
 				return new ModelLD(def);

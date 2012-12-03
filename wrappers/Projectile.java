@@ -9,23 +9,34 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Projectile extends Animable{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook animator;
+	private static FieldHook target;
 	public Projectile(Object o){
 		super(o);
 		currentObject=o;
-		currentHook = Data.indentifiedClasses.get("Projectile");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Projectile");
+			animator = currentHook.getFieldHook("getAnimator");
+			target = currentHook.getFieldHook("getTarget");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		animator=null;
+		target=null;
 	}
 	public Animator getAnimator(){
-		FieldHook fh = currentHook.getFieldHook("getAnimator");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(animator==null)
+			animator = currentHook.getFieldHook("getAnimator");
+		if(animator!=null){
+			Object data = animator.get(currentObject);
 			if(data!=null)
 				return new Animator(data);
 		}
@@ -41,9 +52,10 @@ public class Projectile extends Animable{
 		return -1;
 	}
 	public int getTarget(){
-		FieldHook fh = currentHook.getFieldHook("getTarget");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(target==null)
+			target = currentHook.getFieldHook("getTarget");
+		if(target!=null){
+			Object data = target.get(currentObject);
 			if(data!=null)
 				return (Integer)data;
 		}

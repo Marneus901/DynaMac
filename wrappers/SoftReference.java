@@ -9,27 +9,41 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class SoftReference extends Reference{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook reference;
 	public SoftReference(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("SoftReference");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("SoftReference");
+			reference = currentHook.getFieldHook("getSoftReference");
+		}
 	}
-	@SuppressWarnings({ "rawtypes" })
-	public java.lang.ref.SoftReference getSoftReference(){
-		FieldHook fh = currentHook.getFieldHook("getSoftReference");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+	public static void resetHooks(){
+		currentHook=null;
+		reference=null;
+	}
+	public java.lang.ref.SoftReference<?> getSoftReference(){
+		if(reference==null)
+			reference = currentHook.getFieldHook("getSoftReference");
+		if(reference!=null){
+			Object data = reference.get(currentObject);
 			if(data!=null)
-				return (java.lang.ref.SoftReference)data;
+				return (java.lang.ref.SoftReference<?>)data;
 		}
 		return null;
+	}
+	public static boolean isInstance(Object o){
+		if(currentHook==null)
+			currentHook = Data.runtimeClassHooks.get("SoftReference");
+		if(currentHook!=null)
+			return o.getClass().getName().equals(currentHook.getClassName());
+		return false;
 	}
 }

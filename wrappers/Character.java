@@ -18,18 +18,33 @@ import java.util.Random;
 import org.dynamac.bot.api.methods.Calculations;
 import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Mouse;
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Character extends Animable{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook animator;
+	private static FieldHook direction;
+	private static FieldHook height;
+	private static FieldHook movementSpeed;
+	private static FieldHook models;
 	public Character(Object o){
 		super(o);
 		currentObject=o;
-		currentHook = Data.indentifiedClasses.get("Character");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Character");
+			animator = currentHook.getFieldHook("getAnimator");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		animator=null;
+		direction=null;
+		height=null;
+		movementSpeed=null;
+		models=null;
 	}
 	public boolean clickTile(){
 		if(isOnScreen()){
@@ -51,9 +66,10 @@ public class Character extends Animable{
 	
 	
 	public Animator getAnimator(){
-		FieldHook fh = currentHook.getFieldHook("getAnimator");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(animator==null)
+			animator = currentHook.getFieldHook("getAnimator");
+		if(animator!=null){
+			Object data = animator.get(currentObject);
 			if(data!=null)
 				return new Animator(data);
 		}
@@ -69,11 +85,12 @@ public class Character extends Animable{
 		return -1;
 	}
 	public int getDirection(){
-		FieldHook fh = currentHook.getFieldHook("getDirection");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(direction==null)
+			direction = currentHook.getFieldHook("getDirection");
+		if(direction!=null){
+			Object data = direction.get(currentObject);
 			if(data!=null){
-				double deg = ((Integer)data) * fh.getMultiplier();
+				double deg = ((Integer)data) * direction.getIntMultiplier();
 				deg = deg/45;
 				deg = deg-(deg%45);
 				return (int)deg;
@@ -118,30 +135,38 @@ public class Character extends Animable{
 		}
 	}
 	public int getHeight(){
-		FieldHook fh = currentHook.getFieldHook("getHeight");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(height==null)
+			direction = currentHook.getFieldHook("getHeight");
+		if(height!=null){
+			Object data = height.get(currentObject);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * height.getIntMultiplier();
 		}
 		return -1;		
 	}
 	public int getMovementSpeed(){
-		FieldHook fh = currentHook.getFieldHook("getMovementSpeed");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(movementSpeed==null)
+			movementSpeed = currentHook.getFieldHook("getMovementSpeed");
+		if(movementSpeed!=null){
+			Object data = movementSpeed.get(currentObject);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * movementSpeed.getIntMultiplier();
 		}
 		return -1;		
 	}
 	public ModelLD[] getLDModels(){
-		FieldHook fh = currentHook.getFieldHook("getModels");
-		if(fh!=null){
-			Object array = fh.getData(currentObject);
+		if(models==null)
+			movementSpeed = currentHook.getFieldHook("getModels");
+		if(models!=null){
+			Object array = models.get(currentObject);
 			ModelLD[] models = new ModelLD[Array.getLength(array)];
-			for(int i=0;i<models.length;++i)
-				models[i] = new ModelLD(Array.get(array, i));
+			for(int i=0;i<models.length;++i){
+				Object data = Array.get(array, i);
+				if(data!=null)
+					models[i] = new ModelLD(data);
+				else
+					models[i] = null;
+			}
 			return models;
 		}
 		return new ModelLD[]{};

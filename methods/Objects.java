@@ -30,8 +30,7 @@ import org.dynamac.bot.api.wrappers.ObjectDef;
 import org.dynamac.bot.api.wrappers.Tile;
 import org.dynamac.bot.api.wrappers.WallDecoration;
 import org.dynamac.bot.api.wrappers.WallObject;
-import org.dynamac.enviroment.Data;
-
+import org.dynamac.environment.Data;
 
 public class Objects {
 	public static AnimableObject[] getAllAnimableObjects(){
@@ -73,38 +72,38 @@ public class Objects {
 						continue;
 					if(g1.getBoundary1()!=null){
 						Boundary object = g1.getBoundary1();
-						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedBoundaryObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedBoundaryObject").getClassName())){
 							animatedObjects.add(new AnimatedBoundaryObject(object.currentObject, x, y).getAnimatedObject());
 						}
 					}
 					if(g1.getBoundary2()!=null){
 						Boundary object = g1.getBoundary2();
-						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedBoundaryObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedBoundaryObject").getClassName())){
 							animatedObjects.add(new AnimatedBoundaryObject(object.currentObject, x, y).getAnimatedObject());
 						}
 					}
 					if(g1.getWallDecoration1()!=null){
 						WallDecoration object = g1.getWallDecoration1();
-						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedWallObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedWallObject").getClassName())){
 							animatedObjects.add(new AnimatedWallObject(object.currentObject, x, y).getAnimatedObject());
 						}
 					}
 					if(g1.getWallDecoration2()!=null){
 						WallDecoration object = g1.getWallDecoration2();
-						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedWallObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedWallObject").getClassName())){
 							animatedObjects.add(new AnimatedWallObject(object.currentObject, x, y).getAnimatedObject());
 						}
 					}
 					if(g1.getFloorDecoration()!=null){
 						FloorDecoration object = g1.getFloorDecoration();
-						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedFloorObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedFloorObject").getClassName())){
 							animatedObjects.add(new AnimatedFloorObject(object.currentObject, x, y).getAnimatedObject());
 						}
 					}
 					if(g1.getAnimableList()!=null){
 						AnimableNode node = g1.getAnimableList();
 						Animable object = node.getAnimable();
-						if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedAnimableObject").getClassName())){
+						if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedAnimableObject").getClassName())){
 							animatedObjects.add(new AnimatedAnimableObject(object.currentObject).getAnimatedObject());
 						}
 					}
@@ -245,7 +244,7 @@ public class Objects {
 			if(g.getAnimableList()==null)
 				return null;
 			Animable a = new Animable(g.getAnimableList().getAnimable().currentObject);
-			if(a.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimableObject").getClassName())){
+			if(a.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimableObject").getClassName())){
 				return new AnimableObject(a.currentObject);
 			}
 		}
@@ -258,38 +257,38 @@ public class Objects {
 			Ground g1 = Client.getRSData().getGroundInfo().getGroundArray()[Client.getPlane()][x-Client.getBaseX()][y-Client.getBaseY()];
 			if(g1.getBoundary1()!=null){
 				Boundary object = g1.getBoundary1();
-				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedBoundaryObject").getClassName())){
+				if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedBoundaryObject").getClassName())){
 					return new AnimatedBoundaryObject(object.currentObject, x, y).getAnimatedObject();
 				}
 			}
 			if(g1.getBoundary2()!=null){
 				Boundary object = g1.getBoundary2();
-				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedBoundaryObject").getClassName())){
+				if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedBoundaryObject").getClassName())){
 					return new AnimatedBoundaryObject(object.currentObject, x, y).getAnimatedObject();
 				}
 			}
 			if(g1.getWallDecoration1()!=null){
 				WallDecoration object = g1.getWallDecoration1();
-				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedWallObject").getClassName())){
+				if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedWallObject").getClassName())){
 					return new AnimatedWallObject(object.currentObject, x, y).getAnimatedObject();
 				}
 			}
 			if(g1.getWallDecoration2()!=null){
 				WallDecoration object = g1.getWallDecoration2();
-				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedWallObject").getClassName())){
+				if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedWallObject").getClassName())){
 					return new AnimatedWallObject(object.currentObject, x, y).getAnimatedObject();
 				}
 			}
 			if(g1.getFloorDecoration()!=null){
 				FloorDecoration object = g1.getFloorDecoration();
-				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedFloorObject").getClassName())){
+				if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedFloorObject").getClassName())){
 					return new AnimatedFloorObject(object.currentObject, x, y).getAnimatedObject();
 				}
 			}
 			if(g1.getAnimableList()!=null){
 				AnimableNode node = g1.getAnimableList();
 				Animable object = node.getAnimable();
-				if(object.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedAnimableObject").getClassName())){
+				if(object.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedAnimableObject").getClassName())){
 					return new AnimatedAnimableObject(object.currentObject).getAnimatedObject();
 				}
 			}
@@ -306,7 +305,7 @@ public class Objects {
 				b=g.getBoundary2();
 			if(b==null)
 				return null;
-			if(b.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("BoundaryObject").getClassName())){
+			if(b.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("BoundaryObject").getClassName())){
 				return new BoundaryObject(b.currentObject, x-Client.getBaseX(), y-Client.getBaseY());
 			}
 		}
@@ -318,7 +317,7 @@ public class Objects {
 		try{
 			Ground g = Client.getRSData().getGroundInfo().getGroundArray()[Client.getPlane()][x-Client.getBaseX()][y-Client.getBaseY()];
 			FloorDecoration a = g.getFloorDecoration();
-			if(a.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("FloorObject").getClassName())){
+			if(a.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("FloorObject").getClassName())){
 				return new FloorObject(a.currentObject, x-Client.getBaseX(), y-Client.getBaseY());
 			}
 		}
@@ -334,7 +333,7 @@ public class Objects {
 				b=g.getWallDecoration2();
 			if(b==null)
 				return null;
-			if(b.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("WallObject").getClassName())){
+			if(b.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("WallObject").getClassName())){
 				return new WallObject(b.currentObject, x-Client.getBaseX(), y-Client.getBaseY());
 			}
 		}

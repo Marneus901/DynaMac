@@ -1,12 +1,12 @@
 /******************************************************
-* Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
-* **************************************************** *
-* Access to this source is unauthorized without prior  *
-* authorization from its appropriate author(s).        *
-* You are not permitted to release, nor distribute this* 
-* work without appropriate author(s) authorization.    *
-********************************************************/
+ * Created by Marneus901                                *
+ * © 2012 MarneusScripts.com                            *
+ * **************************************************** *
+ * Access to this source is unauthorized without prior  *
+ * authorization from its appropriate author(s).        *
+ * You are not permitted to release, nor distribute this* 
+ * work without appropriate author(s) authorization.    *
+ ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
 import java.awt.Point;
@@ -18,14 +18,55 @@ import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Menu;
 import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Interfaces;
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class InterfaceChild {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook getAnimator;
+	private static FieldHook getRelativeX;
+	private static FieldHook getRelativeY;
+	private static FieldHook getWidth;
+	private static FieldHook getHeight;
+	private static FieldHook getID;
+	private static FieldHook getTextureID;
+	private static FieldHook getParentID;
+	private static FieldHook getComponentID;
+	private static FieldHook getModelID;
+	private static FieldHook getModelZoom;
+	private static FieldHook getTextColor;
+	private static FieldHook getVerticalScrollbarSize;
+	private static FieldHook getHorizontalScrollbarSize;
+	private static FieldHook getVerticalScrollbarPosition;
+	private static FieldHook getHorizontalScrollbarPosition;
+	private static FieldHook getVerticalScrollbarThumbSize;
+	private static FieldHook getHorizontalScrollbarThumbSize;
+	private static FieldHook getComponentStackSize;
+	private static FieldHook getBoundsArrayIndex;
+	private static FieldHook getYRotation;
+	private static FieldHook getXRotation;
+	private static FieldHook getZRotation;
+	private static FieldHook getModelType;
+	private static FieldHook getShadowColor;
+	private static FieldHook getBorderThickness;
+	private static FieldHook getComponentIndex;
+	private static FieldHook getType;
+	private static FieldHook getSpecialType;
+	private static FieldHook getChildren;
+	private static FieldHook getActions;
+	private static FieldHook getSelectedActionName;
+	private static FieldHook getComponentName;
+	private static FieldHook getText;
+	private static FieldHook getTooltip;
+	private static FieldHook isHidden;
+	private static FieldHook isHovering;
+	private static FieldHook isVisible;
+	private static FieldHook getDisplayTime;
+	private static FieldHook isVerticallyFlipped;
+	private static FieldHook isHorizontallyFlipped;
+	private static FieldHook isInventoryInterface;
 	public Interface parentInterface;
 	public InterfaceChild parentInterfaceChild;
 	public int index;
@@ -40,15 +81,148 @@ public class InterfaceChild {
 		parentInterface = i;
 		index=idx;
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("InterfaceChild");
-		displayTime=getDisplayTime();
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("InterfaceChild");
+			getAnimator = currentHook.getFieldHook("getAnimator");
+			getRelativeX = currentHook.getFieldHook("getRelativeX");
+			getRelativeY = currentHook.getFieldHook("getRelativeY");
+			getWidth = currentHook.getFieldHook("getWidth");
+			getHeight = currentHook.getFieldHook("getHeight");
+			getID = currentHook.getFieldHook("getID");
+			getTextureID = currentHook.getFieldHook("getTextureID");
+			getParentID = currentHook.getFieldHook("getParentID");
+			getComponentID = currentHook.getFieldHook("getComponentID");
+			getModelID = currentHook.getFieldHook("getModelID");
+			getModelZoom = currentHook.getFieldHook("getModelZoom");
+			getTextColor = currentHook.getFieldHook("getTextColor");
+			getVerticalScrollbarSize = currentHook.getFieldHook("getVerticalScrollbarSize");
+			getHorizontalScrollbarSize = currentHook.getFieldHook("getHorizontalScrollbarSize");
+			getVerticalScrollbarPosition = currentHook.getFieldHook("getVerticalScrollbarPosition");
+			getHorizontalScrollbarPosition = currentHook.getFieldHook("getHorizontalScrollbarPosition");
+			getVerticalScrollbarThumbSize = currentHook.getFieldHook("getVerticalScrollbarThumbSize");
+			getHorizontalScrollbarThumbSize = currentHook.getFieldHook("getHorizontalScrollbarThumbSize");
+			getComponentStackSize = currentHook.getFieldHook("getComponentStackSize");
+			getBoundsArrayIndex = currentHook.getFieldHook("getBoundsArrayIndex");
+			getYRotation = currentHook.getFieldHook("getYRotation");
+			getXRotation = currentHook.getFieldHook("getXRotation");
+			getZRotation = currentHook.getFieldHook("getZRotation");
+			getModelType = currentHook.getFieldHook("getModelType");
+			getShadowColor = currentHook.getFieldHook("getShadowColor");
+			getBorderThickness = currentHook.getFieldHook("getBorderThickness");
+			getComponentIndex = currentHook.getFieldHook("getComponentIndex");
+			getType = currentHook.getFieldHook("getType");
+			getSpecialType = currentHook.getFieldHook("getSpecialType");
+			getChildren = currentHook.getFieldHook("getChildren");
+			getActions = currentHook.getFieldHook("getActions");
+			getSelectedActionName = currentHook.getFieldHook("getSelectedActionName");
+			getComponentName = currentHook.getFieldHook("getComponentName");
+			getText = currentHook.getFieldHook("getText");
+			getTooltip = currentHook.getFieldHook("getTooltip");
+			isHidden = currentHook.getFieldHook("isHidden");
+			isHovering = currentHook.getFieldHook("isHovering");
+			isVisible = currentHook.getFieldHook("isVisible");
+			getDisplayTime = currentHook.getFieldHook("getDisplayTime");
+			isVerticallyFlipped = currentHook.getFieldHook("isVerticallyFlipped");
+			isHorizontallyFlipped = currentHook.getFieldHook("isHorizontallyFlipped");
+			isInventoryInterface = currentHook.getFieldHook("isInventoryInterface");
+		}
+		displayTime=getDisplayTime()-1;
 	}
 	public InterfaceChild(Object o, InterfaceChild ic, int idx){
 		parentInterfaceChild=ic;
 		index=idx;
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("InterfaceChild");
-		displayTime=getDisplayTime();
+		displayTime=getDisplayTime()-1;
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("InterfaceChild");
+			getAnimator = currentHook.getFieldHook("getAnimator");
+			getRelativeX = currentHook.getFieldHook("getRelativeX");
+			getRelativeY = currentHook.getFieldHook("getRelativeY");
+			getWidth = currentHook.getFieldHook("getWidth");
+			getHeight = currentHook.getFieldHook("getHeight");
+			getID = currentHook.getFieldHook("getID");
+			getTextureID = currentHook.getFieldHook("getTextureID");
+			getParentID = currentHook.getFieldHook("getParentID");
+			getComponentID = currentHook.getFieldHook("getComponentID");
+			getModelID = currentHook.getFieldHook("getModelID");
+			getModelZoom = currentHook.getFieldHook("getModelZoom");
+			getTextColor = currentHook.getFieldHook("getTextColor");
+			getVerticalScrollbarSize = currentHook.getFieldHook("getVerticalScrollbarSize");
+			getHorizontalScrollbarSize = currentHook.getFieldHook("getHorizontalScrollbarSize");
+			getVerticalScrollbarPosition = currentHook.getFieldHook("getVerticalScrollbarPosition");
+			getHorizontalScrollbarPosition = currentHook.getFieldHook("getHorizontalScrollbarPosition");
+			getVerticalScrollbarThumbSize = currentHook.getFieldHook("getVerticalScrollbarThumbSize");
+			getHorizontalScrollbarThumbSize = currentHook.getFieldHook("getHorizontalScrollbarThumbSize");
+			getComponentStackSize = currentHook.getFieldHook("getComponentStackSize");
+			getBoundsArrayIndex = currentHook.getFieldHook("getBoundsArrayIndex");
+			getYRotation = currentHook.getFieldHook("getYRotation");
+			getXRotation = currentHook.getFieldHook("getXRotation");
+			getZRotation = currentHook.getFieldHook("getZRotation");
+			getModelType = currentHook.getFieldHook("getModelType");
+			getShadowColor = currentHook.getFieldHook("getShadowColor");
+			getBorderThickness = currentHook.getFieldHook("getBorderThickness");
+			getComponentIndex = currentHook.getFieldHook("getComponentIndex");
+			getType = currentHook.getFieldHook("getType");
+			getSpecialType = currentHook.getFieldHook("getSpecialType");
+			getChildren = currentHook.getFieldHook("getChildren");
+			getActions = currentHook.getFieldHook("getActions");
+			getSelectedActionName = currentHook.getFieldHook("getSelectedActionName");
+			getComponentName = currentHook.getFieldHook("getComponentName");
+			getText = currentHook.getFieldHook("getText");
+			getTooltip = currentHook.getFieldHook("getTooltip");
+			isHidden = currentHook.getFieldHook("isHidden");
+			isHovering = currentHook.getFieldHook("isHovering");
+			isVisible = currentHook.getFieldHook("isVisible");
+			getDisplayTime = currentHook.getFieldHook("getDisplayTime");
+			isVerticallyFlipped = currentHook.getFieldHook("isVerticallyFlipped");
+			isHorizontallyFlipped = currentHook.getFieldHook("isHorizontallyFlipped");
+			isInventoryInterface = currentHook.getFieldHook("isInventoryInterface");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		getAnimator=null;
+		getRelativeX=null;
+		getRelativeY=null;
+		getWidth=null;
+		getHeight=null;
+		getID=null;
+		getTextureID=null;
+		getParentID=null;
+		getComponentID=null;
+		getModelID=null;
+		getModelZoom=null;
+		getTextColor=null;
+		getVerticalScrollbarSize=null;
+		getHorizontalScrollbarSize=null;
+		getVerticalScrollbarPosition=null;
+		getHorizontalScrollbarPosition=null;
+		getVerticalScrollbarThumbSize=null;
+		getHorizontalScrollbarThumbSize=null;
+		getComponentStackSize=null;
+		getBoundsArrayIndex=null;
+		getYRotation=null;
+		getXRotation=null;
+		getZRotation=null;
+		getModelType=null;
+		getShadowColor=null;
+		getBorderThickness=null;
+		getComponentIndex=null;
+		getType=null;
+		getSpecialType=null;
+		getChildren=null;
+		getActions=null;
+		getSelectedActionName=null;
+		getComponentName=null;
+		getText=null;
+		getTooltip=null;
+		isHidden=null;
+		isHovering=null;
+		isVisible=null;
+		getDisplayTime=null;
+		isVerticallyFlipped=null;
+		isHorizontallyFlipped=null;
+		isInventoryInterface=null;
 	}
 	public void click(){
 		Point p = getRandomPoint();
@@ -81,17 +255,7 @@ public class InterfaceChild {
 			}
 			if(Menu.getIndex(action)==0){
 				Mouse.click();
-				for(int i=0;i<20;++i){
-					if(Client.getMouseCrosshairState()==2)
-						return true;
-					if(Client.getMouseCrosshairState()==1)
-						return false;
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-					}
-				}
-				return false;
+				return true;
 			}
 			if(Menu.getIndex(action)>0){
 				Mouse.rightClick();
@@ -109,7 +273,8 @@ public class InterfaceChild {
 	}
 	public Point getRandomPoint(){
 		try{
-			return new Point(new Random().nextInt(getWidth())+getAbsoluteX(), new Random().nextInt(getHeight())+getAbsoluteY());
+			Rectangle r = getBounds();
+			return new Point(new Random().nextInt(r.width)+r.x, new Random().nextInt(r.height)+r.y);
 		}
 		catch(Exception e){}
 		return new Point(-1, -1);
@@ -151,9 +316,10 @@ public class InterfaceChild {
 		return getAbsoluteLocation().y;
 	}
 	public Animator getAnimator(){
-		FieldHook fh = currentHook.getFieldHook("getAnimator");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(getAnimator!=null)
+			getAnimator = currentHook.getFieldHook("getAnimator");
+		if(getAnimator!=null){
+			Object data = getAnimator.get(currentObject);
 			if(data!=null)
 				return new Animator(data);
 		}
@@ -169,61 +335,89 @@ public class InterfaceChild {
 		return -1;
 	}
 	public Rectangle getBounds(){
-		return new Rectangle(getAbsoluteX(), getAbsoluteY(), getWidth(), getHeight());
+		return new Rectangle(getAbsoluteX(), getAbsoluteY(), getHorizontalScrollbarThumbSize(), getVerticalScrollbarThumbSize());
 	}
 	public int getRelativeX(){
-		Object data = currentHook.getData("getRelativeX", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getRelativeX").getMultiplier();
+		if(getRelativeX==null)
+			getRelativeX=currentHook.getFieldHook("getRelativeX");
+		if(getRelativeX!=null){
+			Object data = getRelativeX.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getRelativeX.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getRelativeY(){
-		Object data = currentHook.getData("getRelativeY", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getRelativeY").getMultiplier();
+		if(getRelativeY==null)
+			getRelativeY=currentHook.getFieldHook("getRelativeY");
+		if(getRelativeY!=null){
+			Object data = getRelativeY.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getRelativeY.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getWidth(){
-		Object data = currentHook.getData("getWidth", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getWidth").getMultiplier();
+		if(getWidth==null)
+			getWidth=currentHook.getFieldHook("getWidth");
+		if(getWidth!=null){
+			Object data = getWidth.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getWidth.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getHeight(){
-		Object data = currentHook.getData("getHeight", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getHeight").getMultiplier();
+		if(getHeight==null)
+			getHeight=currentHook.getFieldHook("getHeight");
+		if(getHeight!=null){
+			Object data = getHeight.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getHeight.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getID(){
-		Object data = currentHook.getData("getID", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getID").getMultiplier();
+		if(getID==null)
+			getID=currentHook.getFieldHook("getID");
+		if(getID!=null){
+			Object data = getID.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getID.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getTextureID(){
-		Object data = currentHook.getData("getTextureID", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getTextureID").getMultiplier();
+		if(getTextureID==null)
+			getTextureID=currentHook.getFieldHook("getTextureID");
+		if(getTextureID!=null){
+			Object data = getTextureID.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getTextureID.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getParentID(){
-		Object data = currentHook.getData("getParentID", currentObject);
-		if(data!=null){
-			int id = (Integer)data * currentHook.getFieldHook("getParentID").getMultiplier();
-			if(id!=-1)
-				return id;
-			else{
-				int mainID = getID() >> 0x10;
-				HashTable nc = Client.getInterfaceNodeCache();
-				for(Node start : nc.getBuckets()){
-					for(Node in = start.getNext();in!=null && !in.currentObject.equals(start.currentObject);in=in.getNext()){
-						try{
-							InterfaceNode curr = new InterfaceNode(in.currentObject);
-							if(mainID==curr.getMainID())
-								return (int)curr.getID();
+		if(getParentID==null)
+			getParentID=currentHook.getFieldHook("getParentID");
+		if(getParentID!=null){
+			Object data = getParentID.get(currentObject);
+			if(data!=null){
+				int id = (Integer)data * getParentID.getIntMultiplier();
+				if(id!=-1)
+					return id;
+				else{
+					int mainID = getID() >> 0x10;
+					HashTable nc = Client.getInterfaceNodeCache();
+					for(Node start : nc.getBuckets()){
+						for(Node in = start.getNext();in!=null && !in.currentObject.equals(start.currentObject);in=in.getNext()){
+							try{
+								InterfaceNode curr = new InterfaceNode(in.currentObject);
+								if(mainID==curr.getMainID())
+									return (int)curr.getID();
+							}
+							catch(Exception e){}
 						}
-						catch(Exception e){}
 					}
 				}
 			}
@@ -231,222 +425,358 @@ public class InterfaceChild {
 		return -1;
 	}
 	public int getComponentID(){
-		Object data = currentHook.getData("getComponentID", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getComponentID").getMultiplier();
+		if(getComponentID==null)
+			getComponentID=currentHook.getFieldHook("getComponentID");
+		if(getComponentID!=null){
+			Object data = getComponentID.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getComponentID.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getModelID(){
-		Object data = currentHook.getData("getModelID", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getModelID").getMultiplier();
+		if(getModelID==null)
+			getModelID=currentHook.getFieldHook("getModelID");
+		if(getModelID!=null){
+			Object data = getModelID.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getModelID.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getModelZoom(){
-		Object data = currentHook.getData("getModelZoom", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getModelZoom").getMultiplier();
+		if(getModelZoom==null)
+			getModelZoom=currentHook.getFieldHook("getModelZoom");
+		if(getModelZoom!=null){
+			Object data = getModelZoom.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getModelZoom.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getTextColor(){
-		Object data = currentHook.getData("getTextColor", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getTextColor").getMultiplier();
+		if(getTextColor==null)
+			getTextColor=currentHook.getFieldHook("getTextColor");
+		if(getTextColor!=null){
+			Object data = getTextColor.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getTextColor.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getVerticalScrollbarSize(){
-		Object data = currentHook.getData("getVerticalScrollbarSize", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getVerticalScrollbarSize").getMultiplier();
+		if(getVerticalScrollbarSize==null)
+			getVerticalScrollbarSize=currentHook.getFieldHook("getVerticalScrollbarSize");
+		if(getVerticalScrollbarSize!=null){
+			Object data = getVerticalScrollbarSize.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getVerticalScrollbarSize.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getHorizontalScrollbarSize(){
-		Object data = currentHook.getData("getHorizontalScrollbarSize", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getHorizontalScrollbarSize").getMultiplier();
+		if(getHorizontalScrollbarSize==null)
+			getHorizontalScrollbarSize=currentHook.getFieldHook("getHorizontalScrollbarSize");
+		if(getHorizontalScrollbarSize!=null){
+			Object data = getHorizontalScrollbarSize.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getHorizontalScrollbarSize.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getVerticalScrollbarPosition(){
-		Object data = currentHook.getData("getVerticalScrollbarPosition", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getVerticalScrollbarPosition").getMultiplier();
+		if(getVerticalScrollbarPosition==null)
+			getVerticalScrollbarPosition=currentHook.getFieldHook("getVerticalScrollbarPosition");
+		if(getVerticalScrollbarPosition!=null){
+			Object data = getVerticalScrollbarPosition.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getVerticalScrollbarPosition.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getHorizontalScrollbarPosition(){
-		Object data = currentHook.getData("getHorizontalScrollbarPosition", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getHorizontalScrollbarPosition").getMultiplier();
+		if(getHorizontalScrollbarPosition==null)
+			getHorizontalScrollbarPosition=currentHook.getFieldHook("getHorizontalScrollbarPosition");
+		if(getHorizontalScrollbarPosition!=null){
+			Object data = getHorizontalScrollbarPosition.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getHorizontalScrollbarPosition.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getVerticalScrollbarThumbSize(){
-		Object data = currentHook.getData("getVerticalScrollbarThumbSize", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getVerticalScrollbarThumbSize").getMultiplier();
+		if(getVerticalScrollbarThumbSize==null)
+			getVerticalScrollbarThumbSize=currentHook.getFieldHook("getVerticalScrollbarThumbSize");
+		if(getVerticalScrollbarThumbSize!=null){
+			Object data = getVerticalScrollbarThumbSize.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getVerticalScrollbarThumbSize.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getHorizontalScrollbarThumbSize(){
-		Object data = currentHook.getData("getHorizontalScrollbarThumbSize", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getHorizontalScrollbarThumbSize").getMultiplier();
+		if(getHorizontalScrollbarThumbSize==null)
+			getHorizontalScrollbarThumbSize=currentHook.getFieldHook("getHorizontalScrollbarThumbSize");
+		if(getHorizontalScrollbarThumbSize!=null){
+			Object data = getHorizontalScrollbarThumbSize.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getHorizontalScrollbarThumbSize.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getComponentStackSize(){
-		Object data = currentHook.getData("getComponentStackSize", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getComponentStackSize").getMultiplier();
+		if(getComponentStackSize==null)
+			getComponentStackSize=currentHook.getFieldHook("getComponentStackSize");
+		if(getComponentStackSize!=null){
+			Object data = getComponentStackSize.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getComponentStackSize.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getBoundsArrayIndex(){
-		Object data = currentHook.getData("getBoundsArrayIndex", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getBoundsArrayIndex").getMultiplier();
+		if(getBoundsArrayIndex==null)
+			getBoundsArrayIndex=currentHook.getFieldHook("getBoundsArrayIndex");
+		if(getBoundsArrayIndex!=null){
+			Object data = getBoundsArrayIndex.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getBoundsArrayIndex.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getYRotation(){
-		Object data = currentHook.getData("getYRotation", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getYRotation").getMultiplier();
+		if(getYRotation==null)
+			getYRotation=currentHook.getFieldHook("getYRotation");
+		if(getYRotation!=null){
+			Object data = getYRotation.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getYRotation.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getXRotation(){
-		Object data = currentHook.getData("getXRotation", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getXRotation").getMultiplier();
+		if(getXRotation==null)
+			getXRotation=currentHook.getFieldHook("getXRotation");
+		if(getXRotation!=null){
+			Object data = getXRotation.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getXRotation.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getZRotation(){
-		Object data = currentHook.getData("getZRotation", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getZRotation").getMultiplier();
+		if(getZRotation==null)
+			getZRotation=currentHook.getFieldHook("getZRotation");
+		if(getZRotation!=null){
+			Object data = getZRotation.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getZRotation.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getModelType(){
-		Object data = currentHook.getData("getModelType", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getModelType").getMultiplier();
+		if(getModelType==null)
+			getModelType=currentHook.getFieldHook("getModelType");
+		if(getModelType!=null){
+			Object data = getModelType.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getModelType.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getShadowColor(){
-		Object data = currentHook.getData("getShadowColor", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getShadowColor").getMultiplier();
+		if(getShadowColor==null)
+			getShadowColor=currentHook.getFieldHook("getShadowColor");
+		if(getShadowColor!=null){
+			Object data = getShadowColor.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getShadowColor.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getBorderThickness(){
-		Object data = currentHook.getData("getBorderThickness", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getBorderThickness").getMultiplier();
+		if(getBorderThickness==null)
+			getBorderThickness=currentHook.getFieldHook("getBorderThickness");
+		if(getBorderThickness!=null){
+			Object data = getBorderThickness.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getBorderThickness.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getComponentIndex(){
-		Object data = currentHook.getData("getComponentIndex", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getComponentIndex").getMultiplier();
+		if(getComponentIndex==null)
+			getComponentIndex=currentHook.getFieldHook("getComponentIndex");
+		if(getComponentIndex!=null){
+			Object data = getComponentIndex.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getComponentIndex.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getType(){
-		Object data = currentHook.getData("getType", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getType").getMultiplier();
+		if(getType==null)
+			getType=currentHook.getFieldHook("getType");
+		if(getType!=null){
+			Object data = getType.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getType.getIntMultiplier();
+		}
 		return -1;
 	}
 	public int getSpecialType(){
-		Object data = currentHook.getData("getSpecialType", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getSpecialType").getMultiplier();
+		if(getSpecialType==null)
+			getSpecialType=currentHook.getFieldHook("getSpecialType");
+		if(getSpecialType!=null){
+			Object data = getSpecialType.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getSpecialType.getIntMultiplier();
+		}
 		return -1;
 	}
 	public InterfaceChild[] getChildren(){
-		Object data = currentHook.getData("getChildren", currentObject);
-		if(data!=null){
-			ArrayList<InterfaceChild> array = new ArrayList<InterfaceChild>();
-			int i=0;
-			for(Object o : (Object[])data){
-				array.add(new InterfaceChild(o, this, i));
-				i++;
+		if(getChildren==null)
+			getChildren=currentHook.getFieldHook("getChildren");
+		if(getChildren!=null){
+			Object data = getChildren.get(currentObject);
+			if(data!=null){
+				ArrayList<InterfaceChild> array = new ArrayList<InterfaceChild>();
+				int i=0;
+				for(Object o : (Object[])data){
+					array.add(new InterfaceChild(o, this, i));
+					i++;
+				}
+				return array.toArray(new InterfaceChild[]{});
 			}
-			return array.toArray(new InterfaceChild[]{});
 		}
 		return new InterfaceChild[]{};
 	}
 	public String[] getActions(){
-		Object data = currentHook.getData("getActions", currentObject);
-		if(data!=null)
-			return (String[])data;
+		if(getActions==null)
+			getActions=currentHook.getFieldHook("getActions");
+		if(getActions!=null){
+			Object data = getActions.get(currentObject);
+			if(data!=null)
+				return (String[])data;
+		}
 		return new String[]{};
 	}
 	public String getSelectedActionName(){
-		Object data = currentHook.getData("getSelectedActionName", currentObject);
-		if(data!=null)
-			return (String)data;
+		if(getSelectedActionName==null)
+			getSelectedActionName=currentHook.getFieldHook("getSelectedActionName");
+		if(getSelectedActionName!=null){
+			Object data = getSelectedActionName.get(currentObject);
+			if(data!=null)
+				return data.toString();
+		}
 		return "";
 	}
 	public String getComponentName(){
-		Object data = currentHook.getData("getComponentName", currentObject);
-		if(data!=null)
-			return (String)data;
+		if(getComponentName==null)
+			getComponentName=currentHook.getFieldHook("getComponentName");
+		if(getComponentName!=null){
+			Object data = getComponentName.get(currentObject);
+			if(data!=null)
+				return data.toString();
+		}
 		return "";
 	}
 	public String getText(){
-		Object data = currentHook.getData("getText", currentObject);
-		if(data!=null)
-			return (String)data;
+		if(getText==null)
+			getText=currentHook.getFieldHook("getText");
+		if(getText!=null){
+			Object data = getText.get(currentObject);
+			if(data!=null)
+				return data.toString();
+		}
 		return "";
 	}
 	public String getTooltip(){
-		Object data = currentHook.getData("getTooltip", currentObject);
-		if(data!=null)
-			return (String)data;
+		if(getTooltip==null)
+			getTooltip=currentHook.getFieldHook("getTooltip");
+		if(getTooltip!=null){
+			Object data = getTooltip.get(currentObject);
+			if(data!=null)
+				return data.toString();
+		}
 		return "";
 	}
 	public boolean isHidden(){
-		Object data = currentHook.getData("isHidden", currentObject);
-		if(data!=null)
-			return Boolean.parseBoolean(data.toString());
+		if(isHidden==null)
+			isHidden=currentHook.getFieldHook("isHidden");
+		if(isHidden!=null){
+			Object data = isHidden.get(currentObject);
+			if(data!=null)
+				return (Boolean)data;
+		}
 		return false;
 	}
 	public boolean isHovering(){
-		Object data = currentHook.getData("isHovering", currentObject);
-		if(data!=null)
-			return Boolean.parseBoolean(data.toString());
+		if(isHovering==null)
+			isHovering=currentHook.getFieldHook("isHovering");
+		if(isHovering!=null){
+			Object data = isHovering.get(currentObject);
+			if(data!=null)
+				return (Boolean)data;
+		}
 		return false;
 	}
 	public boolean isVisible(){
-		Object data = currentHook.getData("isVisible", currentObject);
-		if(data!=null)
-			return Boolean.parseBoolean(data.toString());
+		if(isVisible==null)
+			isVisible=currentHook.getFieldHook("isVisible");
+		if(isVisible!=null){
+			Object data = isVisible.get(currentObject);
+			if(data!=null)
+				return (Boolean)data;
+		}
 		return false;
 	}
 	public int getDisplayTime(){
-		Object data = currentHook.getData("getDisplayTime", currentObject);
-		if(data!=null)
-			return (Integer)data * currentHook.getFieldHook("getDisplayTime").getMultiplier();
+		if(getDisplayTime==null)
+			getDisplayTime=currentHook.getFieldHook("getDisplayTime");
+		if(getDisplayTime!=null){
+			Object data = getDisplayTime.get(currentObject);
+			if(data!=null)
+				return (Integer)data * getDisplayTime.getIntMultiplier();
+		}
 		return -1;
 	}
 	public boolean isDisplayed(){
 		int curr = getDisplayTime();
-		if(curr>displayTime){
+		if(curr>displayTime && curr>0){
 			displayTime=curr;
 			return true;
 		}
 		return false;
 	}
 	public boolean isVerticallyFlipped(){
-		Object data = currentHook.getData("isVerticallyFlipped", currentObject);
-		if(data!=null)
-			return Boolean.parseBoolean(data.toString());
+		if(isVerticallyFlipped==null)
+			isVerticallyFlipped=currentHook.getFieldHook("isVerticallyFlipped");
+		if(isVerticallyFlipped!=null){
+			Object data = isVerticallyFlipped.get(currentObject);
+			if(data!=null)
+				return (Boolean)data;
+		}
 		return false;
 	}
 	public boolean isHorizontallyFlipped(){
-		Object data = currentHook.getData("isHorizontallyFlipped", currentObject);
-		if(data!=null)
-			return Boolean.parseBoolean(data.toString());
+		if(isHorizontallyFlipped==null)
+			isHorizontallyFlipped=currentHook.getFieldHook("isHorizontallyFlipped");
+		if(isHorizontallyFlipped!=null){
+			Object data = isHorizontallyFlipped.get(currentObject);
+			if(data!=null)
+				return (Boolean)data;
+		}
 		return false;
 	}
 	public boolean isInventoryInterface(){
-		Object data = currentHook.getData("isInventoryInterface", currentObject);
-		if(data!=null)
-			return Boolean.parseBoolean(data.toString());
+		if(isInventoryInterface==null)
+			isInventoryInterface=currentHook.getFieldHook("isInventoryInterface");
+		if(isInventoryInterface!=null){
+			Object data = isInventoryInterface.get(currentObject);
+			if(data!=null)
+				return (Boolean)data;
+		}
 		return false;
 	}
 }

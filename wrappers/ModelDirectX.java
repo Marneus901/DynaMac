@@ -9,16 +9,19 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
 
 public class ModelDirectX extends Model{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
 	public ModelDirectX(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("ModelDirectX");
+		if(currentHook==null)
+			currentHook = Data.runtimeClassHooks.get("ModelDirectX");
+	}
+	public static void resetHooks(){
+		currentHook=null;
 	}
 }

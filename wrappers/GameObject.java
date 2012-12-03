@@ -11,7 +11,7 @@ import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Menu;
 import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Nodes;
-import org.dynamac.enviroment.Data;
+import org.dynamac.environment.Data;
 
 public class GameObject {
 	@SuppressWarnings("unused")
@@ -20,29 +20,7 @@ public class GameObject {
 	private ModelLD model;
 	private int id;
 	private int orientation=0;
-	@SuppressWarnings("unused")//Used to see what type of object GameObject is referencing - do not remove.
 	private Object reference;
-	/*
-	private int x = 0;
-	private int y = 0;
-	private int height = 0;
-	private int width = 0;
-
-
-
-	public int getX() {
-		return this.x;
-	}
-	public int getY() {
-		return this.y;
-	}
-	public int getHeight() {
-		return this.height;
-	}
-	public int getWidth() {
-		return this.width;
-	}*/
-
 	public GameObject(AnimableObject ao){
 		minx=ao.getMinX();
 		miny=ao.getMinY();
@@ -122,14 +100,12 @@ public class GameObject {
 			if(!containsPoint(p)){
 				return false;
 			}
-			//Mouse.moveMouse(p);
 			Mouse.move(p);
 			try {
 				Thread.sleep(100);
 			} catch (Exception e) {
 			}
 			if(Menu.getIndex(action)==0){
-				//Mouse.clickMouse();
 				Mouse.click();
 				for(int i=0;i<20;++i){
 					if(Client.getMouseCrosshairState()==2)
@@ -144,7 +120,6 @@ public class GameObject {
 				return false;
 			}
 			if(Menu.getIndex(action)>0){
-				//Mouse.clickMouse(3);
 				Mouse.rightClick();
 				for(int i=0;i<10;++i){
 					if(Menu.isOpen())
@@ -189,70 +164,7 @@ public class GameObject {
 	}
 	public ModelLD getModel(){
 		return model;
-	}/*
-	public Point getModelPoint() {
-
-		//if(obj == null) return new Point(-1, -1);
-
-		final ModelLD mod = this.getModel();
-
-		final int[] xPoints = mod.getVerticiesX();
-		final int[] yPoints =mod.getVerticiesY();
-		final int[] zPoints =mod.getVerticiesZ();
-
-		final int i = new Random(0).nextInt(mod.getTriangleZ().length);
-
-		final int i1 = mod.getTriangleX()[i],
-				i2 = mod.getTriangleY()[i],
-				i3 = mod.getTriangleZ()[i];
-
-		final int ax = getX(), ay = getY();
-
-		final Point[] indicePoints = new Point[3];
-
-		indicePoints[0] = Calculations.worldToScreen(xPoints[i1] + ax,
-				yPoints[i1] + Calculations.tileHeight(ax, ay),
-				zPoints[i1] + ay);
-
-		indicePoints[1] = Calculations.worldToScreen(xPoints[i2] + ax,
-				yPoints[i2] + Calculations.tileHeight(ax, ay),
-				zPoints[i2] + ay);
-
-		indicePoints[2] = Calculations.worldToScreen(xPoints[i3] + ax,
-				yPoints[i3] + Calculations.tileHeight(ax, ay),
-				zPoints[i3] + ay);
-
-		final int xPoint = blend(min(indicePoints[0].x, indicePoints[1].x, indicePoints[2].x), 
-				max(indicePoints[0].x, indicePoints[1].x, indicePoints[2].x), new Random((long) 0.0).nextInt((int) 1.0));
-
-		final int[][] xIndexes = new int[2][2];
-
-		for(int xIndex = 0, xIndexCount = 0; xIndex < 3 && xIndexCount < 2; xIndex++) {
-			final int x1 = indicePoints[xIndex].x;
-			final int x2 = indicePoints[xIndex == 2 ? 0 : xIndex + 1].x;
-
-			if(Math.min(x1, x2) <= Math.max(x1, x2)) {
-				xIndexes[xIndexCount++] = new int[] {xIndex, xIndex == 2 ? 0 : xIndex + 1};
-			}
-		}
-
-		final int d1 = Math.min(indicePoints[xIndexes[0][0]].x, indicePoints[xIndexes[0][1]].x) +
-				Math.abs(indicePoints[xIndexes[0][0]].x - indicePoints[xIndexes[0][1]].x);
-		final int d2 = Math.min(indicePoints[xIndexes[1][0]].x, indicePoints[xIndexes[1][1]].x) +
-				Math.abs(indicePoints[xIndexes[1][0]].x - indicePoints[xIndexes[1][1]].x);
-
-		final double xRatio1 = d1 == 0 ? 0.0 : xPoint / d1;
-		final double xRatio2 = d2 == 0 ? 0.0 : xPoint / d2;
-
-		final int yLimit1 = (int)(Math.abs(indicePoints[xIndexes[0][0]].y - indicePoints[xIndexes[0][1]].y) * xRatio1);
-		final int yLimit2 = (int)(Math.abs(indicePoints[xIndexes[1][0]].y - indicePoints[xIndexes[1][1]].y) * xRatio2);
-
-		final int yPoint = min(indicePoints[0].y, indicePoints[1].y, 
-				indicePoints[2].y) + new Random(yLimit1).nextInt(yLimit2);
-
-		return new Point(xPoint, yPoint);
-
-	}*/
+	}
 	public String getName(){
 		ObjectDef def = getObjectDef();
 		if(def!=null)
@@ -264,12 +176,12 @@ public class GameObject {
 			Node ref = Nodes.lookup(Client.getRSData().getObjectDefLoaders().getDefCache().getTable(), (long)getID());
 			if(ref==null)
 				return null;
-			if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {
+			if (SoftReference.isInstance(ref.currentObject)){
 				SoftReference sr = new SoftReference(ref.currentObject);
 				Object def = sr.getSoftReference().get();
 				return new ObjectDef(def);
 			}
-			else if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("HardReference").getClassName())) {
+			else if (HardReference.isInstance(ref.currentObject)) {
 				HardReference hr = new HardReference(ref.currentObject);
 				Object def = hr.getHardReference();
 				return new ObjectDef(def);
@@ -374,28 +286,8 @@ public class GameObject {
 			return false;
 		Point p = Calculations.locationToScreen(getLocationX(), getLocationY());
 		return (p.x>0 && p.x<515 && p.y>54 && p.y<388);
-	}/*
-	private int min(final int... values) {
-		int min = values[0];
-		for(final int value : values) {
-			if(value < min) {
-				min = value;
-			}
-		}
-
-		return min;
 	}
-
-	private int max(final int... values) {
-		int max = values[0];
-		for(final int value : values) {
-			if(value > max) {
-				max = value;
-			}
-		}
-
-		return max;
-	}*/
+	
 	public int[][] projectVertices() {
 		float[] data = Calculations.matrixCache;
 		ModelLD model = getModel();
@@ -405,6 +297,22 @@ public class GameObject {
 		try{
 			double locX = (getLocalX()+0.5)*512;
 			double locY = (getLocalY()+0.5)*512;
+			if(reference instanceof AnimatedObject){
+				Interactable inter = ((AnimatedObject)reference).getInteractable();
+				if(inter!=null && inter.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedAnimableObject").getClassName())){
+					Animable anim = new Animable(inter.currentObject);
+					locX = (anim.getMinX()+0.5)*512;
+					locY = (anim.getMinY()+0.5)*512;
+					if(anim.getMinX()!=anim.getMaxX()){
+						locX+=(anim.getMaxX()+0.5)*512;
+						locX/=2;
+					}
+					if(anim.getMinY()!=anim.getMaxY()){
+						locY+=(anim.getMaxY()+0.5)*512;
+						locY/=2;
+					}
+				}
+			}
 			int numVertices = Math.min(model.getVerticiesX().length, Math.min(model.getVerticiesY().length, model.getVerticiesZ().length));
 			int[][] screen = new int[numVertices][3];
 

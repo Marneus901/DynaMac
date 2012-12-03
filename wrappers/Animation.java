@@ -9,24 +9,32 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Animation {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook id;
 	public Animation(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Animation");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Animation");
+			id=currentHook.getFieldHook("getID");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		id=null;
 	}
 	public int getID(){
-		FieldHook fh = currentHook.getFieldHook("getID");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(id==null)
+			id=currentHook.getFieldHook("getID");
+		if(id!=null){
+			Object data = id.get(currentObject);
 			if(data!=null)
-				return (Integer)data * fh.getMultiplier();
+				return (Integer)data * id.getIntMultiplier();
 		}
 		return -1;
 	}

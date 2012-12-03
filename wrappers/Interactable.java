@@ -9,23 +9,31 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Interactable extends EntityNode{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook plane;
 	public Interactable(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Interactable");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Interactable");
+			plane = currentHook.getFieldHook("getPlane");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		plane=null;
 	}
 	public byte getPlane(){
-		FieldHook fh = currentHook.getFieldHook("getPlane");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(plane==null)
+			plane = currentHook.getFieldHook("getPlane");
+		if(plane!=null){
+			Object data = plane.get(currentObject);
 			if(data!=null)
 				return (Byte)data;
 		}

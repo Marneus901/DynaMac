@@ -9,31 +9,43 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class AnimableNode {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook next;
+	private static FieldHook animable;
 	public AnimableNode(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("AnimableNode");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("AnimableNode");
+			next=currentHook.getFieldHook("getNext");
+			animable=currentHook.getFieldHook("getAnimable");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		next=null;
+		animable=null;
 	}
 	public AnimableNode getNext(){
-		FieldHook fh = currentHook.getFieldHook("getNext");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(next==null)
+			next=currentHook.getFieldHook("getNext");
+		if(next!=null){
+			Object data = next.get(currentObject);
 			if(data!=null)
 				return new AnimableNode(data);
 		}
 		return null;
 	}
 	public Animable getAnimable(){
-		FieldHook fh = currentHook.getFieldHook("getAnimable");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(animable==null)
+			animable=currentHook.getFieldHook("getAnimable");
+		if(animable!=null){
+			Object data = animable.get(currentObject);
 			if(data!=null)
 				return new Animable(data);
 		}

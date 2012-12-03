@@ -16,10 +16,16 @@ import org.dynamac.bot.api.wrappers.Interface;
 import org.dynamac.bot.api.wrappers.InterfaceChild;
 
 public class Interfaces {
+	public static Interface get(int index){
+		Interface[] faces = getInterfaces();
+		if(faces.length>index)
+			return faces[index];
+		return null;
+	}
 	public static InterfaceChild get(int index1, int index2){
-		Interface i = getInterfaces()[index1];
+		Interface i = get(index1);
 		if(i!=null){
-			if(i.getChildren().length>=index2){
+			if(i.getChildren().length>index2){
 				return i.getChildren()[index2];
 			}
 		}
@@ -28,13 +34,15 @@ public class Interfaces {
 	public static InterfaceChild getChild(final int id) {
 		final int x = id >> 0x10;
 		final int y = id & 0xffff;
-		return Client.getInterfaceCache()[x].getChildren()[y];
+		return get(x, y);
 	}
 	public static Interface[] getInterfaces(){
 		Interface[] interfaces = Client.getInterfaceCache();
-		for(int i=0;i<interfaces.length;++i)
-			if(!Client.getValidInterfaceArray()[i])
+		for(int i=0;i<interfaces.length;++i){
+			boolean[] valid = Client.getValidInterfaceArray();
+			if(valid.length>i && !valid[i])
 				interfaces[i]=null;
+		}
 		return interfaces;
 	}
 	public static boolean scrollTo(InterfaceChild component, InterfaceChild scrollBar) {

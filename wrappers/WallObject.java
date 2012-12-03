@@ -20,39 +20,36 @@ import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Menu;
 import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Nodes;
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class WallObject extends WallDecoration{
 	public Object currentObject;
-	public ClassHook currentHook;
-	public WallObject(Object o){
-		super(o);
-		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("WallObject");
-	}
+	public static ClassHook currentHook;
+	private static FieldHook id;
+	private static FieldHook model;
+	private static FieldHook objectDefLoader;
 	public WallObject(Object o, int locx, int locy){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("WallObject");
 		locX=locx;
 		locY=locy;
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("WallObject");
+			id=currentHook.getFieldHook("getID");
+			model=currentHook.getFieldHook("getModel");
+			objectDefLoader=currentHook.getFieldHook("getObjectDefLoader");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		id=null;
+		model=null;
+		objectDefLoader=null;
 	}
 	private int locX;
 	private int locY;
-	/*
-	public boolean clickCenterOfModel(){
-		if(isOnScreen() && getLDModel()!=null){
-			Point p = new Point(getCenterOfModel());
-			if(p.x>0 && p.x<515 && p.y>54 && p.y<388){
-				Mouse.clickMouse(p, 1);
-				return true;
-			}
-		}
-		return false;
-	}*/
 	public boolean clickModel(){
 		if(isOnScreen() && getLDModel()!=null){
 			int[][] pts = projectVertices();
@@ -134,12 +131,6 @@ public class WallObject extends WallDecoration{
 		}
 		return Menu.click(action);
 	}
-	/*
-	public Point getCenterOfModel() {
-		Rectangle thetangle = new Rectangle(realBounds(getWireframe()).x, realBounds(getWireframe()).y, realBounds(getWireframe()).height, realBounds(getWireframe()).width);
-		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
-	}*/
-	
 	public Tile getLocation() {
 		return new Tile(getLocationX(), getLocationY(), getPlane());
 	}
@@ -156,11 +147,12 @@ public class WallObject extends WallDecoration{
 		return new Point(-1, -1);
 	}
 	public int getID(){
-		FieldHook fh = currentHook.getFieldHook("getID");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(id==null)
+			id=currentHook.getFieldHook("getID");
+		if(id!=null){
+			Object data = id.get(currentObject);
 			if(data!=null)
-				return (Integer)data * fh.getMultiplier();
+				return ((Integer)data) * id.getIntMultiplier();
 		}
 		return -1;		
 	}
@@ -191,12 +183,12 @@ public class WallObject extends WallDecoration{
 			Node ref = Nodes.lookup(Client.getRSData().getObjectDefLoaders().getDefCache().getTable(), (long)getID());
 			if(ref==null)
 				return null;
-			if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {
+			if (SoftReference.isInstance(ref.currentObject)){
 				SoftReference sr = new SoftReference(ref.currentObject);
 				Object def = sr.getSoftReference().get();
 				return new ObjectDef(def);
 			}
-			else if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("HardReference").getClassName())) {
+			else if (HardReference.isInstance(ref.currentObject)) {
 				HardReference hr = new HardReference(ref.currentObject);
 				Object def = hr.getHardReference();
 				return new ObjectDef(def);
@@ -207,24 +199,25 @@ public class WallObject extends WallDecoration{
 		return null;
 	}
 	public ObjectDefLoader getObjectDefLoader(){
-		FieldHook fh = currentHook.getFieldHook("getObjectDefLoader");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(objectDefLoader==null)
+			objectDefLoader=currentHook.getFieldHook("getObjectDefLoader");
+		if(objectDefLoader!=null){
+			Object data = objectDefLoader.get(currentObject);
 			if(data!=null)
 				return new ObjectDefLoader(data);
 		}
 		return null;
 	}
 	public ModelLD getLDModel(){
-		FieldHook fh = currentHook.getFieldHook("getModel");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(model==null)
+			model=currentHook.getFieldHook("getModel");
+		if(model!=null){
+			Object data = model.get(currentObject);
 			if(data!=null)
 				return new ModelLD(data);
 		}
 		return null;
 	}	
-
 	public Point[] getModelPoints(){
 		ModelLD model = getLDModel();
 		if(model==null)

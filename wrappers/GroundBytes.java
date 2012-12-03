@@ -9,22 +9,30 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class GroundBytes {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook bytes;
 	public GroundBytes(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("GroundBytes");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("GroundBytes");
+			bytes = currentHook.getFieldHook("getBytes");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		bytes=null;
 	}
 	public byte[][][] getBytes(){
-		FieldHook fh = currentHook.getFieldHook("getBytes");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(bytes==null)
+			bytes = currentHook.getFieldHook("getBytes");
+		if(bytes!=null){
+			Object data = bytes.get(currentObject);
 			if(data!=null)
 				return (byte[][][])data;
 		}

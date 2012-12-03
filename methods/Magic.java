@@ -1,8 +1,14 @@
-package org.dynamac.bot.api.wrappers;
+/******************************************************
+* Created by Marneus901                                *
+* © 2012 MarneusScripts.com                            *
+* **************************************************** *
+* Access to this source is unauthorized without prior  *
+* authorization from its appropriate author(s).        *
+* You are not permitted to release, nor distribute this* 
+* work without appropriate author(s) authorization.    *
+********************************************************/
+package org.dynamac.bot.api.methods;
 
-import org.dynamac.bot.api.methods.Client;
-import org.dynamac.bot.api.methods.Mouse;
-import org.dynamac.bot.api.methods.Skills;
 import org.dynamac.bot.api.wrappers.Interface;
 import org.dynamac.bot.api.wrappers.InterfaceChild;
 
@@ -188,7 +194,7 @@ public class Magic {
 		}
 
 		public boolean isSetToAutoCast() {
-			return hasAutoCast() && (Client.getSettings().getData()[108] == autoCastValue);
+			return hasAutoCast() && (Settings.get(108) == autoCastValue);
 		}
 
 		public void setAutoCast() {

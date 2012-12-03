@@ -9,24 +9,32 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class DetailInfo {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook level;
 	public DetailInfo(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("DetailInfo");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("DetailInfo");
+			level = currentHook.getFieldHook("getLevel");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		level=null;
 	}
 	public int getLevel(){
-		FieldHook fh = currentHook.getFieldHook("getLevel");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(level==null)
+			level = currentHook.getFieldHook("getLevel");
+		if(level!=null){
+			Object data = level.get(currentObject);
 			if(data!=null)
-				return (Integer)data;
+				return (Integer)data * level.getIntMultiplier();
 		}
 		return -1;
 	}

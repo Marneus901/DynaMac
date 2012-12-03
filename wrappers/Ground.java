@@ -9,76 +9,108 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Ground {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook floorDecoration;
+	private static FieldHook plane;
+	private static FieldHook boundary1;
+	private static FieldHook boundary2;
+	private static FieldHook wallDecoration1;
+	private static FieldHook wallDecoration2;
+	private static FieldHook animableList;
 	public Ground(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Ground");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Ground");
+			floorDecoration = currentHook.getFieldHook("getFloorDecoration");
+			plane = currentHook.getFieldHook("getPlane");
+			boundary1 = currentHook.getFieldHook("getBoundary1");
+			boundary2 = currentHook.getFieldHook("getBoundary2");
+			wallDecoration1 = currentHook.getFieldHook("getWallDecoration1");
+			wallDecoration2 = currentHook.getFieldHook("getWallDecoration2");
+			animableList = currentHook.getFieldHook("getAnimableList");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		floorDecoration=null;
+		plane=null;
+		boundary1=null;
+		boundary2=null;
+		wallDecoration1=null;
+		wallDecoration2=null;
+		animableList=null;
 	}
 	public FloorDecoration getFloorDecoration(){
-		FieldHook fh = currentHook.getFieldHook("getFloorDecoration");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(floorDecoration==null)
+			floorDecoration = currentHook.getFieldHook("getFloorDecoration");
+		if(floorDecoration!=null){
+			Object data = floorDecoration.get(currentObject);
 			if(data!=null)
 				return new FloorDecoration(data);
 		}
 		return null;		
 	}
 	public byte getPlane(){
-		FieldHook fh = currentHook.getFieldHook("getPlane");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(plane==null)
+			plane = currentHook.getFieldHook("getPlane");
+		if(plane!=null){
+			Object data = plane.get(currentObject);
 			if(data!=null)
 				return (Byte)data;
 		}
 		return -1;		
 	}
 	public Boundary getBoundary1(){
-		FieldHook fh = currentHook.getFieldHook("getBoundary1");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(boundary1==null)
+			boundary1 = currentHook.getFieldHook("getBoundary1");
+		if(boundary1!=null){
+			Object data = boundary1.get(currentObject);
 			if(data!=null)
 				return new Boundary(data);
 		}
 		return null;		
 	}
 	public Boundary getBoundary2(){
-		FieldHook fh = currentHook.getFieldHook("getBoundary2");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(boundary2==null)
+			boundary2 = currentHook.getFieldHook("getBoundary2");
+		if(boundary2!=null){
+			Object data = boundary2.get(currentObject);
 			if(data!=null)
 				return new Boundary(data);
 		}
 		return null;		
 	}
 	public WallDecoration getWallDecoration1(){
-		FieldHook fh = currentHook.getFieldHook("getWallDecoration1");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(wallDecoration1==null)
+			wallDecoration1 = currentHook.getFieldHook("getWallDecoration1");
+		if(wallDecoration1!=null){
+			Object data = wallDecoration1.get(currentObject);
 			if(data!=null)
 				return new WallDecoration(data);
 		}
 		return null;		
 	}
 	public WallDecoration getWallDecoration2(){
-		FieldHook fh = currentHook.getFieldHook("getWallDecoration2");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(wallDecoration2==null)
+			wallDecoration2 = currentHook.getFieldHook("getWallDecoration2");
+		if(wallDecoration2!=null){
+			Object data = wallDecoration2.get(currentObject);
 			if(data!=null)
 				return new WallDecoration(data);
 		}
 		return null;		
 	}
 	public AnimableNode getAnimableList(){
-		FieldHook fh = currentHook.getFieldHook("getAnimableList");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(animableList==null)
+			animableList = currentHook.getFieldHook("getAnimableList");
+		if(animableList!=null){
+			Object data = animableList.get(currentObject);
 			if(data!=null)
 				return new AnimableNode(data);
 		}

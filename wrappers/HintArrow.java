@@ -9,31 +9,43 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class HintArrow {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook headIconIndex;
+	private static FieldHook targetIndex;
 	public HintArrow(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("HintArrow");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("HintArrow");
+			headIconIndex = currentHook.getFieldHook("getHeadIconIndex");
+			targetIndex = currentHook.getFieldHook("getTargetIndex");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		headIconIndex=null;
+		targetIndex=null;
 	}
 	public int getHeadIconIndex(){
-		FieldHook fh = currentHook.getFieldHook("getHeadIconIndex");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(headIconIndex==null)
+			headIconIndex = currentHook.getFieldHook("getHeadIconIndex");
+		if(headIconIndex!=null){
+			Object data = headIconIndex.get(currentObject);
 			if(data!=null)
 				return (Integer)data;
 		}			
 		return -1;
 	}
 	public int getTargetIndex(){
-		FieldHook fh = currentHook.getFieldHook("getTargetIndex");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(targetIndex==null)
+			targetIndex = currentHook.getFieldHook("getTargetIndex");
+		if(targetIndex!=null){
+			Object data = targetIndex.get(currentObject);
 			if(data!=null)
 				return (Integer)data;
 		}			

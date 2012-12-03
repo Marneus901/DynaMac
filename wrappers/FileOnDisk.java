@@ -11,22 +11,30 @@ package org.dynamac.bot.api.wrappers;
 
 import java.io.File;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class FileOnDisk {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook file;
 	public FileOnDisk(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("FileOnDisk");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("FileOnDisk");
+			file = currentHook.getFieldHook("getFile");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		file=null;
 	}
 	public File getFile(){
-		FieldHook fh = currentHook.getFieldHook("getFile");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(file==null)
+			file = currentHook.getFieldHook("getFile");
+		if(file!=null){
+			Object data = file.get(currentObject);
 			if(data!=null)
 				return (File)data;
 		}

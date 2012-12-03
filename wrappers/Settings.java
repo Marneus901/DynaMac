@@ -9,24 +9,32 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Settings {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook data;
 	public Settings(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Settings");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Settings");
+			data = currentHook.getFieldHook("getData");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		data=null;
 	}
 	public int[] getData(){
-		FieldHook fh = currentHook.getFieldHook("getData");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
-			if(data!=null)
-				return (int[])data;
+		if(data==null)
+			data = currentHook.getFieldHook("getData");
+		if(data!=null){
+			Object dat = data.get(currentObject);
+			if(dat!=null)
+				return (int[])dat;
 		}
 		return new int[]{};
 	}

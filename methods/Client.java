@@ -1,19 +1,21 @@
 /******************************************************
-* Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
-* **************************************************** *
-* Access to this source is unauthorized without prior  *
-* authorization from its appropriate author(s).        *
-* You are not permitted to release, nor distribute this* 
-* work without appropriate author(s) authorization.    *
-********************************************************/
+ * Created by Marneus901                                *
+ * © 2012 MarneusScripts.com                            *
+ * **************************************************** *
+ * Access to this source is unauthorized without prior  *
+ * authorization from its appropriate author(s).        *
+ * You are not permitted to release, nor distribute this* 
+ * work without appropriate author(s) authorization.    *
+ ********************************************************/
 package org.dynamac.bot.api.methods;
 
 import java.awt.Rectangle;
 import java.lang.reflect.Array;
 
 import org.dynamac.bot.api.wrappers.BaseInfo;
+import org.dynamac.bot.api.wrappers.Cache;
 import org.dynamac.bot.api.wrappers.DetailInfoNode;
+import org.dynamac.bot.api.wrappers.Facade;
 import org.dynamac.bot.api.wrappers.HashTable;
 import org.dynamac.bot.api.wrappers.HintArrow;
 import org.dynamac.bot.api.wrappers.Info;
@@ -26,14 +28,144 @@ import org.dynamac.bot.api.wrappers.NodeSubQueue;
 import org.dynamac.bot.api.wrappers.ObjectDefLoader;
 import org.dynamac.bot.api.wrappers.Player;
 import org.dynamac.bot.api.wrappers.RenderLD;
-import org.dynamac.bot.api.wrappers.Settings;
 import org.dynamac.bot.api.wrappers.Tile;
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.FieldHook;
-import org.dynamac.rsapplet.canvas.Canvas;
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.FieldHook;
 
+import com.marneusscripts.injection.wrappers.Canvas;
+import com.marneusscripts.injection.wrappers.MouseListener;
 
 public class Client {
+	private static FieldHook rsdata;
+	private static FieldHook cameraPitch;
+	private static FieldHook cameraX;
+	private static FieldHook cameraY;
+	private static FieldHook cameraYaw;
+	private static FieldHook cameraZ;
+	private static FieldHook canvas;
+	private static FieldHook client;
+	private static FieldHook currentMenuGroupNode;
+	private static FieldHook currentAction;
+	private static FieldHook collapsedMenuItems;
+	private static FieldHook destinationX;
+	private static FieldHook destinationY;
+	private static FieldHook detailInfoNode;
+	private static FieldHook facade;
+	private static FieldHook interfaceBoundsArray;
+	private static FieldHook interfaceCache;
+	private static FieldHook interfaceNodeCache;
+	private static FieldHook interfaceIndex;
+	private static FieldHook itemDefLoader;
+	private static FieldHook itemHashTable;
+	private static FieldHook keyboard;
+	private static FieldHook loadedHintArrows;
+	private static FieldHook loginIndex;
+	private static FieldHook loopCycle;
+	private static FieldHook menuItems;
+	private static FieldHook loadedProjectiles;
+	private static FieldHook menuHeight;
+	private static FieldHook menuOptionsCount;
+	private static FieldHook menuOptionsCountCollapsed;
+	private static FieldHook menuWidth;
+	private static FieldHook menuX;
+	private static FieldHook menuY;
+	private static FieldHook minimapAngle;
+	private static FieldHook minimapOffset;
+	private static FieldHook minimapScale;
+	private static FieldHook minimapSetting;
+	private static FieldHook mouse;
+	private static FieldHook mouseCrosshairState;
+	private static FieldHook myPlayer;
+	private static FieldHook nPCCount;
+	private static FieldHook nPCIndexArray;
+	private static FieldHook nPCNodeArray;
+	private static FieldHook nPCNodeCache;
+	private static FieldHook objectDefLoader;
+	private static FieldHook password;
+	private static FieldHook plane;
+	private static FieldHook playerArray;
+	private static FieldHook playerCount;
+	private static FieldHook playerIndexArray;
+	private static FieldHook playerModelCache;
+	private static FieldHook render;
+	private static FieldHook selectedItemName;
+	private static FieldHook subMenuHeight;
+	private static FieldHook subMenuWidth;
+	private static FieldHook subMenuX;
+	private static FieldHook subMenuY;
+	private static FieldHook tileData;
+	private static FieldHook validInterfaceArray;
+	private static FieldHook username;
+	private static FieldHook itemSelected;
+	private static FieldHook menuCollapsed;
+	private static FieldHook menuOpen;
+	private static FieldHook spellSelected;
+	public static void resetHooks(){
+		rsdata=null;
+		cameraPitch=null;
+		cameraX=null;
+		cameraY=null;
+		cameraYaw=null;
+		cameraZ=null;
+		canvas=null;
+		client=null;
+		currentMenuGroupNode=null;
+		currentAction=null;
+		collapsedMenuItems=null;
+		destinationX=null;
+		destinationY=null;
+		detailInfoNode=null;
+		facade=null;
+		interfaceBoundsArray=null;
+		interfaceCache=null;
+		interfaceNodeCache=null;
+		interfaceIndex=null;
+		itemDefLoader=null;
+		itemHashTable=null;
+		keyboard=null;
+		loadedHintArrows=null;
+		loginIndex=null;
+		loopCycle=null;
+		menuItems=null;
+		loadedProjectiles=null;
+		menuHeight=null;
+		menuOptionsCount=null;
+		menuOptionsCountCollapsed=null;
+		menuWidth=null;
+		menuX=null;
+		menuY=null;
+		minimapAngle=null;
+		minimapOffset=null;
+		minimapScale=null;
+		minimapSetting=null;
+		mouse=null;
+		mouseCrosshairState=null;
+		myPlayer=null;
+		nPCCount=null;
+		nPCIndexArray=null;
+		nPCNodeArray=null;
+		nPCNodeCache=null;
+		objectDefLoader=null;
+		password=null;
+		plane=null;
+		playerArray=null;
+		playerCount=null;
+		playerIndexArray=null;
+		playerModelCache=null;
+		render=null;
+		selectedItemName=null;
+		subMenuHeight=null;
+		subMenuWidth=null;
+		subMenuX=null;
+		subMenuY=null;
+		tileData=null;
+		validInterfaceArray=null;
+		username=null;
+		itemSelected=null;
+		menuCollapsed=null;
+		menuOpen=null;
+		spellSelected=null;
+	}
 	public static int getBaseX(){
 		Info rsdata = getRSData();
 		if(rsdata!=null){
@@ -55,90 +187,100 @@ public class Client {
 		return -1;
 	}
 	public static int getCameraPitch(){
-		FieldHook fh = Data.runtimeStaticFields.get("getCameraPitch");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(cameraPitch==null)
+			cameraPitch = Data.staticFieldHooks.get("getCameraPitch");
+		if(cameraPitch!=null){
+			Object data = cameraPitch.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * cameraPitch.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getCameraX(){
-		FieldHook fh = Data.runtimeStaticFields.get("getCameraX");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(cameraX==null)
+			cameraX = Data.staticFieldHooks.get("getCameraX");
+		if(cameraX!=null){
+			Object data = cameraX.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * cameraX.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getCameraY(){
-		FieldHook fh = Data.runtimeStaticFields.get("getCameraY");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(cameraY==null)
+			cameraY = Data.staticFieldHooks.get("getCameraY");
+		if(cameraY!=null){
+			Object data = cameraY.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * cameraY.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getCameraYaw(){
-		FieldHook fh = Data.runtimeStaticFields.get("getCameraYaw");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(cameraYaw==null)
+			cameraYaw = Data.staticFieldHooks.get("getCameraYaw");
+		if(cameraYaw!=null){
+			Object data = cameraYaw.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * cameraYaw.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getCameraZ(){
-		FieldHook fh = Data.runtimeStaticFields.get("getCameraZ");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(cameraZ==null)
+			cameraZ = Data.staticFieldHooks.get("getCameraZ");
+		if(cameraZ!=null){
+			Object data = cameraZ.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * cameraZ.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static Canvas getCanvas(){
-		FieldHook fh = Data.runtimeStaticFields.get("getCanvas");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(canvas==null)
+			canvas = Data.staticFieldHooks.get("getCanvas");
+		if(canvas!=null){
+			Object data = canvas.get(Data.clientBootClass);
 			if(data!=null)
 				return (Canvas)data;
 		}
 		return null;
 	}
 	public static Object getClient(){
-		FieldHook fh = Data.runtimeStaticFields.get("getClient");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(client==null)
+			client = Data.staticFieldHooks.get("getClient");
+		if(client!=null){
+			Object data = client.get(Data.clientBootClass);
 			if(data!=null)
 				return data;
 		}
 		return null;
 	}
 	public static NodeSubQueue getCollapsedMenuItems(){
-		FieldHook fh = Data.runtimeStaticFields.get("getCollapsedMenuItems");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(collapsedMenuItems==null)
+			collapsedMenuItems = Data.staticFieldHooks.get("getCollapsedMenuItems");
+		if(collapsedMenuItems!=null){
+			Object data = collapsedMenuItems.get(Data.clientBootClass);
 			if(data!=null)
 				return new NodeSubQueue(data);
 		}
 		return null;
 	}
 	public static String getCurrentAction(){
-		FieldHook fh = Data.runtimeStaticFields.get("getCurrentAction");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(currentAction==null)
+			currentAction = Data.staticFieldHooks.get("getCurrentAction");
+		if(currentAction!=null){
+			Object data = currentAction.get(Data.clientBootClass);
 			if(data!=null)
 				return data.toString();
 		}
 		return "";
 	}
 	public static MenuGroupNode getCurrentMenuGroupNode(){
-		FieldHook fh = Data.runtimeStaticFields.get("getCurrentMenuGroupNode");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(currentMenuGroupNode==null)
+			currentMenuGroupNode = Data.staticFieldHooks.get("getCurrentMenuGroupNode");
+		if(currentMenuGroupNode!=null){
+			Object data = currentMenuGroupNode.get(Data.clientBootClass);
 			if(data!=null)
 				return new MenuGroupNode(data);
 		}
@@ -152,64 +294,66 @@ public class Client {
 		return new Tile(-1, -1);
 	}
 	public static int getDestinationX(){
-		FieldHook fh = Data.runtimeStaticFields.get("getDestinationX");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(destinationX==null)
+			destinationX = Data.staticFieldHooks.get("getDestinationX");
+		if(destinationX!=null){
+			Object data = destinationX.get(Data.clientBootClass);
 			if(data!=null){
-				Info rsdata = getRSData();
-				if(rsdata!=null){
-					BaseInfo baseinfo = rsdata.getBaseInfo();
-					if(baseinfo!=null){
-						int localDest = (((Integer)data) * fh.getMultiplier());
-						if(localDest!=-1)
-							return localDest + baseinfo.getX();
-					}
-				}
+				int localDest = (((Integer)data) * destinationX.getIntMultiplier());
+				if(localDest>0)
+					return localDest + getBaseX();
 			}
 		}
 		return -1;
 	}
 	public static int getDestinationY(){
-		FieldHook fh = Data.runtimeStaticFields.get("getDestinationY");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(destinationY==null)
+			destinationY = Data.staticFieldHooks.get("getDestinationY");
+		if(destinationY!=null){
+			Object data = destinationY.get(Data.clientBootClass);
 			if(data!=null){
-				Info rsdata = getRSData();
-				if(rsdata!=null){
-					BaseInfo baseinfo = rsdata.getBaseInfo();
-					if(baseinfo!=null){
-						int localDest = (((Integer)data) * fh.getMultiplier());
-						localDest/=4;
-						if(localDest!=-1)
-							return localDest + baseinfo.getY();
-					}
-				}
+				int localDest = (((Integer)data) * destinationY.getIntMultiplier());
+				if(localDest>0)
+					return localDest + getBaseY();
 			}
 		}
 		return -1;
 	}
 	public static DetailInfoNode getDetailInfoNode(){
-		FieldHook fh = Data.runtimeStaticFields.get("getDetailInfoNode");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(detailInfoNode==null)
+			detailInfoNode = Data.staticFieldHooks.get("getDetailInfoNode");
+		if(detailInfoNode!=null){
+			Object data = detailInfoNode.get(Data.clientBootClass);
 			if(data!=null)
 				return new DetailInfoNode(data);
 		}
 		return null;
 	}
+	public static Facade getFacade(){
+		if(facade==null)
+			facade = Data.staticFieldHooks.get("getFacade");
+		if(facade!=null){
+			Object data = facade.get(Data.clientBootClass);
+			if(data!=null)
+				return new Facade(data);
+		}
+		return null;
+	}
 	public static Rectangle[] getInterfaceBoundsArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getInterfaceBoundsArray");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(interfaceBoundsArray==null)
+			interfaceBoundsArray = Data.staticFieldHooks.get("getInterfaceBoundsArray");
+		if(interfaceBoundsArray!=null){
+			Object data = interfaceBoundsArray.get(Data.clientBootClass);
 			if(data!=null)
 				return (Rectangle[])data;
 		}
 		return new Rectangle[]{};
 	}
 	public static Interface[] getInterfaceCache(){
-		FieldHook fh = Data.runtimeStaticFields.get("getInterfaceCache");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(interfaceCache==null)
+			interfaceCache = Data.staticFieldHooks.get("getInterfaceCache");
+		if(interfaceCache!=null){
+			Object data = interfaceCache.get(Data.clientBootClass);
 			if(data!=null){
 				Interface[] array = new Interface[Array.getLength(data)];
 				for(int i=0;i<array.length;++i){
@@ -230,72 +374,60 @@ public class Client {
 		return new Interface[]{};
 	}
 	public static HashTable getInterfaceNodeCache(){
-		FieldHook fh = Data.runtimeStaticFields.get("getInterfaceNodeCache");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(interfaceNodeCache==null)
+			interfaceNodeCache = Data.staticFieldHooks.get("getInterfaceNodeCache");
+		if(interfaceNodeCache!=null){
+			Object data = interfaceNodeCache.get(Data.clientBootClass);
 			if(data!=null)
 				return new HashTable(data);
 		}
 		return null;
 	}
 	public static int getInterfaceIndex(){
-		FieldHook fh = Data.runtimeStaticFields.get("getInterfaceIndex");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(interfaceIndex==null)
+			interfaceIndex = Data.staticFieldHooks.get("getInterfaceIndex");
+		if(interfaceIndex!=null){
+			Object data = interfaceIndex.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * interfaceIndex.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static ItemDefLoader getItemDefLoader(){
-		FieldHook fh = Data.runtimeStaticFields.get("getItemDefLoader");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(itemDefLoader==null)
+			destinationY = Data.staticFieldHooks.get("getItemDefLoader");
+		if(itemDefLoader!=null){
+			Object data = itemDefLoader.get(Data.clientBootClass);
 			if(data!=null)
 				return new ItemDefLoader(data);
 		}
 		return null;
 	}
 	public static HashTable getItemHashTable(){
-		FieldHook fh = Data.runtimeStaticFields.get("getItemHashTable");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(itemHashTable==null)
+			itemHashTable = Data.staticFieldHooks.get("getItemHashTable");
+		if(itemHashTable!=null){
+			Object data = itemHashTable.get(Data.clientBootClass);
 			if(data!=null)
 				return new HashTable(data);
 		}
 		return null;
 	}
 	public static Object getKeyboard(){
-		FieldHook fh = Data.runtimeStaticFields.get("getKeyboard");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(keyboard==null)
+			keyboard = Data.staticFieldHooks.get("getKeyboard");
+		if(keyboard!=null){
+			Object data = keyboard.get(Data.clientBootClass);
 			if(data!=null)
 				return data;
 		}
 		return null;
 	}
-	public static int[] getLevelArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getSkillLevels");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return (int[])data;
-		}
-		return new int[]{};
-	}
-	public static int[] getLevelExpArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getLevelExpArray");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return (int[])data;
-		}
-		return new int[]{};
-	}
 	public static HintArrow[] getLoadedHintArrows(){
-		FieldHook fh = Data.runtimeStaticFields.get("getLoadedHintArrows");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(loadedHintArrows==null)
+			loadedHintArrows = Data.staticFieldHooks.get("getLoadedHintArrows");
+		if(loadedHintArrows!=null){
+			Object data = loadedHintArrows.get(Data.clientBootClass);
 			if(data!=null){
 				HintArrow[] array = new HintArrow[Array.getLength(data)];
 				for(int i=0;i<array.length;++i)
@@ -306,189 +438,200 @@ public class Client {
 		return new HintArrow[]{};
 	}
 	public static int getLoginIndex(){
-		FieldHook fh = Data.runtimeStaticFields.get("getLoginIndex");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(loginIndex==null)
+			loginIndex = Data.staticFieldHooks.get("getLoginIndex");
+		if(loginIndex!=null){
+			Object data = loginIndex.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * loginIndex.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getLoopCycle(){
-		FieldHook fh = Data.runtimeStaticFields.get("getLoopCycle");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(loopCycle==null)
+			loopCycle = Data.staticFieldHooks.get("getLoopCycle");
+		if(loopCycle!=null){
+			Object data = loopCycle.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * loopCycle.getIntMultiplier();
 		}
 		return -1;
 	}
-	public static int[] getMaxLevelArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMaxLevelArray");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return (int[])data;
-		}
-		return new int[]{};
-	}
 	public static NodeList getMenuItems(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMenuItems");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(menuItems==null)
+			menuItems = Data.staticFieldHooks.get("getMenuItems");
+		if(menuItems!=null){
+			Object data = menuItems.get(Data.clientBootClass);
 			if(data!=null)
 				return new NodeList(data);
 		}
 		return null;
 	}
 	public static NodeList getLoadedProjectiles(){
-		FieldHook fh = Data.runtimeStaticFields.get("getLoadedProjectiles");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(loadedProjectiles==null)
+			loadedProjectiles = Data.staticFieldHooks.get("getLoadedProjectiles");
+		if(loadedProjectiles!=null){
+			Object data = loadedProjectiles.get(Data.clientBootClass);
 			if(data!=null)
 				return new NodeList(data);
 		}
 		return null;
 	}
 	public static int getMenuHeight(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMenuHeight");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(menuHeight==null)
+			menuHeight = Data.staticFieldHooks.get("getMenuHeight");
+		if(menuHeight!=null){
+			Object data = menuHeight.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * menuHeight.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getMenuOptionsCount(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMenuOptionsCount");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(menuOptionsCount==null)
+			menuOptionsCount = Data.staticFieldHooks.get("getMenuOptionsCount");
+		if(menuOptionsCount!=null){
+			Object data = menuOptionsCount.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * menuOptionsCount.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getMenuOptionsCountCollapsed(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMenuOptionsCountCollapsed");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(menuOptionsCountCollapsed==null)
+			menuOptionsCountCollapsed = Data.staticFieldHooks.get("getMenuOptionsCountCollapsed");
+		if(menuOptionsCountCollapsed!=null){
+			Object data = menuOptionsCountCollapsed.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * menuOptionsCountCollapsed.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getMenuWidth(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMenuWidth");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(menuWidth==null)
+			menuWidth = Data.staticFieldHooks.get("getMenuWidth");
+		if(menuWidth!=null){
+			Object data = menuWidth.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier()-2;
+				return ((Integer)data) * menuWidth.getIntMultiplier()-2;
 		}
 		return -1;
 	}
 	public static int getMenuX(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMenuX");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(menuX==null)
+			menuX = Data.staticFieldHooks.get("getMenuX");
+		if(menuX!=null){
+			Object data = menuX.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier() + 1;
+				return ((Integer)data) * menuX.getIntMultiplier() + 1;
 		}
 		return -1;
 	}
 	public static int getMenuY(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMenuY");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(menuY==null)
+			menuY = Data.staticFieldHooks.get("getMenuY");
+		if(menuY!=null){
+			Object data = menuY.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * menuY.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static float getMinimapAngle(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMinimapAngle");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(minimapAngle==null)
+			minimapAngle = Data.staticFieldHooks.get("getMinimapAngle");
+		if(minimapAngle!=null){
+			Object data = minimapAngle.get(Data.clientBootClass);
 			if(data!=null)
 				return (Float)data;
 		}
 		return -1;
 	}
 	public static int getMinimapOffset(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMinimapOffset");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(minimapOffset==null)
+			minimapOffset = Data.staticFieldHooks.get("getMinimapOffset");
+		if(minimapOffset!=null){
+			Object data = minimapOffset.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * minimapOffset.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getMinimapScale(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMinimapScale");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(minimapScale==null)
+			minimapScale = Data.staticFieldHooks.get("getMinimapScale");
+		if(minimapScale!=null){
+			Object data = minimapScale.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * minimapScale.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getMinimapSetting(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMinimapSetting");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(minimapSetting==null)
+			minimapSetting = Data.staticFieldHooks.get("getMinimapSetting");
+		if(minimapSetting!=null){
+			Object data = minimapSetting.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * minimapSetting.getIntMultiplier();
 		}
 		return -1;
 	}
-	public static Object getMouse(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMouse");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+	public static MouseListener getMouse(){
+		if(mouse==null)
+			mouse = Data.staticFieldHooks.get("getMouse");
+		if(mouse!=null){
+			Object data = mouse.get(Data.clientBootClass);
 			if(data!=null)
-				return data;
+				return (MouseListener) data;
 		}
 		return null;
 	}
 	public static int getMouseCrosshairState(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMouseCrosshairState");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(mouseCrosshairState==null)
+			mouseCrosshairState = Data.staticFieldHooks.get("getMouseCrosshairState");
+		if(mouseCrosshairState!=null){
+			Object data = mouseCrosshairState.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * mouseCrosshairState.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static Player getMyPlayer(){
-		FieldHook fh = Data.runtimeStaticFields.get("getMyPlayer");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(myPlayer==null)
+			myPlayer = Data.staticFieldHooks.get("getMyPlayer");
+		if(myPlayer!=null){
+			Object data = myPlayer.get(Data.clientBootClass);
 			if(data!=null)
 				return new Player(data);
 		}
 		return null;
 	}
 	public static int getNPCCount(){
-		FieldHook fh = Data.runtimeStaticFields.get("getNPCCount");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(nPCCount==null)
+			nPCCount = Data.staticFieldHooks.get("getNPCCount");
+		if(nPCCount!=null){
+			Object data = nPCCount.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * nPCCount.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int[] getNPCIndexArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getNPCIndexArray");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(nPCIndexArray==null)
+			nPCIndexArray = Data.staticFieldHooks.get("getNPCIndexArray");
+		if(nPCIndexArray!=null){
+			Object data = nPCIndexArray.get(Data.clientBootClass);
 			if(data!=null)
 				return (int[])data;
 		}
 		return new int[]{};
 	}
 	public static NPCNode[] getNPCNodeArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getNPCNodeArray");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(nPCNodeArray==null)
+			nPCNodeArray = Data.staticFieldHooks.get("getNPCNodeArray");
+		if(nPCNodeArray!=null){
+			Object data = nPCNodeArray.get(Data.clientBootClass);
 			if(data!=null){
 				NPCNode[] array = new NPCNode[Array.getLength(data)];
 				for(int i=0;i<array.length;++i)
@@ -499,45 +642,50 @@ public class Client {
 		return new NPCNode[]{};
 	}
 	public static HashTable getNPCNodeCache(){
-		FieldHook fh = Data.runtimeStaticFields.get("getNPCNodeCache");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(nPCNodeCache==null)
+			nPCNodeCache = Data.staticFieldHooks.get("getNPCNodeCache");
+		if(nPCNodeCache!=null){
+			Object data = nPCNodeCache.get(Data.clientBootClass);
 			if(data!=null)
 				return new HashTable(data);
 		}
 		return null;
 	}
 	public static ObjectDefLoader getObjectDefLoader(){
-		FieldHook fh = Data.runtimeStaticFields.get("getObjectDefLoader");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(objectDefLoader==null)
+			objectDefLoader = Data.staticFieldHooks.get("getObjectDefLoader");
+		if(objectDefLoader!=null){
+			Object data = objectDefLoader.get(Data.clientBootClass);
 			if(data!=null)
 				return new ObjectDefLoader(data);
 		}
 		return null;
 	}
 	public static String getPassword(){
-		FieldHook fh = Data.runtimeStaticFields.get("getPassword");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(password==null)
+			password = Data.staticFieldHooks.get("getPassword");
+		if(password!=null){
+			Object data = password.get(Data.clientBootClass);
 			if(data!=null)
 				return data.toString();
 		}
 		return "";
 	}
 	public static int getPlane(){
-		FieldHook fh = Data.runtimeStaticFields.get("getPlane");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(plane==null)
+			plane = Data.staticFieldHooks.get("getPlane");
+		if(plane!=null){
+			Object data = plane.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * plane.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static Player[] getPlayerArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getPlayerArray");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(playerArray==null)
+			playerArray = Data.staticFieldHooks.get("getPlayerArray");
+		if(playerArray!=null){
+			Object data = playerArray.get(Data.clientBootClass);
 			if(data!=null){
 				Player[] array = new Player[Array.getLength(data)];
 				for(int i=0;i<array.length;++i)
@@ -548,153 +696,140 @@ public class Client {
 		return new Player[]{};
 	}
 	public static int getPlayerCount(){
-		FieldHook fh = Data.runtimeStaticFields.get("getPlayerCount");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(playerCount==null)
+			playerCount = Data.staticFieldHooks.get("getPlayerCount");
+		if(playerCount!=null){
+			Object data = playerCount.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * playerCount.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int[] getPlayerIndexArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getPlayerIndexArray");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(playerIndexArray==null)
+			playerIndexArray = Data.staticFieldHooks.get("getPlayerIndexArray");
+		if(playerIndexArray!=null){
+			Object data = playerIndexArray.get(Data.clientBootClass);
 			if(data!=null)
 				return (int[])data;
 		}
 		return new int[]{};
 	}
+	public static Cache getPlayerModels(){
+		if(playerModelCache==null)
+			playerModelCache = Data.staticFieldHooks.get("getPlayerModels");
+		if(playerModelCache!=null){
+			Object data = playerModelCache.get(Data.clientBootClass);
+			if(data!=null)
+				return new Cache(data);
+		}
+		return null;
+	}
 	public static RenderLD getRenderLD(){
-		FieldHook fh = Data.runtimeStaticFields.get("getRender");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(render==null)
+			render = Data.staticFieldHooks.get("getRender");
+		if(render!=null){
+			Object data = render.get(Data.clientBootClass);
 			if(data!=null)
 				return new RenderLD(data);
 		}
 		return null;
 	}
 	public static Info getRSData(){
-		FieldHook fh = Data.runtimeStaticFields.get("getRSData");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(rsdata==null)
+			rsdata = Data.staticFieldHooks.get("getRSData");
+		if(rsdata!=null){
+			Object data = rsdata.get(Data.clientBootClass);
 			if(data!=null)
 				return new Info(data);
 		}
 		return null;
 	}
 	public static String getSelectedItemName(){
-		FieldHook fh = Data.runtimeStaticFields.get("getSelectedItemName");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(selectedItemName==null)
+			selectedItemName = Data.staticFieldHooks.get("getSelectedItemName");
+		if(selectedItemName!=null){
+			Object data = selectedItemName.get(Data.clientBootClass);
 			if(data!=null)
 				return data.toString();
 		}
 		return "";
 	}
-	public static Settings getSettings(){
-		FieldHook fh = Data.runtimeStaticFields.get("getSettings");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return new Settings(data);
-		}
-		return null;
-	}
-	public static int[] getSkillExperienceMaxes(){
-		FieldHook fh = Data.runtimeStaticFields.get("getSkillExperienceMaxes");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return (int[])data;
-		}
-		return new int[]{};
-	}
-	public static int[] getSkillLevels(){
-		FieldHook fh = Data.runtimeStaticFields.get("getSkillLevels");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return (int[])data;
-		}
-		return new int[]{};
-	}
-	public static int[] getSkillLevelMaxesArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getSkillLevelMaxesArray");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
-			if(data!=null)
-				return (int[])data;
-		}
-		return new int[]{};
-	}
 	public static int getSubMenuHeight(){
-		FieldHook fh = Data.runtimeStaticFields.get("getSubMenuHeight");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(subMenuHeight==null)
+			subMenuHeight = Data.staticFieldHooks.get("getSubMenuHeight");
+		if(subMenuHeight!=null){
+			Object data = subMenuHeight.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * subMenuHeight.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getSubMenuWidth(){
-		FieldHook fh = Data.runtimeStaticFields.get("getSubMenuWidth");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(subMenuWidth==null)
+			subMenuWidth = Data.staticFieldHooks.get("getSubMenuWidth");
+		if(subMenuWidth!=null){
+			Object data = subMenuWidth.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * subMenuWidth.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getSubMenuX(){
-		FieldHook fh = Data.runtimeStaticFields.get("getSubMenuX");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(subMenuX==null)
+			subMenuX = Data.staticFieldHooks.get("getSubMenuX");
+		if(subMenuX!=null){
+			Object data = subMenuX.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * subMenuX.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static int getSubMenuY(){
-		FieldHook fh = Data.runtimeStaticFields.get("getSubMenuY");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(subMenuY==null)
+			subMenuY = Data.staticFieldHooks.get("getSubMenuY");
+		if(subMenuY!=null){
+			Object data = subMenuY.get(Data.clientBootClass);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * subMenuY.getIntMultiplier();
 		}
 		return -1;
 	}
 	public static float[] getTileData(){
-		FieldHook fh = Data.runtimeStaticFields.get("getTileData");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(tileData==null)
+			tileData = Data.staticFieldHooks.get("getTileData");
+		if(tileData!=null){
+			Object data = tileData.get(Data.clientBootClass);
 			if(data!=null)
 				return (float[])data;
 		}
 		return new float[]{};
 	}
 	public static boolean[] getValidInterfaceArray(){
-		FieldHook fh = Data.runtimeStaticFields.get("getValidInterfaceArray");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(validInterfaceArray==null)
+			validInterfaceArray = Data.staticFieldHooks.get("getValidInterfaceArray");
+		if(validInterfaceArray!=null){
+			Object data = validInterfaceArray.get(Data.clientBootClass);
 			if(data!=null)
 				return (boolean[])data;
 		}
 		return new boolean[]{};
 	}
 	public static String getUsername(){
-		FieldHook fh = Data.runtimeStaticFields.get("getUsername");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(username==null)
+			username = Data.staticFieldHooks.get("getUsername");
+		if(username!=null){
+			Object data = username.get(Data.clientBootClass);
 			if(data!=null)
 				return data.toString();
 		}
 		return "";
 	}
 	public static boolean isItemSelected(){
-		FieldHook fh = Data.runtimeStaticFields.get("isItemSelected");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(itemSelected==null)
+			itemSelected = Data.staticFieldHooks.get("isItemSelected");
+		if(itemSelected!=null){
+			Object data = itemSelected.get(Data.clientBootClass);
 			if(data!=null)
 				return (Boolean)data;
 		}
@@ -709,27 +844,30 @@ public class Client {
 		}
 	}
 	public static boolean isMenuCollapsed(){
-		FieldHook fh = Data.runtimeStaticFields.get("isMenuCollapsed");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(menuCollapsed==null)
+			menuCollapsed = Data.staticFieldHooks.get("isMenuCollapsed");
+		if(menuCollapsed!=null){
+			Object data = menuCollapsed.get(Data.clientBootClass);
 			if(data!=null)
 				return (Boolean)data;
 		}
 		return false;
 	}
 	public static boolean isMenuOpen(){
-		FieldHook fh = Data.runtimeStaticFields.get("isMenuOpen");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(menuOpen==null)
+			menuOpen = Data.staticFieldHooks.get("isMenuOpen");
+		if(menuOpen!=null){
+			Object data = menuOpen.get(Data.clientBootClass);
 			if(data!=null)
 				return (Boolean)data;
 		}
 		return false;
 	}
 	public static boolean isSpellSelected(){
-		FieldHook fh = Data.runtimeStaticFields.get("isSpellSelected");
-		if(fh!=null){
-			Object data = fh.getData(Data.CLIENT);
+		if(spellSelected==null)
+			spellSelected = Data.staticFieldHooks.get("isSpellSelected");
+		if(spellSelected!=null){
+			Object data = spellSelected.get(Data.clientBootClass);
 			if(data!=null)
 				return (Boolean)data;
 		}

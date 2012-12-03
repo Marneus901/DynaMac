@@ -9,25 +9,33 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class InterfaceNode extends Node{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook mainID;
 	public InterfaceNode(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("InterfaceNode");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("InterfaceNode");
+			mainID = currentHook.getFieldHook("getMainID");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		mainID=null;
 	}
 	public int getMainID(){
-		FieldHook fh = currentHook.getFieldHook("getMainID");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(mainID==null)
+			mainID = currentHook.getFieldHook("getMainID");
+		if(mainID!=null){
+			Object data = mainID.get(currentObject);
 			if(data!=null)
-				return (Integer)data * fh.getMultiplier();
+				return (Integer)data * mainID.getIntMultiplier();
 		}
 		return -1;		
 	}

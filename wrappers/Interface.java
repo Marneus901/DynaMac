@@ -11,28 +11,39 @@ package org.dynamac.bot.api.wrappers;
 
 import java.lang.reflect.Array;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Interface {
 	public int index;
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook children;
 	public Interface(int i, Object o){
 		index=i;
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Interface");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Interface");
+			children = currentHook.getFieldHook("getChildren");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		children=null;
 	}
 	public InterfaceChild[] getChildren(){
-		FieldHook fh = currentHook.getFieldHook("getChildren");
-		if(fh!=null){
-			Object array = fh.getData(currentObject);
+		if(children==null)
+			children = currentHook.getFieldHook("getChildren");
+		if(children!=null){
+			Object array = children.get(currentObject);
 			if(array!=null){
 				InterfaceChild[] children = new InterfaceChild[Array.getLength(array)];
-				for(int i=0;i<children.length;++i)
-					children[i] = new InterfaceChild(Array.get(array, i), this, i);
+				for(int i=0;i<children.length;++i){
+					Object data = Array.get(array, i);
+					if(data!=null)
+						children[i] = new InterfaceChild(data, this, i);
+				}
 				return children;
 			}
 		}

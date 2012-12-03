@@ -11,44 +11,16 @@ package org.dynamac.bot.api.wrappers;
 
 import org.dynamac.environment.Data;
 import org.dynamac.reflection.ClassHook;
-import org.dynamac.reflection.FieldHook;
 
-public class InteractableLocation {
+public class FileWorker {
 	public Object currentObject;
 	public static ClassHook currentHook;
-	private static FieldHook x;
-	private static FieldHook y;
-	public InteractableLocation(Object o){
+	public FileWorker(Object o){
 		currentObject = o;
-		if(currentHook==null){
-			currentHook = Data.runtimeClassHooks.get("InteractableLocation");
-			x = currentHook.getFieldHook("getX");
-			y = currentHook.getFieldHook("getY");
-		}
+		if(currentHook==null)
+			currentHook = Data.runtimeClassHooks.get("FileWorker");
 	}
 	public static void resetHooks(){
 		currentHook=null;
-		x=null;
-		y=null;
-	}
-	public float getX(){
-		if(x==null)
-			x = currentHook.getFieldHook("getX");
-		if(x!=null){
-			Object data = x.get(currentObject);
-			if(data!=null)
-				return (Float)data;
-		}
-		return -1;
-	}
-	public float getY(){
-		if(y==null)
-			y = currentHook.getFieldHook("getY");
-		if(y!=null){
-			Object data = y.get(currentObject);
-			if(data!=null)
-				return (Float)data;
-		}
-		return -1;
 	}
 }

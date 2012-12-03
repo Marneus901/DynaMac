@@ -11,91 +11,38 @@ import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Menu;
 import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Nodes;
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class AnimatedObject{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private int localX;
+	private int localY;
+	private static FieldHook id;
+	private static FieldHook interactable;
+	private static FieldHook objectDefLoader;
+	private static FieldHook orientation;
 	public AnimatedObject(Object data, short x, short y) {
 		localX=x;
 		localY=y;
 		currentObject = data;
-		currentHook = Data.indentifiedClasses.get("AnimatedObject");
-	}
-	private int localX;
-	private int localY;
-	/*
-	public Rectangle realBounds(Polygon[] polys) {
-		int maxheight = -9999999;
-		int minheight = 9999999;
-		int maxwidth = -9999999;
-		int minwidth = 9999999;
-		int maxX = -9999999;
-		int minX = 9999999;
-		int maxY = -9999999;
-		int minY = 9999999;
-
-		for(Polygon p : polys) {
-			if(p.getBounds().height > maxheight) {
-				maxheight = p.getBounds().height;
-			} else if(p.getBounds().height < minheight) {
-				minheight = p.getBounds().height;
-			}
-			if(p.getBounds().width > maxwidth) {
-				maxwidth = p.getBounds().width;
-			} else if(p.getBounds().width < minwidth) {
-				minwidth = p.getBounds().width;
-			}
-			if(p.getBounds().x > maxX) {
-				maxX = p.getBounds().x;
-			} else if(p.getBounds().x < minX) {
-				minX = p.getBounds().x;
-			}
-			if(p.getBounds().y > maxY) {
-				maxY = p.getBounds().y;
-			} else if(p.getBounds().y < minY) {
-				minY = p.getBounds().y;
-			}
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("AnimatedObject");
+			id=currentHook.getFieldHook("getID");
+			interactable=currentHook.getFieldHook("getInteractable");
+			objectDefLoader=currentHook.getFieldHook("getObjectDefLoader");
+			orientation=currentHook.getFieldHook("getOrientation");
 		}
-		return new Rectangle(((maxX + minX)/2), ((maxY + minY)/2), ((maxwidth + minwidth)/2), ((maxheight + minheight)/2));
 	}
-	
-	public Point getCenterOfModel() {
-		Rectangle thetangle = new Rectangle(realBounds(getWireframe()).x, realBounds(getWireframe()).y, realBounds(getWireframe()).height, realBounds(getWireframe()).width);
-		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
-	}*/
-	
-	public boolean clickModel(){
-		if(isOnScreen() && getLDModel()!=null){
-			int[][] pts = projectVertices();
-			int randInd = new Random().nextInt(pts.length);
-			Point p = new Point(pts[randInd][0], pts[randInd][1]);
-			if(p.x>0 && p.x<515 && p.y>54 && p.y<388){
-				Mouse.move(p);
-				try {
-					Thread.sleep(100);
-				} catch (Exception e) {
-				}
-				Mouse.click();
-				return true;
-			}
-		}
-		return false;
+	public static void resetHooks(){
+		currentHook=null;
+		id=null;
+		interactable=null;
+		objectDefLoader=null;
+		orientation=null;
 	}
-	/*
-	public boolean clickCenterOfModel(){
-		if(isOnScreen() && getLDModel()!=null){
-			Point p = new Point(getCenterOfModel());
-			if(p.x>0 && p.x<515 && p.y>54 && p.y<388){
-				Mouse.clickMouse(p, 1);
-				return true;
-			}
-		}
-		return false;
-	}*/
-	
 	public boolean clickTile(){
 		if(isOnScreen()){
 			Polygon p = Calculations.getTilePolygon(getLocationX(), getLocationY());
@@ -173,18 +120,20 @@ public class AnimatedObject{
 		return new Point(-1, -1);
 	}
 	public int getID(){
-		FieldHook fh = currentHook.getFieldHook("getID");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(id==null)
+			id = currentHook.getFieldHook("getID");
+		if(id!=null){
+			Object data = id.get(currentObject);
 			if(data!=null)
-				return (Integer)data * fh.getMultiplier();
+				return (Integer)data * id.getIntMultiplier();
 		}
 		return -1;
 	}
 	public Interactable getInteractable(){
-		FieldHook fh = currentHook.getFieldHook("getInteractable");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(interactable==null)
+			interactable = currentHook.getFieldHook("getInteractable");
+		if(interactable!=null){
+			Object data = interactable.get(currentObject);
 			if(data!=null)
 				return new Interactable(data);
 		}
@@ -195,12 +144,12 @@ public class AnimatedObject{
 			Node ref = Nodes.lookup(Client.getRSData().getObjectDefLoaders().getDefCache().getTable(), (long)getID());
 			if(ref==null)
 				return null;
-			if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {
+			if (ref.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("SoftReference").getClassName())) {
 				SoftReference sr = new SoftReference(ref.currentObject);
 				Object def = sr.getSoftReference().get();
 				return new ObjectDef(def);
 			}
-			else if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("HardReference").getClassName())) {
+			else if (ref.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("HardReference").getClassName())) {
 				HardReference hr = new HardReference(ref.currentObject);
 				Object def = hr.getHardReference();
 				return new ObjectDef(def);
@@ -215,7 +164,7 @@ public class AnimatedObject{
 	}
 	public int getLocationX(){
 		try{
-			return localX+Client.getRSData().getBaseInfo().getX();
+			return localX+Client.getBaseX();
 		}
 		catch(Exception e){
 			return -1;
@@ -223,7 +172,7 @@ public class AnimatedObject{
 	}
 	public int getLocationY(){
 		try{
-			return localY+Client.getRSData().getBaseInfo().getY();
+			return localY+Client.getBaseY();
 		}
 		catch(Exception e){
 			return -1;
@@ -236,9 +185,10 @@ public class AnimatedObject{
 		return localY;
 	}
 	public ObjectDefLoader getObjectDefLoader(){
-		FieldHook fh = currentHook.getFieldHook("getObjectDefLoader");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(objectDefLoader==null)
+			objectDefLoader = currentHook.getFieldHook("getObjectDefLoader");
+		if(objectDefLoader!=null){
+			Object data = objectDefLoader.get(currentObject);
 			if(data!=null)
 				return new ObjectDefLoader(data);
 		}
@@ -252,11 +202,13 @@ public class AnimatedObject{
 				Node model = Nodes.lookup(modelCache.getTable(), getModelHash());
 				if(model!=null){
 					Object def=null;
-					if (model.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {
+					if (SoftReference.isInstance(model.currentObject)){
 						SoftReference sr = new SoftReference(model.currentObject);
-						def = sr.getSoftReference().get();
+						java.lang.ref.SoftReference<?> realRef = sr.getSoftReference();
+						if(realRef!=null)
+							def = realRef.get();
 					}
-					else if (model.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("HardReference").getClassName())) {
+					else if (HardReference.isInstance(model.currentObject)) {
 						HardReference hr = new HardReference(model.currentObject);
 						def = hr.getHardReference();
 					}
@@ -320,11 +272,10 @@ public class AnimatedObject{
 		return pts.toArray(new Point[]{});
 	}
 	public int getOrientation(){
-		FieldHook fh = currentHook.getFieldHook("getOrientation");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(orientation!=null){
+			Object data = orientation.get(currentObject);
 			if(data!=null)
-				return (Integer)data * fh.getMultiplier();
+				return (Integer)data * orientation.getIntMultiplier();
 		}
 		return 0;
 	}
@@ -379,7 +330,7 @@ public class AnimatedObject{
 			double locX = (localX+0.5)*512;
 			double locY = (localY+0.5)*512;
 			Interactable inter = getInteractable();
-			if(inter!=null && inter.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("AnimatedAnimableObject").getClassName())){
+			if(inter!=null && inter.currentObject.getClass().getName().equals(Data.runtimeClassHooks.get("AnimatedAnimableObject").getClassName())){
 				Animable anim = new Animable(inter.currentObject);
 				locX = (anim.getMinX()+0.5)*512;
 				locY = (anim.getMinY()+0.5)*512;

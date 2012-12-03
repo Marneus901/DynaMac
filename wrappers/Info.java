@@ -9,60 +9,84 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Info {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook groundInfo;
+	private static FieldHook baseInfo;
+	private static FieldHook groundBytes;
+	private static FieldHook groundData;
+	private static FieldHook objectDefLoader;
 	public Info(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Info");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Info");
+			groundInfo = currentHook.getFieldHook("getGroundInfo");
+			baseInfo = currentHook.getFieldHook("getBaseInfo");
+			groundBytes = currentHook.getFieldHook("getGroundBytes");
+			groundData = currentHook.getFieldHook("getGroundData");
+			objectDefLoader = currentHook.getFieldHook("getObjectDefLoaders");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		groundInfo=null;
+		baseInfo=null;
+		groundBytes=null;
+		groundData=null;
+		objectDefLoader=null;
 	}
 	public GroundInfo getGroundInfo(){
-		FieldHook fh = currentHook.getFieldHook("getGroundInfo");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(groundInfo==null)
+			groundInfo = currentHook.getFieldHook("getGroundInfo");
+		if(groundInfo!=null){
+			Object data = groundInfo.get(currentObject);
 			if(data!=null)
-				return new GroundInfo(fh.getData(currentObject));
+				return new GroundInfo(data);
 		}
 		return null;		
 	}
 	public BaseInfo getBaseInfo(){
-		FieldHook fh = currentHook.getFieldHook("getBaseInfo");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(baseInfo==null)
+			baseInfo = currentHook.getFieldHook("getBaseInfo");
+		if(baseInfo!=null){
+			Object data = baseInfo.get(currentObject);
 			if(data!=null)
-				return new BaseInfo(fh.getData(currentObject));
+				return new BaseInfo(data);
 		}
 		return null;		
 	}
 	public GroundBytes getGroundBytes(){
-		FieldHook fh = currentHook.getFieldHook("getGroundBytes");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(groundBytes==null)
+			groundBytes = currentHook.getFieldHook("getGroundBytes");
+		if(groundBytes!=null){
+			Object data = groundBytes.get(currentObject);
 			if(data!=null)
-				return new GroundBytes(fh.getData(currentObject));
+				return new GroundBytes(data);
 		}
 		return null;		
 	}
 	public GroundData getGroundData(){
-		FieldHook fh = currentHook.getFieldHook("getGroundData");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(groundData==null)
+			groundData = currentHook.getFieldHook("getGroundData");
+		if(groundData!=null){
+			Object data = groundData.get(currentObject);
 			if(data!=null)
-				return new GroundData(fh.getData(currentObject));
+				return new GroundData(data);
 		}
 		return null;		
 	}
 	public ObjectDefLoader getObjectDefLoaders(){
-		FieldHook fh = currentHook.getFieldHook("getObjectDefLoaders");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(objectDefLoader==null)
+			objectDefLoader = currentHook.getFieldHook("getObjectDefLoaders");
+		if(objectDefLoader!=null){
+			Object data = objectDefLoader.get(currentObject);
 			if(data!=null)
-				return new ObjectDefLoader(fh.getData(currentObject));
+				return new ObjectDefLoader(data);
 		}
 		return null;		
 	}

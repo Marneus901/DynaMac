@@ -29,7 +29,11 @@ public class Players {
 		return Client.getMyPlayer();
 	}
 	public static Player[] getPlayerArray(){
-		return Client.getPlayerArray();
+		ArrayList<Player> players = new ArrayList<Player>();
+		for(Player p : Client.getPlayerArray())
+			if(p!=null)
+				players.add(p);
+		return players.toArray(new Player[]{});
 	}
 	public static Player getPlayerByID(int id){
 		for(Player p : getPlayerArray()){

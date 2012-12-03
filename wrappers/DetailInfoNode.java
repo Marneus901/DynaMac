@@ -9,16 +9,19 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
 
 public class DetailInfoNode extends Node{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
 	public DetailInfoNode(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("DetailInfoNode");
+		if(currentHook==null)
+			currentHook = Data.runtimeClassHooks.get("DetailInfoNode");
+	}
+	public static void resetHooks(){
+		currentHook=null;
 	}
 }

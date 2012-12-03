@@ -1,3 +1,12 @@
+/******************************************************
+* Created by Marneus901                                *
+* © 2012 MarneusScripts.com                            *
+* **************************************************** *
+* Access to this source is unauthorized without prior  *
+* authorization from its appropriate author(s).        *
+* You are not permitted to release, nor distribute this* 
+* work without appropriate author(s) authorization.    *
+********************************************************/
 package org.dynamac.bot.api.walking;
 
 import java.awt.Color;
@@ -10,7 +19,7 @@ import org.dynamac.bot.api.methods.Players;
 import org.dynamac.bot.api.methods.Walking;
 import org.dynamac.bot.api.wrappers.Player;
 import org.dynamac.bot.api.wrappers.Tile;
-import org.dynamac.enviroment.Data;
+import org.dynamac.environment.Data;
 
 public class TheWalker {
 	private static Thread walker = null;
@@ -139,7 +148,7 @@ public class TheWalker {
 			long timer = System.currentTimeMillis();
 			Tile lastTile = Players.getMyPlayer().getLocation();
 			int randomReturn = Calculations.random(5, 8);
-			while (Calculations.distanceTo(tile) > distanceTo && Data.currentScript!=null) {
+			while (Client.isLoggedIn() && Calculations.distanceTo(tile) > distanceTo && Data.currentScript!=null) {
 				if(Data.currentScript.isPaused){
 					sleep(500);
 					continue;

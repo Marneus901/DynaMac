@@ -9,33 +9,45 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class BaseInfo {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook x;
+	private static FieldHook y;
 	public BaseInfo(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("BaseInfo");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("BaseInfo");
+			x=currentHook.getFieldHook("getX");
+			y=currentHook.getFieldHook("getY");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		x=null;
+		y=null;
 	}
 	public int getX(){
-		FieldHook fh = currentHook.getFieldHook("getX");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(x==null)
+			x=currentHook.getFieldHook("getX");
+		if(x!=null){
+			Object data = x.get(currentObject);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * x.getIntMultiplier();
 		}
 		return -1;
 	}
 	public int getY(){
-		FieldHook fh = currentHook.getFieldHook("getY");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(y==null)
+			y=currentHook.getFieldHook("getY");
+		if(y!=null){
+			Object data = y.get(currentObject);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * y.getIntMultiplier();
 		}
 		return -1;
 	}

@@ -20,28 +20,36 @@ import org.dynamac.bot.api.methods.Client;
 import org.dynamac.bot.api.methods.Menu;
 import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.bot.api.methods.Nodes;
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class BoundaryObject extends Boundary{
 	public Object currentObject;
-	public ClassHook currentHook;
-	public BoundaryObject(Object o){
-		super(o);
-		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("BoundaryObject");
-	}
+	public static ClassHook currentHook;
+	private int locX;
+	private int locY;
+	private static FieldHook id;
+	private static FieldHook model;
+	private static FieldHook objectDefLoader;
 	public BoundaryObject(Object o, int locx, int locy){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("BoundaryObject");
 		locX=locx;
 		locY=locy;
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("BoundaryObject");
+			id=currentHook.getFieldHook("getID");
+			model=currentHook.getFieldHook("getModel");
+			objectDefLoader=currentHook.getFieldHook("getObjectDefLoader");
+		}
 	}
-	private int locX;
-	private int locY;
+	public static void resetHooks(){
+		currentHook=null;
+		id=null;
+		model=null;
+		objectDefLoader=null;
+	}
 	public boolean clickModel(){
 		if(isOnScreen() && getLDModel()!=null){
 			int[][] pts = projectVertices();
@@ -122,12 +130,7 @@ public class BoundaryObject extends Boundary{
 			}
 		}
 		return Menu.click(action);
-	}/*
-	public Point getCenterOfModel() {
-		Polygon[] wireframe = getWireframe();
-		Rectangle thetangle = new Rectangle(realBounds(wireframe).x, realBounds(wireframe).y, realBounds(wireframe).height, realBounds(wireframe).width);
-		return new Point((int)thetangle.getCenterX(), (int)thetangle.getCenterY());
-	}*/
+	}
 	public Point getRandomPoint(){
 		try{
 			int[][] pts = projectVertices();
@@ -141,17 +144,18 @@ public class BoundaryObject extends Boundary{
 		return new Point(-1, -1);
 	}
 	public int getID(){
-		FieldHook fh = currentHook.getFieldHook("getID");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(id==null)
+			id=currentHook.getFieldHook("getID");
+		if(id!=null){
+			Object data = id.get(currentObject);
 			if(data!=null)
-				return ((Integer)data) * fh.getMultiplier();
+				return ((Integer)data) * id.getIntMultiplier();
 		}
 		return -1;		
 	}
 	public int getLocationX(){
 		try{
-			return locX+Client.getRSData().getBaseInfo().getX();
+			return locX+Client.getBaseX();
 		}
 		catch(Exception e){
 			return -1;
@@ -159,7 +163,7 @@ public class BoundaryObject extends Boundary{
 	}
 	public int getLocationY(){
 		try{
-			return locY+Client.getRSData().getBaseInfo().getY();
+			return locY+Client.getBaseY();
 		}
 		catch(Exception e){
 			return -1;
@@ -180,12 +184,12 @@ public class BoundaryObject extends Boundary{
 			Node ref = Nodes.lookup(Client.getRSData().getObjectDefLoaders().getDefCache().getTable(), (long)getID());
 			if(ref==null)
 				return null;
-			if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("SoftReference").getClassName())) {
+			if (SoftReference.isInstance(ref.currentObject)){
 				SoftReference sr = new SoftReference(ref.currentObject);
 				Object def = sr.getSoftReference().get();
 				return new ObjectDef(def);
 			}
-			else if (ref.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("HardReference").getClassName())) {
+			else if (HardReference.isInstance(ref.currentObject)) {
 				HardReference hr = new HardReference(ref.currentObject);
 				Object def = hr.getHardReference();
 				return new ObjectDef(def);
@@ -196,18 +200,20 @@ public class BoundaryObject extends Boundary{
 		return null;
 	}
 	public ObjectDefLoader getObjectDefLoader(){
-		FieldHook fh = currentHook.getFieldHook("getObjectDefLoader");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(objectDefLoader==null)
+			objectDefLoader=currentHook.getFieldHook("getObjectDefLoader");
+		if(objectDefLoader!=null){
+			Object data = objectDefLoader.get(currentObject);
 			if(data!=null)
 				return new ObjectDefLoader(data);
 		}
 		return null;
 	}
 	public ModelLD getLDModel(){
-		FieldHook fh = currentHook.getFieldHook("getModel");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(model==null)
+			model=currentHook.getFieldHook("getModel");
+		if(model!=null){
+			Object data = model.get(currentObject);
 			if(data!=null)
 				return new ModelLD(data);
 		}

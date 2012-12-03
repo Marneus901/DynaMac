@@ -9,6 +9,9 @@
  ********************************************************/
 package org.dynamac.bot.api.methods;
 
+import org.dynamac.bot.api.wrappers.Facade;
+import org.dynamac.bot.api.wrappers.SkillInfo;
+
 public class Skills {
 	public static int[] XP_TABLE = {0, 0, 83, 174, 276, 388, 512, 650, 801, 969, 1154, 1358, 1584, 1833, 2107,
 		2411, 2746, 3115, 3523, 3973, 4470, 5018, 5624, 6291, 7028, 7842, 8740, 9730, 10824, 12031, 13363, 14833,
@@ -73,9 +76,16 @@ public class Skills {
 		return getLevel(getSkillExperience(index));
 	}
 	public static int getSkillExperience(int index){
-		int[] exps = Client.getLevelExpArray();
-		if(exps.length>index)
-			return exps[index];
+		Facade fac = Client.getFacade();
+		if(fac!=null){
+			SkillInfo[] array = fac.getSkillArray();
+			if(array.length>index){
+				SkillInfo skill = array[index];
+				if(skill!=null){
+					return skill.getExperience();
+				}
+			}
+		}
 		return -1;
 	}
 	public static int getSkillIndex(String statName) {
@@ -85,15 +95,29 @@ public class Skills {
 		return -1;
 	}
 	public static int getSkillLevel(int index){
-		int[] levels = Client.getLevelArray();
-		if(levels.length>index)
-			return levels[index];
+		Facade fac = Client.getFacade();
+		if(fac!=null){
+			SkillInfo[] array = fac.getSkillArray();
+			if(array.length>index){
+				SkillInfo skill = array[index];
+				if(skill!=null){
+					return skill.getCurrentLevel();
+				}
+			}
+		}
 		return -1;
 	}
 	public static int getSkillMaxLevel(int index){
-		int[] maxes = Client.getMaxLevelArray();
-		if(maxes.length>index)
-			return maxes[index];
+		Facade fac = Client.getFacade();
+		if(fac!=null){
+			SkillInfo[] array = fac.getSkillArray();
+			if(array.length>index){
+				SkillInfo skill = array[index];
+				if(skill!=null){
+					return skill.getMaxLevel();
+				}
+			}
+		}
 		return -1;
 	}
 	public static String getSkillName(int index) {

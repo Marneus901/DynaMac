@@ -11,22 +11,30 @@ package org.dynamac.bot.api.wrappers;
 
 import java.lang.reflect.Array;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class HashTable {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook buckets;
 	public HashTable(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("HashTable");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("HashTable");
+			buckets = currentHook.getFieldHook("getBuckets");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		buckets=null;
 	}
 	public Node[] getBuckets(){
-		FieldHook fh = currentHook.getFieldHook("getBuckets");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(buckets==null)
+			buckets = currentHook.getFieldHook("getBuckets");
+		if(buckets!=null){
+			Object data = buckets.get(currentObject);
 			Node[] nodes = new Node[Array.getLength(data)];
 			for(int i=0;i<nodes.length;++i)
 				nodes[i]=new Node(Array.get(data, i));

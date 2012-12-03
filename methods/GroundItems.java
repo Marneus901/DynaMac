@@ -1,3 +1,12 @@
+/******************************************************
+* Created by Marneus901                                *
+* © 2012 MarneusScripts.com                            *
+* **************************************************** *
+* Access to this source is unauthorized without prior  *
+* authorization from its appropriate author(s).        *
+* You are not permitted to release, nor distribute this* 
+* work without appropriate author(s) authorization.    *
+********************************************************/
 package org.dynamac.bot.api.methods;
 
 import java.util.ArrayList;
@@ -9,7 +18,6 @@ import org.dynamac.bot.api.wrappers.Node;
 import org.dynamac.bot.api.wrappers.NodeList;
 import org.dynamac.bot.api.wrappers.NodeListCache;
 import org.dynamac.bot.api.wrappers.Tile;
-import org.dynamac.enviroment.Data;
 
 public class GroundItems {
 	public static GroundItem[] getAll() {
@@ -38,7 +46,7 @@ public class GroundItems {
 			NodeList nodeList = cache.getNodeList();
 			Node tail = nodeList.getTail();
 			for(Node curr = tail.getPrevious();curr!=null && !curr.currentObject.equals(tail.currentObject);curr=curr.getPrevious()){	
-				if(curr.currentObject.getClass().getName().equals(Data.indentifiedClasses.get("Item").getClassName())){
+				if(Item.isInstance(curr.currentObject)){
 					items.add(new GroundItem(x, y, new Item(curr.currentObject)));
 				}
 			}	

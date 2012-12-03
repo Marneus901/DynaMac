@@ -9,31 +9,43 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class EntityNode {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook next;
+	private static FieldHook previous;
 	public EntityNode(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("EntityNode");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("EntityNode");
+			next = currentHook.getFieldHook("getNext");
+			previous = currentHook.getFieldHook("getPrevious");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		next=null;
+		previous=null;
 	}
 	public EntityNode getNext(){
-		FieldHook fh = currentHook.getFieldHook("getNext");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(next==null)
+			next = currentHook.getFieldHook("getNext");
+		if(next!=null){
+			Object data = next.get(currentObject);
 			if(data!=null)
 				return new EntityNode(data);
 		}
 		return null;
 	}
 	public EntityNode getPrevious(){
-		FieldHook fh = currentHook.getFieldHook("getPrevious");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(previous==null)
+			previous = currentHook.getFieldHook("getPrevious");
+		if(previous!=null){
+			Object data = previous.get(currentObject);
 			if(data!=null)
 				return new EntityNode(data);
 		}

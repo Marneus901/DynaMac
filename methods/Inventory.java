@@ -1,3 +1,12 @@
+/******************************************************
+* Created by Marneus901                                *
+* © 2012 MarneusScripts.com                            *
+* **************************************************** *
+* Access to this source is unauthorized without prior  *
+* authorization from its appropriate author(s).        *
+* You are not permitted to release, nor distribute this* 
+* work without appropriate author(s) authorization.    *
+********************************************************/
 package org.dynamac.bot.api.methods;
 
 import java.util.ArrayList;
@@ -36,7 +45,7 @@ public class Inventory {
 		Interface inventory = Client.getInterfaceCache()[763];
 		if(inventory!=null && inventory.getChildren().length>0){
 			InterfaceChild inventoryItems = inventory.getChildren()[0];
-			if(inventoryItems!=null){
+			if(inventoryItems!=null && inventoryItems.getChildren().length>slotIndex){
 				return new InterfaceItem(inventoryItems.getChildren()[slotIndex]);
 			}
 		}
@@ -44,7 +53,7 @@ public class Inventory {
 			inventory = Client.getInterfaceCache()[679];
 			if(inventory!=null && inventory.getChildren().length>0){
 				InterfaceChild inventoryItems = inventory.getChildren()[0];
-				if(inventoryItems!=null){
+				if(inventoryItems!=null && inventoryItems.getChildren().length>slotIndex){
 					return new InterfaceItem(inventoryItems.getChildren()[slotIndex]);
 				}
 			}
@@ -83,7 +92,7 @@ public class Inventory {
 	}   
 	public static InterfaceItem[] getItems(){
 		ArrayList<InterfaceItem> items = new ArrayList<InterfaceItem>();
-		Interface inventory = Client.getInterfaceCache()[763];
+		Interface inventory = Interfaces.get(763);
 		if(inventory!=null && inventory.getChildren().length>0){
 			InterfaceChild inventoryItems = inventory.getChildren()[0];
 			if(inventoryItems!=null){
@@ -97,7 +106,7 @@ public class Inventory {
 			}
 		}
 		else{
-			inventory = Client.getInterfaceCache()[679];
+			inventory = Interfaces.get(679);
 			if(inventory!=null && inventory.getChildren().length>0){
 				InterfaceChild inventoryItems = inventory.getChildren()[0];
 				if(inventoryItems!=null){

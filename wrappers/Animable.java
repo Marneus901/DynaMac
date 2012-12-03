@@ -9,50 +9,70 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Animable extends Interactable{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook minX;
+	private static FieldHook minY;
+	private static FieldHook maxX;
+	private static FieldHook maxY;
 	public Animable(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Animable");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Animable");
+			minX=currentHook.getFieldHook("getMinX");
+			minY=currentHook.getFieldHook("getMinY");
+			maxX=currentHook.getFieldHook("getMaxX");
+			maxY=currentHook.getFieldHook("getMaxY");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		minX=null;
+		minY=null;
+		maxX=null;
+		maxY=null;
 	}
 	public short getMinX(){
-		FieldHook fh = currentHook.getFieldHook("getMinX");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(minX==null)
+			minX=currentHook.getFieldHook("getMinX");
+		if(minX!=null){
+			Object data = minX.get(currentObject);
 			if(data!=null)
 				return (Short)data;
 		}
 		return -1;
 	}
 	public short getMaxX(){
-		FieldHook fh = currentHook.getFieldHook("getMaxX");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(maxX==null)
+			maxX=currentHook.getFieldHook("getMaxX");
+		if(maxX!=null){
+			Object data = maxX.get(currentObject);
 			if(data!=null)
 				return (Short)data;
 		}
 		return -1;
 	}
 	public short getMinY(){
-		FieldHook fh = currentHook.getFieldHook("getMinY");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(minY==null)
+			minY=currentHook.getFieldHook("getMinY");
+		if(minY!=null){
+			Object data = minY.get(currentObject);
 			if(data!=null)
 				return (Short)data;
 		}
 		return -1;
 	}
 	public short getMaxY(){
-		FieldHook fh = currentHook.getFieldHook("getMaxY");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(maxY==null)
+			maxY=currentHook.getFieldHook("getMaxY");
+		if(maxY!=null){
+			Object data = maxY.get(currentObject);
 			if(data!=null)
 				return (Short)data;
 		}

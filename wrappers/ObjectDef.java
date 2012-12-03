@@ -9,49 +9,69 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class ObjectDef {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook actions;
+	private static FieldHook id;
+	private static FieldHook name;
+	private static FieldHook defLoader;
 	public ObjectDef(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("ObjectDef");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("ObjectDef");
+			actions = currentHook.getFieldHook("getActions");
+			id = currentHook.getFieldHook("getID");
+			name = currentHook.getFieldHook("getName");
+			defLoader = currentHook.getFieldHook("getObjectDefLoader");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		actions=null;
+		id=null;
+		name=null;
+		defLoader=null;
 	}
 	public String[] getActions(){
-		FieldHook fh = currentHook.getFieldHook("getActions");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(actions==null)
+			actions = currentHook.getFieldHook("getActions");
+		if(actions!=null){
+			Object data = actions.get(currentObject);
 			if(data!=null)
 				return (String[])data;
 		}
 		return new String[]{};
 	}
 	public int getID(){
-		FieldHook fh = currentHook.getFieldHook("getID");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(id==null)
+			id = currentHook.getFieldHook("getID");
+		if(id!=null){
+			Object data = id.get(currentObject);
 			if(data!=null)
-				return (Integer)data * fh.getMultiplier();
+				return (Integer)data * id.getIntMultiplier();
 		}
 		return -1;
 	}
 	public String getName(){
-		FieldHook fh = currentHook.getFieldHook("getName");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(name==null)
+			name = currentHook.getFieldHook("getName");
+		if(name!=null){
+			Object data = name.get(currentObject);
 			if(data!=null)
 				return data.toString();
 		}
 		return "";
 	}
 	public ObjectDefLoader getObjectDefLoader(){
-		FieldHook fh = currentHook.getFieldHook("getObjectDefLoader");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(defLoader==null)
+			defLoader = currentHook.getFieldHook("getObjectDefLoader");
+		if(defLoader!=null){
+			Object data = defLoader.get(currentObject);
 			if(data!=null)
 				return new ObjectDefLoader(data);
 		}

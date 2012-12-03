@@ -9,15 +9,18 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
 
 public class Keyboard {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
 	public Keyboard(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Keyboard");
+		if(currentHook==null)
+			currentHook = Data.runtimeClassHooks.get("Keyboard");
+	}
+	public static void resetHooks(){
+		currentHook=null;
 	}
 }

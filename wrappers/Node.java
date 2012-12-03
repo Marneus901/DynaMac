@@ -9,33 +9,48 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class Node {
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook id;
+	private static FieldHook next;
+	private static FieldHook previous;
 	public Node(Object o){
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("Node");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("Node");
+			id = currentHook.getFieldHook("getID");
+			next = currentHook.getFieldHook("getNext");
+			previous = currentHook.getFieldHook("getPrevious");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		id=null;
+		next=null;
+		previous=null;
 	}
 	public long getID(){
-		FieldHook fh = currentHook.getFieldHook("getID");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(id==null)
+			id = currentHook.getFieldHook("getID");
+		if(id!=null){
+			Object data = id.get(currentObject);
 			if(data!=null)
-				return ((Long)data) * fh.getLongMultiplier();
+				return ((Long)data) * id.getLongMultiplier();
 		}
 		return -1;
 	}
 	public Node getNext(){
-		FieldHook fh = currentHook.getFieldHook("getNext");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(next==null)
+		next = currentHook.getFieldHook("getNext");
+		if(next!=null){
+			Object data = next.get(currentObject);
 			if(data!=null){
-				if(data.getClass().getName().equals(Data.indentifiedClasses.get("MenuItemNode").getClassName()))
+				if(data.getClass().getName().equals(Data.runtimeClassHooks.get("MenuItemNode").getClassName()))
 					return new MenuItemNode(data);
 				return new Node(data);
 			}
@@ -43,11 +58,12 @@ public class Node {
 		return null;
 	}
 	public Node getPrevious(){
-		FieldHook fh = currentHook.getFieldHook("getPrevious");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(previous==null)	
+			previous = currentHook.getFieldHook("getPrevious");
+		if(previous!=null){
+			Object data = previous.get(currentObject);
 			if(data!=null){
-				if(data.getClass().getName().equals(Data.indentifiedClasses.get("MenuItemNode").getClassName()))
+				if(data.getClass().getName().equals(Data.runtimeClassHooks.get("MenuItemNode").getClassName()))
 					return new MenuItemNode(data);
 				return new Node(data);
 			}

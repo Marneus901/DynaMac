@@ -9,23 +9,31 @@
 ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
-import org.dynamac.enviroment.Data;
-import org.dynamac.enviroment.hook.ClassHook;
-import org.dynamac.enviroment.hook.FieldHook;
-
+import org.dynamac.environment.Data;
+import org.dynamac.reflection.ClassHook;
+import org.dynamac.reflection.FieldHook;
 
 public class NPCNode extends Node{
 	public Object currentObject;
-	public ClassHook currentHook;
+	public static ClassHook currentHook;
+	private static FieldHook npc;
 	public NPCNode(Object o){
 		super(o);
 		currentObject = o;
-		currentHook = Data.indentifiedClasses.get("NPCNode");
+		if(currentHook==null){
+			currentHook = Data.runtimeClassHooks.get("NPCNode");
+			npc = currentHook.getFieldHook("getNPC");
+		}
+	}
+	public static void resetHooks(){
+		currentHook=null;
+		npc=null;
 	}
 	public NPC getNPC(){
-		FieldHook fh = currentHook.getFieldHook("getNPC");
-		if(fh!=null){
-			Object data = fh.getData(currentObject);
+		if(npc==null)
+			npc = currentHook.getFieldHook("getNPC");
+		if(npc!=null){
+			Object data = npc.get(currentObject);
 			if(data!=null)
 				return new NPC(data);
 		}
