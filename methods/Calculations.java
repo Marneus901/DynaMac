@@ -38,9 +38,13 @@ public class Calculations {
 		return distanceTo(t.getX(), t.getY());
 	}
 	public static double distanceTo(int x, int y) {
-		int x2 = Client.getMyPlayer().getLocationX();
-		int y2 = Client.getMyPlayer().getLocationY();
-		return Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
+		Player p = Client.getMyPlayer();
+		if(p!=null){
+			int x2 = p.getLocationX();
+			int y2 = p.getLocationY();
+			return Math.sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
+		}
+		return -1.0;
 	}
 	public static Tile[] getSurrounding(final Tile t) {
         final Vector<Tile> neighbors = new Vector<Tile>();
@@ -158,35 +162,38 @@ public class Calculations {
 		return new Point(-1, -1);
 	}
 	public static Point worldToMap(int x, int y){	
-		x-= Client.getBaseX();	
-		y-= Client.getBaseY();	
-		int regionTileX = Client.getMyPlayer().getLocationX() - Client.getBaseX();
-		int regionTileY = Client.getMyPlayer().getLocationY() - Client.getBaseY();
-		if(x>104 || x<0 || y>104 || y<0)
-			return new Point(-1, -1);
-		final int cX = (int) (x * 4 + 2) - (regionTileX << 9) / 0x80;		
-		final int cY = (int) (y * 4 + 2) - (regionTileY << 9) / 0x80;		
-		final int actDistSq = cX * cX + cY * cY;	
-		final int mmDist = Math.max(154 / 2, 154 / 2) + 10;	
-		if (mmDist * mmDist >= actDistSq) {		
-			int angle = 0x3fff & (int)Client.getMinimapAngle();		
-			final boolean mmsettingis4 = Client.getMinimapSetting()==4;		
-			if (!mmsettingis4){			
-				angle = 0x3fff & Client.getMinimapOffset() + (int) Client.getMinimapAngle();	
+		try{
+			x-= Client.getBaseX();	
+			y-= Client.getBaseY();	
+			int regionTileX = Client.getMyPlayer().getLocationX() - Client.getBaseX();
+			int regionTileY = Client.getMyPlayer().getLocationY() - Client.getBaseY();
+			if(x>104 || x<0 || y>104 || y<0)
+				return new Point(-1, -1);
+			final int cX = (int) (x * 4 + 2) - (regionTileX << 9) / 0x80;		
+			final int cY = (int) (y * 4 + 2) - (regionTileY << 9) / 0x80;		
+			final int actDistSq = cX * cX + cY * cY;	
+			final int mmDist = Math.max(154 / 2, 154 / 2) + 10;	
+			if (mmDist * mmDist >= actDistSq) {		
+				int angle = 0x3fff & (int)Client.getMinimapAngle();		
+				final boolean mmsettingis4 = Client.getMinimapSetting()==4;		
+				if (!mmsettingis4){			
+					angle = 0x3fff & Client.getMinimapOffset() + (int) Client.getMinimapAngle();	
+				}	
+				int sin = SIN_TABLE[angle];	
+				int cos = COS_TABLE[angle];		
+				if (!mmsettingis4) {		
+					final int fact = 0x100 + Client.getMinimapScale();		
+					sin = 0x100 * sin / fact;			
+					cos = 0x100 * cos / fact;		
+				}	
+				Point ret = new Point((cos * cX + sin * cY >> 0xf) + 550 + 154 / 2, -(cos * cY - sin * cX >> 0xf) + 58 + 154 / 2);
+				if(x==regionTileX && y==regionTileY)
+					return ret;
+				else if(Calculations.distanceBetween(ret, Players.getMyPlayer().getLocation().getTileOnMap())<70)
+					return ret;	
 			}	
-			int sin = SIN_TABLE[angle];	
-			int cos = COS_TABLE[angle];		
-			if (!mmsettingis4) {		
-				final int fact = 0x100 + Client.getMinimapScale();		
-				sin = 0x100 * sin / fact;			
-				cos = 0x100 * cos / fact;		
-			}	
-			Point ret = new Point((cos * cX + sin * cY >> 0xf) + 550 + 154 / 2, -(cos * cY - sin * cX >> 0xf) + 58 + 154 / 2);
-			if(x==regionTileX && y==regionTileY)
-				return ret;
-			else if(Calculations.distanceBetween(ret, Players.getMyPlayer().getLocation().getTileOnMap())<70)
-				return ret;	
-		}	
+		}
+		catch(Exception e){}
 		return new Point(-1, -1);
 	}
 	public static Point worldToScreen(final int x, final int y, final int z) {
