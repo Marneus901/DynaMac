@@ -1,3 +1,12 @@
+/******************************************************
+* Created by Marneus901                                *
+* © 2012 MarneusScripts.com                            *
+* **************************************************** *
+* Access to this source is unauthorized without prior  *
+* authorization from its appropriate author(s).        *
+* You are not permitted to release, nor distribute this* 
+* work without appropriate author(s) authorization.    *
+********************************************************/
 package org.dynamac.bot.api.methods;
 
 import java.awt.Point;
@@ -168,10 +177,14 @@ public class Bank {
 		return false;
 	}
 	public static boolean isOpen(){
+		try{
 		return Client.getInterfaceCache()[BANK_INTERFACE_ID]!=null;
+		}
+		catch(Exception e){}
+		return false;
 	}
 	public static int getCurrentTab(){
-		return ((Client.getSettings().getData()[1248] >>> 24) - 136) / 8;
+		return ((Settings.get(110) >>> 24) - 136) / 8;
 	}
 	public static InterfaceItem getItem(int id){
 		for(InterfaceItem item : getItems())
@@ -202,15 +215,12 @@ public class Bank {
 	public static boolean open(){
 		AnimableObject object = Objects.getNearestAnimableObjectByID(BANK_BOOTH_IDS);
 		if(object!=null){
-			System.out.println("[Bank:open] Bank booth found.");
 			if(object.isOnScreen()){
 				if(!object.doAction("Bank")){
-					System.out.println("[Bank:open] Failed to click bank tile.");
 					return false;
 				}
 				for(int i=0;i<20;++i){
 					if(Bank.isOpen()){
-						System.out.println("[Bank:open] Bank opened.");
 						return true;
 					}
 					try {
@@ -220,19 +230,15 @@ public class Bank {
 				}
 				return true;
 			}
-			System.out.println("[Bank:open] Bank booth not on screen.");
 		}
 		object=Objects.getNearestAnimableObjectByID(BANK_CHEST_IDS);
 		if(object!=null){
-			System.out.println("[Bank:open] Bank chest found.");
 			if(object.isOnScreen()){
 				if(!object.clickTile()){//Check for top action
-					System.out.println("[Bank:open] Failed to click chest tile.");
 					return false;
 				}
 				for(int i=0;i<20;++i){
 					if(Bank.isOpen()){
-						System.out.println("[Bank:open] Bank opened.");
 						return true;
 					}
 					try {
@@ -242,7 +248,6 @@ public class Bank {
 				}
 				return true;
 			}
-			System.out.println("[Bank:open] Bank chest not on screen.");
 		}
 		/*NPC npcToDisplay=NPCs.getNearest(BANKER_IDS);
 		if(npcToDisplay!=null){
