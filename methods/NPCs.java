@@ -1,16 +1,16 @@
+package org.dynamac.bot.api.methods;
+
 /******************************************************
  * Created by Marneus901                                *
- * © 2012 MarneusScripts.com                            *
+ * @ 2012 MarneusScripts.com                            *
  * **************************************************** *
  * Access to this source is unauthorized without prior  *
  * authorization from its appropriate author(s).        *
  * You are not permitted to release, nor distribute this* 
  * work without appropriate author(s) authorization.    *
  ********************************************************/
-package org.dynamac.bot.api.methods;
 
 import java.util.ArrayList;
-
 import org.dynamac.bot.api.wrappers.NPC;
 import org.dynamac.bot.api.wrappers.NPCNode;
 import org.dynamac.bot.api.wrappers.Tile;
@@ -36,9 +36,8 @@ public class NPCs {
 				}
 			}
 		}
-		if(temp != null)
-			return temp;
-		return null;
+
+		return temp;
 	}
 
 	/**
@@ -48,7 +47,7 @@ public class NPCs {
 	 * @param npcIDs
 	 * @return The closest NPC with a valid id from the list given on screen
 	 */
-	public static NPC getNearestOnScreen(int...ids) {
+	public static NPC getNearestOnScreen(int... ids) {
 		NPC temp = null;
 		double dist = Double.MAX_VALUE;
 		for (NPC npc : getNPCArray()) {
@@ -65,10 +64,8 @@ public class NPCs {
 				}
 			}
 		}
-		if(temp != null)
-			if(temp.isOnScreen())
-				return temp;
-		return getNearestOnScreen(ids);
+
+		return (temp != null && isOnScreen()) ? temp :  getNearestOnScreen(ids);
 	}
 
 	/**
@@ -118,17 +115,15 @@ public class NPCs {
 		return npcs.toArray(new NPC[]{});
 	}
 
-	public static NPC getNPCAt(Tile t){
-		if(t==null)
-			return null;
-		return getNPCAt(t.getX(), t.getY());
+	public static NPC getNPCAt(Tile tile){
+		return tile != null ? getNPCAt(tile.getX(), tile.getY()) : null;
 	}
 
 	public static NPC getNPCAt(int x, int y){
-		for(NPC npc : getNPCArray()){
+		for(NPC npc : getNPCArray())
 			if(npc.getLocation().equals(new Tile(x, y, Client.getPlane())))
 				return npc;
-		}
+		
 		return null;
 	}
 
