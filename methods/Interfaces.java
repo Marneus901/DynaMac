@@ -16,6 +16,15 @@ import org.dynamac.bot.api.wrappers.Interface;
 import org.dynamac.bot.api.wrappers.InterfaceChild;
 
 public class Interfaces {
+	public static boolean canContinue() {
+		return getContinueComponent() != null;
+	}
+	public static boolean clickContinue(){
+		InterfaceChild button = getContinueComponent();
+		if(button!=null)
+			return button.doAction("Continue");
+		return false;
+	}
 	public static Interface get(int index){
 		Interface[] faces = getInterfaces();
 		if(faces.length>index)
@@ -35,6 +44,21 @@ public class Interfaces {
 		final int x = id >> 0x10;
 		final int y = id & 0xffff;
 		return get(x, y);
+	}
+	public static InterfaceChild getContinueComponent(){
+		InterfaceChild button = get(752, 5);
+		if(button!=null && button.isDisplayed())
+			return button;
+		button = get(1184, 18);//NPC talking with our player
+		if(button!=null && button.isDisplayed())
+			return button;
+		button = get(1186, 8);
+		if(button!=null && button.isDisplayed())
+			return button;
+		button = get(1191, 18);//Our player talking with an NPC
+		if(button!=null && button.isDisplayed())
+			return button;
+		return null;
 	}
 	public static Interface[] getInterfaces(){
 		Interface[] interfaces = Client.getInterfaceCache();
