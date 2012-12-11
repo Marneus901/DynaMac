@@ -1,6 +1,6 @@
 /******************************************************
 * Created by Marneus901                                *
-* © 2012 MarneusScripts.com                            *
+* ï¿½ 2012 MarneusScripts.com                            *
 * **************************************************** *
 * Access to this source is unauthorized without prior  *
 * authorization from its appropriate author(s).        *
@@ -97,6 +97,9 @@ public class Calculations {
 		Point p = Calculations.locationToScreen(x, y);
 		return (p.x>0 && p.x<515 && p.y>54 && p.y<388);
 	}
+	public static boolean tileOnMap(int x, int y) {
+                return distanceTo(x, y) < 15;
+        }
 	public static Point locationToScreen(int x, int y, int height){
 		x = x-Client.getRSData().getBaseInfo().getX();
 		y = y-Client.getRSData().getBaseInfo().getY();
