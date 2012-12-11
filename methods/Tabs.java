@@ -30,13 +30,13 @@ import org.dynamac.environment.Data;
  *
  */
 public enum Tabs {
-	COMBAT(113, "Combat Styles", KeyEvent.VK_F5),
-	TASK_LIST(114, "Task List"),
-	STATS(115, "Stats"),
-	INVENTORY(117, "Inventory", KeyEvent.VK_F1),
-	EQUIPMENT(118, "Worn Equipment", KeyEvent.VK_F2),
-	PRAYER(119, "Prayer List", KeyEvent.VK_F3),
-	MAGIC(120, "Magic Spellbook", KeyEvent.VK_F4),
+    COMBAT(116, "Combat Styles", KeyEvent.VK_F5),
+    TASK_LIST(117, "Task List"),
+    STATS(118, "Stats"),
+    INVENTORY(120, "Inventory", KeyEvent.VK_F1),
+    EQUIPMENT(121, "Worn Equipment", KeyEvent.VK_F2),
+    PRAYER(122, "Prayer List", KeyEvent.VK_F3),
+    MAGIC(123, "Magic Spellbook", KeyEvent.VK_F4),
 	EXTRAS(84, "Extras"),
 	FRIENDS_LIST(85, "Friends List"),
 	FRIENDS_CHAT(86, "Friends Chat"),
