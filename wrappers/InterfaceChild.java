@@ -701,6 +701,22 @@ public class InterfaceChild {
 		}
 		return "";
 	}
+	public boolean hover(){
+		if(isHovering())
+			return true;
+		Point p = getRandomPoint();
+		if(p.equals(new Point(-1, -1))){
+			return false;
+		}
+		if(!containsPoint(p))
+			return false;
+		Mouse.move(p);
+		try {
+			Thread.sleep(100);
+		} catch (Exception e) {
+		}
+		return isHovering();
+	}
 	public boolean isHidden(){
 		if(isHidden==null)
 			isHidden=currentHook.getFieldHook("isHidden");

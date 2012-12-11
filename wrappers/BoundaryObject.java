@@ -286,6 +286,25 @@ public class BoundaryObject extends Boundary{
 		}
 		return polys.toArray(new Polygon[]{});
 	}
+	public boolean hover(){
+		if(isHovering())
+			return true;
+		Point p = getRandomPoint();
+		if(p.equals(new Point(-1, -1))){
+			return false;
+		}
+		if(!containsPoint(p))
+			return false;
+		Mouse.move(p);
+		try {
+			Thread.sleep(100);
+		} catch (Exception e) {
+		}
+		return isHovering();
+	}
+	public boolean isHovering(){
+		return containsPoint(Mouse.getLocation());
+	}
 	public boolean isOnScreen(){
 		Point p = Calculations.locationToScreen(getLocationX(), getLocationY());
 		return (p.x>0 && p.x<515 && p.y>54 && p.y<388);

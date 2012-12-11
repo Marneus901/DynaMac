@@ -9,11 +9,14 @@
  ********************************************************/
 package org.dynamac.bot.api.wrappers;
 
+import java.awt.Point;
 import java.awt.Polygon;
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.dynamac.bot.api.methods.Calculations;
 import org.dynamac.bot.api.methods.Client;
+import org.dynamac.bot.api.methods.Mouse;
 import org.dynamac.environment.Data;
 import org.dynamac.reflection.ClassHook;
 import org.dynamac.reflection.FieldHook;
@@ -64,6 +67,12 @@ public class Player extends Character{
 		skullIcon=null;
 		team=null;
 		title=null;
+	}
+	public boolean containsPoint(Point p){
+		for(Polygon poly : getBounds())
+			if(poly.contains(p))
+				return true;
+		return false;
 	}
 	public Polygon[] getBounds(){
 		ArrayList<Polygon> polys = new ArrayList<Polygon>();
@@ -181,6 +190,18 @@ public class Player extends Character{
 		}
 		return -1;
 	}
+	public Point getRandomPoint(){
+		try{
+			int[][] pts = projectBoundsVertices();
+			if(pts.length>0){
+				int i = new Random().nextInt(pts.length);
+				return new Point(pts[i][0], pts[i][1]);
+			}
+		}
+		catch(Exception e){			
+		}
+		return new Point(-1, -1);
+	}
 	public int getSkullIcon(){
 		if(skullIcon==null)
 			skullIcon = currentHook.getFieldHook("getSkullIcon");
@@ -247,6 +268,25 @@ public class Player extends Character{
 			catch(Exception e){}
 		}
 		return polys.toArray(new Polygon[]{});
+	}
+	public boolean hover(){
+		if(isHovering())
+			return true;
+		Point p = getRandomPoint();
+		if(p.equals(new Point(-1, -1))){
+			return false;
+		}
+		if(!containsPoint(p))
+			return false;
+		Mouse.move(p);
+		try {
+			Thread.sleep(100);
+		} catch (Exception e) {
+		}
+		return isHovering();
+	}
+	public boolean isHovering(){
+		return containsPoint(Mouse.getLocation());
 	}
 	public int[][] projectVertices() {
 		float[] data = Calculations.matrixCache;
