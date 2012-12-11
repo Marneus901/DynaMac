@@ -234,7 +234,7 @@ public class Bank {
 		object=Objects.getNearestAnimableObjectByID(BANK_CHEST_IDS);
 		if(object!=null){
 			if(object.isOnScreen()){
-				if(!object.clickTile()){//Check for top action
+				if(!object.doAction("Use")){//Check for top action
 					return false;
 				}
 				for(int i=0;i<20;++i){
