@@ -13,7 +13,7 @@ import org.dynamac.bot.api.wrappers.Facade;
 import org.dynamac.bot.api.wrappers.SkillInfo;
 
 public class Skills {
-	public static int[] XP_TABLE = {0, 0, 83, 174, 276, 388, 512, 650, 801, 969, 1154, 1358, 1584, 1833, 2107,
+	public final static int[] XP_TABLE = {0, 0, 83, 174, 276, 388, 512, 650, 801, 969, 1154, 1358, 1584, 1833, 2107,
 		2411, 2746, 3115, 3523, 3973, 4470, 5018, 5624, 6291, 7028, 7842, 8740, 9730, 10824, 12031, 13363, 14833,
 		16456, 18247, 20224, 22406, 24815, 27473, 30408, 33648, 37224, 41171, 45529, 50339, 55649, 61512, 67983,
 		75127, 83014, 91721, 101333, 111945, 123660, 136594, 150872, 166636, 184040, 203254, 224466, 247886, 273742,
@@ -23,35 +23,35 @@ public class Skills {
 		11805606, 13034431, 14391160, 15889109, 17542976, 19368992, 21385073, 23611006, 26068632, 28782069,
 		31777943, 35085654, 38737661, 42769801, 47221641, 52136869, 57563718, 63555443, 70170840, 77474828,
 		85539082, 94442737, 104273167};
-	public static String[] SKILL_NAMES = {"attack", "defence", "strength", "constitution", "range", "prayer",
+	public final static String[] SKILL_NAMES = {"attack", "defence", "strength", "constitution", "range", "prayer",
 			"magic", "cooking", "woodcutting", "fletching", "fishing", "firemaking", "crafting", "smithing", "mining",
 			"herblore", "agility", "thieving", "slayer", "farming", "runecrafting", "hunter", "construction",
 			"summoning", "dungeoneering"};
-	public static int ATTACK_INDEX = 0;
-	public static int DEFENSE_INDEX = 1;
-	public static int STRENGTH_INDEX = 2;
-	public static int CONSTITUTION_INDEX = 3;
-	public static int RANGE_INDEX = 4;
-	public static int PRAYER_INDEX = 5;
-	public static int MAGIC_INDEX = 6;
-	public static int COOKING_INDEX = 7;
-	public static int WOODCUTTING_INDEX = 8;
-	public static int FLETCHING_INDEX = 9;
-	public static int FISHING_INDEX = 10;
-	public static int FIREMAKING_INDEX = 11;
-	public static int CRAFTING_INDEX = 12;
-	public static int SMITHING_INDEX = 13;
-	public static int MINING_INDEX = 14;
-	public static int HERBLORE_INDEX = 15;
-	public static int AGILITY_INDEX = 16;
-	public static int THIEVING_INDEX = 17;
-	public static int SLAYER_INDEX = 18;
-	public static int FARMING_INDEX = 19;
-	public static int RUNECRAFTING_INDEX = 20;
-	public static int HUNTER_INDEX = 21;
-	public static int CONSTRUCTION_INDEX = 22;
-	public static int SUMMONING_INDEX = 23;
-	public static int DUNGEONEERING_INDEX = 24;
+	public final static int ATTACK_INDEX = 0;
+	public final static int DEFENSE_INDEX = 1;
+	public final static int STRENGTH_INDEX = 2;
+	public final static int CONSTITUTION_INDEX = 3;
+	public final static int RANGE_INDEX = 4;
+	public final static int PRAYER_INDEX = 5;
+	public final static int MAGIC_INDEX = 6;
+	public final static int COOKING_INDEX = 7;
+	public final static int WOODCUTTING_INDEX = 8;
+	public final static int FLETCHING_INDEX = 9;
+	public final static int FISHING_INDEX = 10;
+	public final static int FIREMAKING_INDEX = 11;
+	public final static int CRAFTING_INDEX = 12;
+	public final static int SMITHING_INDEX = 13;
+	public final static int MINING_INDEX = 14;
+	public final static int HERBLORE_INDEX = 15;
+	public final static int AGILITY_INDEX = 16;
+	public final static int THIEVING_INDEX = 17;
+	public final static int SLAYER_INDEX = 18;
+	public final static int FARMING_INDEX = 19;
+	public final static int RUNECRAFTING_INDEX = 20;
+	public final static int HUNTER_INDEX = 21;
+	public final static int CONSTRUCTION_INDEX = 22;
+	public final static int SUMMONING_INDEX = 23;
+	public final static int DUNGEONEERING_INDEX = 24;
 
 	public static int getExpTillLevel(int index, int level){
 		int real = getRealSkillLevel(index);
