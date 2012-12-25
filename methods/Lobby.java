@@ -37,10 +37,6 @@ public class Lobby
 		if(world <= 0)
 			return false;
 		
-		final InterfaceChild playButton = Interfaces.get(ID_INTERFACE_LOBBY, ID_INTERFACE_PLAY_BUTTON);
-		if(playButton == null)
-			return false;
-		
 		final InterfaceChild worldbox = Interfaces.get(ID_INTERFACE_LOBBY, World.ID_INTERFACE_ROWS_WORLDENTRY);
 		if(worldbox == null)
 			return false;
