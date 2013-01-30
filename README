@@ -1,6 +1,4 @@
 DynaMac - Dynamic Macro - is a new type of Java hacking software.
-Having the ability to trace + hook data for any Java application or applet.
-You can also create data hooks with the application running, and create API
-without the need for restarting the application/applet, in order to do emulation/testing.
-
-An example is using DynaMac for Runescape in order to emulate human interaction, and test/review runtime data.
+Having the ability to trace + hook data for any Java application or applet using reflection and asm injection.
+Then you can have interaction scripts that have no limits; data manipulation, data dumpming, emulation testing, interaction testing, ect.
+It also has an built-in ASM Analyzer and Tracer (first of its kind); used to trace through the static bytecode instructions with ease.
