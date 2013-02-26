@@ -75,14 +75,14 @@ public class Client {
 						Data.REFLECTION_CLIENT_HOOKS.put(cn.name, hook);
 					}
 				}
-				log.log("Loaded "+Data.REFLECTION_CLIENT_HOOKS.size()+" classes!");
+				log.info("Loaded "+Data.REFLECTION_CLIENT_HOOKS.size()+" classes!");
 			}
 			catch(Exception e){
 				e.printStackTrace();
 			}
 		}
 		else
-			log.log("File is not a loadable jar file.");
+			log.error("File is not a loadable jar file.");
 	}
 	/**
 	 * Creates an instance of the main boot class of the loaded client.
@@ -98,7 +98,7 @@ public class Client {
 				Class<?> bootClass = Data.CLIENT_CLASSLOADER.loadClass(mainClass);
 				if(bootClass!=null){
 					Data.CLIENT_INSTANCE = bootClass.newInstance();
-					log.log("Initialized main class : "+mainClass);
+					log.info("Initialized main class : "+mainClass);
 					for(Method m : Data.CLIENT_INSTANCE.getClass().getDeclaredMethods()){
 						if(m.getName().equals(mainMethod)){
 							m.invoke(Data.CLIENT_INSTANCE, new Object[]{});
@@ -122,6 +122,6 @@ public class Client {
 		for(ClassHook ch : Data.REFLECTION_CLIENT_HOOKS.values()){
 			ch.loadRuntime();
 		}
-		log.log("Loaded reflection hooks...");
+		log.info("Loaded reflection hooks...");
 	}
 }
