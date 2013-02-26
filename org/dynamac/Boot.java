@@ -23,7 +23,7 @@ public class Boot{
 	public static void main(String[] args) {
 		//TODO Cleanup this Boot class; it b ugly
 		Data.clientGUI = new ClientGUI();
-		log.log("Starting up Dynamac!");
+		log.info("Starting up Dynamac!");
 		JFileChooser c = new JFileChooser();    
 		c.setCurrentDirectory(new java.io.File(Settings.getLastLoaderDirectory()));c.setDialogTitle("Select loader script...");
 		c.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -49,10 +49,10 @@ public class Boot{
 					if(scriptObject instanceof LoaderDef){
 						LoaderDef loaderScript = (LoaderDef)scriptObject;
 						loaderScript.start();
-						log.log("Started loader script!");
+						log.info("Started loader script!");
 					}
 					else{
-						log.log("Selected file is not a valid loader script!");
+						log.error("Selected file is not a valid loader script!");
 					}
 				}
 				catch(Exception e){
