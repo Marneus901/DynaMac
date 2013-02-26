@@ -19,7 +19,7 @@ import java.util.Date;
  *
  * <pre>
  * {@code
- * mylogger = new Logger("My App", DEBUG);
+ * mylogger = new Logger("My App", Logger.DEBUG);
  * }
  * </pre>
  *
